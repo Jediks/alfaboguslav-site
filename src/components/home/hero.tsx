@@ -4,13 +4,23 @@ import { useRef, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { HeroAmbience } from "./hero-ambience";
+import { DEFAULT_HERO_BLOCK, type HeroBlockData } from "@/types/content-blocks";
 
-export function Hero() {
+type HeroProps = {
+  block?: HeroBlockData;
+};
+
+function pickLocalized(uk: string, en: string, locale: string) {
+  return locale === "en" ? en : uk;
+}
+
+export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
   const t = useTranslations("home");
+  const locale = useLocale();
   const imageRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -30,7 +40,21 @@ export function Hero() {
     [mouseX, mouseY]
   );
 
-  const titleLines = [t("heroTitleLine1"), t("heroTitleLine2")];
+  const heroTitle = pickLocalized(block.title_uk, block.title_en, locale).trim();
+  const heroSubtitle = pickLocalized(block.subtitle_uk, block.subtitle_en, locale);
+  const heroBadge = pickLocalized(block.badge_uk, block.badge_en, locale);
+  const ctaPrimary = pickLocalized(block.cta_primary_uk, block.cta_primary_en, locale);
+  const ctaSecondary = pickLocalized(block.cta_secondary_uk, block.cta_secondary_en, locale);
+  const vipBadge = pickLocalized(block.vip_badge_uk, block.vip_badge_en, locale);
+  const titleWords = heroTitle.split(/\s+/).filter(Boolean);
+  const splitAt = Math.max(1, Math.ceil(titleWords.length / 2));
+  const titleLines =
+    titleWords.length <= 1
+      ? [heroTitle]
+      : [
+          titleWords.slice(0, splitAt).join(" "),
+          titleWords.slice(splitAt).join(" "),
+        ];
 
   return (
     <section
@@ -52,7 +76,7 @@ export function Hero() {
             transition={{ duration: 0.6 }}
             className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-white/50"
           >
-            {t("heroBadge")}
+            {heroBadge}
           </motion.p>
 
           <div className="overflow-visible pb-1">
@@ -90,7 +114,7 @@ export function Hero() {
             transition={{ delay: 0.5, duration: 0.7 }}
             className="mt-6 max-w-lg text-base leading-relaxed text-white/70 md:mt-8 md:text-lg"
           >
-            {t("heroSubtitle")}
+            {heroSubtitle}
           </motion.p>
 
           <motion.div
@@ -99,22 +123,22 @@ export function Hero() {
             transition={{ delay: 0.65, duration: 0.7 }}
             className="mt-8 flex flex-wrap gap-3 md:mt-10 md:gap-4"
           >
-            <Link href="/catalog">
+            <Link href={(block.cta_primary_href || "/catalog") as never}>
               <Button
                 size="lg"
                 className="group h-12 gap-2 rounded-full bg-primary px-8 text-base font-semibold shadow-xl shadow-primary/30 hover:bg-primary/90 md:h-14 md:px-10"
               >
-                {t("ctaCatalog")}
+                {ctaPrimary}
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <Link href="#configurator">
+            <Link href={(block.cta_secondary_href || "#configurator") as never}>
               <Button
                 size="lg"
                 variant="outline"
                 className="h-12 rounded-full border-white/25 bg-white/5 px-8 text-base text-white backdrop-blur-sm hover:bg-white/10 hover:text-white md:h-14 md:px-10"
               >
-                {t("ctaConsult")}
+                {ctaSecondary}
               </Button>
             </Link>
           </motion.div>
@@ -154,12 +178,13 @@ export function Hero() {
           <div className="relative h-[min(44vh,400px)] w-full sm:h-[min(48vh,440px)] lg:-mt-8 lg:mb-4 lg:h-[min(46vh,460px)]">
             <div className="hero-float-wrap relative h-full w-full">
               <Image
-                src="/catalog/cutouts/hero-main.png?v=20260626e"
+                src={block.image_url || DEFAULT_HERO_BLOCK.image_url}
                 alt=""
                 fill
                 priority
                 sizes="(min-width: 1024px) 58vw, 100vw"
                 className="hero-float !max-w-none object-contain object-center"
+                unoptimized={!(block.image_url || DEFAULT_HERO_BLOCK.image_url).startsWith("/")}
               />
             </div>
           </div>
@@ -169,7 +194,7 @@ export function Hero() {
             className="absolute bottom-[6%] left-0 z-20 rounded-2xl border border-white/20 bg-white/15 px-6 py-4 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-7 sm:py-4 lg:bottom-[18%] lg:left-[4%]"
           >
             <p className="font-display text-2xl font-bold leading-none text-gold">VIP</p>
-            <p className="mt-1.5 text-xs font-medium text-white/80 sm:text-sm">{t("vipBadge")}</p>
+            <p className="mt-1.5 text-xs font-medium text-white/80 sm:text-sm">{vipBadge}</p>
           </motion.div>
         </motion.div>
       </div>

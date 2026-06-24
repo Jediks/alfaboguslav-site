@@ -1,5 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { getPricingTiers, getProducts } from "@/lib/data/products";
+import { getHeroBlock, getTestimonialsBlock } from "@/lib/data/content-blocks";
 import { Hero } from "@/components/home/hero";
 import { B2bConfigurator } from "@/components/home/b2b-configurator";
 import { HorizontalShowcase } from "@/components/home/horizontal-showcase";
@@ -15,7 +16,11 @@ type HomePageProps = {
 
 export default async function HomePage({ params: { locale } }: HomePageProps) {
   setRequestLocale(locale);
-  const products = await getProducts();
+  const [products, heroBlock, testimonialsBlock] = await Promise.all([
+    getProducts(),
+    getHeroBlock(),
+    getTestimonialsBlock(),
+  ]);
   const pricingEntries = await Promise.all(
     products.map(async (product) => [product.id, await getPricingTiers(product.id)] as const)
   );
@@ -23,12 +28,12 @@ export default async function HomePage({ params: { locale } }: HomePageProps) {
 
   return (
     <>
-      <Hero />
+      <Hero block={heroBlock} />
       <B2bConfigurator products={products} pricingByProductId={pricingByProductId} />
       <HorizontalShowcase products={products} pricingByProductId={pricingByProductId} />
       <ProcessSection />
       <DeliveryGoal />
-      <TestimonialsMarquee />
+      <TestimonialsMarquee block={testimonialsBlock} />
       <CtaSection />
     </>
   );
