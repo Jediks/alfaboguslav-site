@@ -53,8 +53,17 @@ export function ContactForm() {
       setSent(true);
       setForm(initialState);
       toast.success(t("successTitle"), { description: t("successDescription") });
-    } catch {
-      toast.error(t("errorTitle"), { description: t("errorDescription") });
+    } catch (err) {
+      if (err instanceof Error && err.name === "RateLimitError") {
+        const retry =
+          (err as Error & { retryAfterSec?: number }).retryAfterSec ?? 60;
+        toast.error(t("rateLimitTitle"), {
+          description: t("rateLimitDescription", { seconds: retry }),
+        });
+      } else {
+        console.error("[contact] submitQuote failed", err);
+        toast.error(t("errorTitle"), { description: t("errorDescription") });
+      }
     } finally {
       setSubmitting(false);
     }

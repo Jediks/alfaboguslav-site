@@ -3,6 +3,8 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseAdmin } from "@/lib/supabase/config";
 import { notifyNewQuote } from "@/lib/email/notify";
+import { checkRateLimit, getClientIp, RateLimitError } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export type SubmitQuoteInput = {
   referenceId: string;
@@ -28,6 +30,16 @@ export type QuoteRecord = {
 export async function submitQuote(
   input: SubmitQuoteInput
 ): Promise<{ ok: true; referenceId: string; persisted: "supabase" | "local" }> {
+  const ip = await getClientIp();
+  const rl = checkRateLimit({
+    key: `submitQuote:${ip}`,
+    limit: 5,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    throw new RateLimitError(rl.retryAfterSec);
+  }
+
   if (!hasSupabaseAdmin()) {
     return { ok: true, referenceId: input.referenceId, persisted: "local" };
   }
@@ -44,7 +56,10 @@ export async function submitQuote(
   } as never);
 
   if (error) {
-    console.error("[submitQuote]", error);
+    logger.error("submitQuote.insert_failed", {
+      referenceId: input.referenceId,
+      error: error.message,
+    });
     throw new Error("Failed to save quote request");
   }
 

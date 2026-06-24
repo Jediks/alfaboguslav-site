@@ -25,5 +25,11 @@ export default async function AccountPage({ params: { locale } }: AccountPagePro
     }
   }
 
-  return <AccountClient supabaseOrders={supabaseOrders} products={products} />;
+  return (
+    <AccountClient
+      supabaseOrders={supabaseOrders}
+      products={products}
+      supabaseEnabled={hasSupabaseEnv()}
+    />
+  );
 }

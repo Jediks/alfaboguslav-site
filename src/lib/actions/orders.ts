@@ -3,7 +3,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseAdmin } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
-import { notifyNewOrder } from "@/lib/email/notify";
+import { notifyNewOrder, notifyClientOrderConfirmation } from "@/lib/email/notify";
+import { checkRateLimit, getClientIp, RateLimitError } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 import type { OrderRecord } from "@/lib/data/orders";
 import type { OrderStatus, PaymentMethod } from "@/types/database";
 
@@ -19,6 +21,7 @@ export type SubmitOrderInput = {
   contact_phone: string;
   branding_logo_url: string | null;
   items: { productId: string; quantity: number; price_at_time: number; brandingLogoUrl?: string }[];
+  locale?: "uk" | "en";
 };
 
 export type { OrderRecord } from "@/lib/data/orders";
@@ -26,6 +29,16 @@ export type { OrderRecord } from "@/lib/data/orders";
 export async function submitOrder(
   input: SubmitOrderInput
 ): Promise<{ ok: true; referenceId: string; persisted: "supabase" | "local" }> {
+  const ip = await getClientIp();
+  const rl = checkRateLimit({
+    key: `submitOrder:${ip}`,
+    limit: 10,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    throw new RateLimitError(rl.retryAfterSec);
+  }
+
   if (!hasSupabaseAdmin()) {
     return { ok: true, referenceId: input.referenceId, persisted: "local" };
   }
@@ -62,7 +75,10 @@ export async function submitOrder(
     .single<{ id: string }>();
 
   if (orderError || !order) {
-    console.error("[submitOrder]", orderError);
+    logger.error("submitOrder.insert_failed", {
+      referenceId: input.referenceId,
+      error: orderError?.message,
+    });
     throw new Error("Failed to save order");
   }
 
@@ -77,7 +93,11 @@ export async function submitOrder(
   );
 
   if (itemsError) {
-    console.error("[submitOrder items]", itemsError);
+    logger.error("submitOrder.items_insert_failed", {
+      referenceId: input.referenceId,
+      orderId: order.id,
+      error: itemsError.message,
+    });
     throw new Error("Failed to save order items");
   }
 
@@ -89,6 +109,16 @@ export async function submitOrder(
     contactPhone: input.contact_phone,
     total: input.total_estimated_price,
     itemCount: input.items.length,
+  });
+
+  await notifyClientOrderConfirmation({
+    referenceId: input.referenceId,
+    companyName: input.company_name,
+    contactName: input.contact_name,
+    contactEmail: input.contact_email,
+    total: input.total_estimated_price,
+    itemCount: input.items.length,
+    locale: input.locale,
   });
 
   return { ok: true, referenceId: input.referenceId, persisted: "supabase" };

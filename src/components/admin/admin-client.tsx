@@ -76,7 +76,7 @@ export function AdminClient({
   >({});
 
   const orders = useMemo(() => {
-    if (supabaseEnabled && supabaseOrders.length > 0) {
+    if (supabaseEnabled) {
       return supabaseOrders.map((o) => ({
         referenceId: o.referenceId,
         company_name: o.company_name,
@@ -90,7 +90,7 @@ export function AdminClient({
   }, [supabaseEnabled, supabaseOrders, localOrders]);
 
   const quotes = useMemo(() => {
-    if (supabaseEnabled && supabaseQuotes.length > 0) {
+    if (supabaseEnabled) {
       return supabaseQuotes.map((q) => ({
         id: q.referenceId,
         referenceId: q.referenceId,

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { CreditCard, FileText, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,9 +73,10 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
     setSubmitting(true);
     const orderId = `ORD-${Date.now().toString(36).toUpperCase()}`;
 
+    let persisted: "supabase" | "local" = "local";
     try {
       const { submitOrder } = await import("@/lib/actions/orders");
-      await submitOrder({
+      const result = await submitOrder({
         referenceId: orderId,
         status: "pending",
         total_estimated_price: total,
@@ -89,25 +91,38 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
           ...item,
           brandingLogoUrl: items[idx]?.brandingLogoUrl,
         })),
+        locale: locale === "en" ? "en" : "uk",
       });
-    } catch {
-      // Still save locally if Supabase fails
+      persisted = result.persisted;
+    } catch (err) {
+      if (err instanceof Error && err.name === "RateLimitError") {
+        setSubmitting(false);
+        const retry =
+          (err as Error & { retryAfterSec?: number }).retryAfterSec ?? 60;
+        toast.error(t("rateLimitTitle"), {
+          description: t("rateLimitDescription", { seconds: retry }),
+        });
+        return;
+      }
+      console.error("[checkout] submitOrder failed", err);
     }
 
-    addOrder({
-      id: orderId,
-      status: "pending",
-      total_estimated_price: total,
-      payment_method: payment,
-      delivery_address: delivery,
-      company_name: company.trim(),
-      contact_name: contactName.trim(),
-      contact_email: contactEmail.trim(),
-      contact_phone: contactPhone.trim(),
-      branding_logo_url: items[0]?.brandingLogoUrl ?? null,
-      created_at: new Date().toISOString(),
-      items: orderItems,
-    });
+    if (persisted !== "supabase") {
+      addOrder({
+        id: orderId,
+        status: "pending",
+        total_estimated_price: total,
+        payment_method: payment,
+        delivery_address: delivery,
+        company_name: company.trim(),
+        contact_name: contactName.trim(),
+        contact_email: contactEmail.trim(),
+        contact_phone: contactPhone.trim(),
+        branding_logo_url: items[0]?.brandingLogoUrl ?? null,
+        created_at: new Date().toISOString(),
+        items: orderItems,
+      });
+    }
 
     clearCart();
     router.push(`/thank-you?order=${orderId}`);
