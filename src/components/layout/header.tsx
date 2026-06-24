@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Menu, ShoppingBag, User } from "lucide-react";
+import { Menu, ShoppingBag } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { Link as I18nLink } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MarqueeText } from "@/components/ui/marquee-text";
 import { LanguageSwitcher } from "./language-switcher";
+import { UserMenu } from "./user-menu";
 import { useCartStore } from "@/stores/cart-store";
 import { useHeaderLightPage } from "@/lib/use-header-theme";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,8 @@ export function Header() {
   const navLinks = [
     { href: "/", label: tNav("home") },
     { href: "/catalog", label: tNav("catalog") },
+    { href: "/about", label: tNav("about") },
+    { href: "/contact", label: tNav("contact") },
   ];
 
   const tickerItems = [t("brandName"), tHome("heroBadge"), t("tagline")];
@@ -110,15 +113,7 @@ export function Header() {
               </Button>
             </I18nLink>
 
-            <I18nLink href="/account" className="hidden sm:block">
-              <Button
-                variant="ghost"
-                size="icon"
-                className={headerLight ? "text-brand-blue" : "text-white"}
-              >
-                <User className="h-5 w-5" />
-              </Button>
-            </I18nLink>
+            <UserMenu scrolled={headerLight} />
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger

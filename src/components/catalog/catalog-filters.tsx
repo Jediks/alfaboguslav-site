@@ -8,9 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Slider, readSliderRange } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import type { Product, PackagingType } from "@/types/database";
-import { PACKAGING_TYPES, SWEET_TYPES } from "@/lib/data/mock-products";
-import { MOCK_PRICING } from "@/lib/data/mock-products";
+import type { PricingTier, Product, PackagingType } from "@/types/database";
 
 export type CatalogFilters = {
   weightRange: [number, number];
@@ -21,13 +19,19 @@ export type CatalogFilters = {
 
 type CatalogFiltersPanelProps = {
   products: Product[];
+  pricingByProductId: Record<string, PricingTier[]>;
   filters: CatalogFilters;
   onChange: (filters: CatalogFilters) => void;
 };
 
-export function getDefaultFilters(products: Product[]): CatalogFilters {
+export function getDefaultFilters(
+  products: Product[],
+  pricingByProductId: Record<string, PricingTier[]>
+): CatalogFilters {
   const weights = products.map((p) => p.weight_grams);
-  const prices = products.flatMap((p) => MOCK_PRICING[p.id]?.map((t) => t.price) ?? [0]);
+  const prices = products.flatMap(
+    (p) => pricingByProductId[p.id]?.map((tier) => tier.price) ?? [0]
+  );
   return {
     weightRange: [Math.min(...weights), Math.max(...weights)],
     priceRange: [Math.min(...prices), Math.max(...prices)],
@@ -36,9 +40,13 @@ export function getDefaultFilters(products: Product[]): CatalogFilters {
   };
 }
 
-export function filterProducts(products: Product[], filters: CatalogFilters): Product[] {
+export function filterProducts(
+  products: Product[],
+  filters: CatalogFilters,
+  pricingByProductId: Record<string, PricingTier[]>
+): Product[] {
   return products.filter((p) => {
-    const minPrice = MOCK_PRICING[p.id]?.[0]?.price ?? 0;
+    const minPrice = pricingByProductId[p.id]?.[0]?.price ?? 0;
     if (p.weight_grams < filters.weightRange[0] || p.weight_grams > filters.weightRange[1])
       return false;
     if (minPrice < filters.priceRange[0] || minPrice > filters.priceRange[1]) return false;
@@ -55,11 +63,23 @@ export function filterProducts(products: Product[], filters: CatalogFilters): Pr
 
 export function CatalogFiltersPanel({
   products,
+  pricingByProductId,
   filters,
   onChange,
 }: CatalogFiltersPanelProps) {
   const t = useTranslations("catalog");
-  const defaults = useMemo(() => getDefaultFilters(products), [products]);
+  const defaults = useMemo(
+    () => getDefaultFilters(products, pricingByProductId),
+    [products, pricingByProductId]
+  );
+  const packagingTypes = useMemo(
+    () => Array.from(new Set(products.map((product) => product.packaging_type))),
+    [products]
+  );
+  const sweetTypes = useMemo(
+    () => Array.from(new Set(products.flatMap((product) => product.sweet_types))),
+    [products]
+  );
 
   const togglePackaging = (type: PackagingType) => {
     const next = filters.packaging.includes(type)
@@ -135,7 +155,7 @@ export function CatalogFiltersPanel({
         <div>
           <Label className="mb-3 block text-sm">{t("packaging")}</Label>
           <div className="space-y-2">
-            {PACKAGING_TYPES.map((type) => (
+            {packagingTypes.map((type) => (
               <label key={type} className="flex cursor-pointer items-center gap-2 text-sm">
                 <Checkbox
                   checked={filters.packaging.includes(type)}
@@ -152,7 +172,7 @@ export function CatalogFiltersPanel({
         <div>
           <Label className="mb-3 block text-sm">{t("sweetType")}</Label>
           <div className="space-y-2">
-            {SWEET_TYPES.map((type) => (
+            {sweetTypes.map((type) => (
               <label key={type} className="flex cursor-pointer items-center gap-2 text-sm">
                 <Checkbox
                   checked={filters.sweetTypes.includes(type)}

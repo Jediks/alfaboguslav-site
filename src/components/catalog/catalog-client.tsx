@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import type { Product } from "@/types/database";
+import type { PricingTier, Product } from "@/types/database";
 import { ProductCard } from "./product-card";
 import {
   CatalogFiltersPanel,
@@ -13,15 +13,16 @@ import {
 
 type CatalogClientProps = {
   products: Product[];
+  pricingByProductId: Record<string, PricingTier[]>;
 };
 
-export function CatalogClient({ products }: CatalogClientProps) {
+export function CatalogClient({ products, pricingByProductId }: CatalogClientProps) {
   const t = useTranslations("catalog");
   const [filters, setFilters] = useState<CatalogFilters>(() =>
-    getDefaultFilters(products)
+    getDefaultFilters(products, pricingByProductId)
   );
 
-  const filtered = filterProducts(products, filters);
+  const filtered = filterProducts(products, filters, pricingByProductId);
 
   return (
     <div className="min-h-screen">
@@ -40,6 +41,7 @@ export function CatalogClient({ products }: CatalogClientProps) {
       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
         <CatalogFiltersPanel
           products={products}
+          pricingByProductId={pricingByProductId}
           filters={filters}
           onChange={setFilters}
         />
@@ -56,7 +58,12 @@ export function CatalogClient({ products }: CatalogClientProps) {
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  pricingByProductId={pricingByProductId}
+                  index={i}
+                />
               ))}
             </div>
           )}

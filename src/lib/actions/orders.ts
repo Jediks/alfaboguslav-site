@@ -2,7 +2,9 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseAdmin } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 import { notifyNewOrder } from "@/lib/email/notify";
+import type { OrderRecord } from "@/lib/data/orders";
 import type { OrderStatus, PaymentMethod } from "@/types/database";
 
 export type SubmitOrderInput = {
@@ -19,21 +21,7 @@ export type SubmitOrderInput = {
   items: { productId: string; quantity: number; price_at_time: number; brandingLogoUrl?: string }[];
 };
 
-export type OrderRecord = {
-  id: string;
-  referenceId: string;
-  status: OrderStatus;
-  total_estimated_price: number;
-  payment_method: PaymentMethod;
-  delivery_address: string;
-  company_name: string;
-  contact_name: string;
-  contact_email: string;
-  contact_phone: string;
-  branding_logo_url: string | null;
-  created_at: string;
-  items: { productId: string; quantity: number; price_at_time: number; brandingLogoUrl?: string }[];
-};
+export type { OrderRecord } from "@/lib/data/orders";
 
 export async function submitOrder(
   input: SubmitOrderInput
@@ -42,13 +30,24 @@ export async function submitOrder(
     return { ok: true, referenceId: input.referenceId, persisted: "local" };
   }
 
+  let userId: string | null = null;
+  try {
+    const userScopedClient = await createClient();
+    const {
+      data: { user },
+    } = await userScopedClient.auth.getUser();
+    userId = user?.id ?? null;
+  } catch {
+    userId = null;
+  }
+
   const supabase = createAdminClient();
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
       reference_id: input.referenceId,
-      user_id: null,
+      user_id: userId,
       status: input.status,
       total_estimated_price: input.total_estimated_price,
       payment_method: input.payment_method,

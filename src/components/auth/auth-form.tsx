@@ -46,10 +46,11 @@ export function AuthForm({ mode }: AuthFormProps) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
+        const normalizedCompany = companyName.trim();
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { company_name: companyName } },
+          options: { data: { company_name: normalizedCompany } },
         });
         if (error) throw error;
       }
@@ -95,6 +96,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="mt-1.5"
+                required
               />
             </div>
           )}

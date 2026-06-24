@@ -1,7 +1,10 @@
 import { setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { AdminOrderDetail } from "@/components/admin/admin-order-detail";
-import { fetchOrderByReference } from "@/lib/actions/orders";
-import { hasSupabaseAdmin } from "@/lib/supabase/config";
+import { fetchOrderForUser } from "@/lib/data/orders";
+import { getProducts } from "@/lib/data/products";
+import { hasSupabaseEnv } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 
 type AccountOrderPageProps = {
   params: { locale: string; id: string };
@@ -9,11 +12,26 @@ type AccountOrderPageProps = {
 
 export default async function AccountOrderPage({ params: { locale, id } }: AccountOrderPageProps) {
   setRequestLocale(locale);
+  const products = await getProducts();
 
   let order = null;
-  if (hasSupabaseAdmin()) {
-    order = await fetchOrderByReference(id);
+  if (hasSupabaseEnv()) {
+    order = await fetchOrderForUser(id);
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user && !order) {
+      notFound();
+    }
   }
 
-  return <AdminOrderDetail serverOrder={order} referenceId={id} />;
+  return (
+    <AdminOrderDetail
+      serverOrder={order}
+      referenceId={id}
+      products={products}
+      showInvoiceLink
+    />
+  );
 }

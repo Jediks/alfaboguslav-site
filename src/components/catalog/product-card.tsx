@@ -7,20 +7,20 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProductImage } from "@/components/catalog/product-image";
 import { Badge } from "@/components/ui/badge";
-import type { Product } from "@/types/database";
+import type { PricingTier, Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
-import { MOCK_PRICING } from "@/lib/data/mock-products";
 import { formatPrice } from "@/lib/pricing";
 
 type ProductCardProps = {
   product: Product;
+  pricingByProductId: Record<string, PricingTier[]>;
   index?: number;
 };
 
-export function ProductCard({ product, index = 0 }: ProductCardProps) {
+export function ProductCard({ product, pricingByProductId, index = 0 }: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
-  const tiers = MOCK_PRICING[product.id] ?? [];
+  const tiers = pricingByProductId[product.id] ?? [];
   const minPrice = tiers[0]?.price ?? 0;
   const cardRef = useRef<HTMLElement>(null);
   const rotateX = useMotionValue(0);

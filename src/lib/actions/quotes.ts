@@ -16,6 +16,7 @@ export type SubmitQuoteInput = {
 export type QuoteRecord = {
   id: string;
   referenceId: string;
+  status: "new" | "in_progress" | "quoted" | "closed";
   company_name: string;
   contact_name: string;
   email: string;
@@ -77,6 +78,7 @@ export async function fetchQuotesAdmin(): Promise<QuoteRecord[]> {
   return data.map((q) => ({
     id: q.id,
     referenceId: q.reference_id,
+    status: q.status ?? "new",
     company_name: q.company_name,
     contact_name: q.contact_name,
     email: q.email,
@@ -84,4 +86,29 @@ export async function fetchQuotesAdmin(): Promise<QuoteRecord[]> {
     message: q.message,
     created_at: q.created_at,
   }));
+}
+
+export async function updateQuoteStatusAdmin(
+  referenceId: string,
+  status: QuoteRecord["status"],
+  adminNotes?: string
+): Promise<{ ok: boolean }> {
+  if (!hasSupabaseAdmin()) return { ok: false };
+
+  const updatePayload: { status: QuoteRecord["status"]; admin_notes?: string } = { status };
+  if (typeof adminNotes === "string") {
+    updatePayload.admin_notes = adminNotes;
+  }
+
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("quote_requests")
+    .update(updatePayload)
+    .eq("reference_id", referenceId);
+
+  if (error) {
+    console.error("[updateQuoteStatusAdmin]", error);
+    return { ok: false };
+  }
+  return { ok: true };
 }

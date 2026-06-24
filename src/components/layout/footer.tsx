@@ -26,6 +26,8 @@ export function Footer() {
           <nav className="flex flex-col gap-2 text-sm text-white/70">
             <Link href="/" className="hover:text-white transition-colors">{tNav("home")}</Link>
             <Link href="/catalog" className="hover:text-white transition-colors">{tNav("catalog")}</Link>
+            <Link href="/about" className="hover:text-white transition-colors">{tNav("about")}</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">{tNav("contact")}</Link>
             <Link href="/account" className="hover:text-white transition-colors">{tCommon("account")}</Link>
             <Link href="/login" className="hover:text-white transition-colors">{tCommon("login")}</Link>
           </nav>

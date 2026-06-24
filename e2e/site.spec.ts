@@ -49,9 +49,8 @@ test.describe("Checkout", () => {
 });
 
 test.describe("Admin", () => {
-  test("admin panel tabs render", async ({ page }) => {
+  test("redirects unauthenticated users to login", async ({ page }) => {
     await page.goto("/uk/admin", { waitUntil: "networkidle" });
-    await expect(page.getByText(/замовлення|orders/i).first()).toBeVisible();
-    await expect(page.getByText(/прорахунок|quote/i).first()).toBeVisible();
+    await expect(page).toHaveURL(/\/uk\/login/);
   });
 });

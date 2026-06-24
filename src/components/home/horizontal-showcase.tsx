@@ -6,16 +6,19 @@ import { ArrowUpRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProductImage } from "@/components/catalog/product-image";
-import type { Product } from "@/types/database";
+import type { PricingTier, Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
-import { MOCK_PRICING } from "@/lib/data/mock-products";
 import { formatPrice } from "@/lib/pricing";
 
 type HorizontalShowcaseProps = {
   products: Product[];
+  pricingByProductId: Record<string, PricingTier[]>;
 };
 
-export function HorizontalShowcase({ products }: HorizontalShowcaseProps) {
+export function HorizontalShowcase({
+  products,
+  pricingByProductId,
+}: HorizontalShowcaseProps) {
   const t = useTranslations("home");
   const locale = useLocale();
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
@@ -59,7 +62,7 @@ export function HorizontalShowcase({ products }: HorizontalShowcaseProps) {
         style={{ scrollSnapType: "x mandatory" }}
       >
         {products.map((product, i) => {
-          const minPrice = MOCK_PRICING[product.id]?.[0]?.price ?? 0;
+          const minPrice = pricingByProductId[product.id]?.[0]?.price ?? 0;
           const setCode = product.id.replace("set-", "").replace(/-/g, "/");
 
           return (

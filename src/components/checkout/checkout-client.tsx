@@ -10,11 +10,20 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCartStore } from "@/stores/cart-store";
-import { MOCK_PRICING } from "@/lib/data/mock-products";
 import { getPriceForQuantity, formatPrice } from "@/lib/pricing";
-import type { PaymentMethod } from "@/types/database";
+import type { PaymentMethod, PricingTier } from "@/types/database";
 
-export function CheckoutClient() {
+type CheckoutClientProps = {
+  pricingByProductId: Record<string, PricingTier[]>;
+  profilePrefill?: {
+    companyName?: string;
+    contactName?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+  };
+};
+
+export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutClientProps) {
   const t = useTranslations("checkout");
   const tCart = useTranslations("cart");
   const locale = useLocale();
@@ -22,10 +31,10 @@ export function CheckoutClient() {
   const router = useRouter();
   const { items, clearCart, addOrder } = useCartStore();
   const [delivery, setDelivery] = useState("");
-  const [company, setCompany] = useState("");
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
+  const [company, setCompany] = useState(profilePrefill?.companyName ?? "");
+  const [contactName, setContactName] = useState(profilePrefill?.contactName ?? "");
+  const [contactEmail, setContactEmail] = useState(profilePrefill?.contactEmail ?? "");
+  const [contactPhone, setContactPhone] = useState(profilePrefill?.contactPhone ?? "");
   const [payment, setPayment] = useState<PaymentMethod>("invoice");
   const [submitting, setSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -42,7 +51,7 @@ export function CheckoutClient() {
 
   let total = 0;
   const orderItems = items.map((item) => {
-    const tiers = MOCK_PRICING[item.productId] ?? [];
+    const tiers = pricingByProductId[item.productId] ?? [];
     const price = getPriceForQuantity(tiers, item.quantity);
     total += price * item.quantity;
     return { productId: item.productId, quantity: item.quantity, price_at_time: price };

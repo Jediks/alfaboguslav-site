@@ -7,11 +7,16 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/stores/cart-store";
-import { MOCK_PRODUCTS, MOCK_PRICING } from "@/lib/data/mock-products";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { getPriceForQuantity, formatPrice } from "@/lib/pricing";
+import type { PricingTier, Product } from "@/types/database";
 
-export function CartClient() {
+type CartClientProps = {
+  products: Product[];
+  pricingByProductId: Record<string, PricingTier[]>;
+};
+
+export function CartClient({ products, pricingByProductId }: CartClientProps) {
   const t = useTranslations("cart");
   const tCommon = useTranslations("common");
   const locale = useLocale();
@@ -35,9 +40,9 @@ export function CartClient() {
   let total = 0;
 
   const rows = items.map((item) => {
-    const product = MOCK_PRODUCTS.find((p) => p.id === item.productId);
+    const product = products.find((p) => p.id === item.productId);
     if (!product) return null;
-    const tiers = MOCK_PRICING[item.productId] ?? [];
+    const tiers = pricingByProductId[item.productId] ?? [];
     const unitPrice = getPriceForQuantity(tiers, item.quantity);
     const lineTotal = unitPrice * item.quantity;
     total += lineTotal;

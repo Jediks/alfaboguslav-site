@@ -79,6 +79,14 @@ export interface QuoteRequest {
   created_at: string;
 }
 
+export interface SavedAsset {
+  id: string;
+  user_id: string;
+  file_url: string;
+  file_name: string;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -120,6 +128,14 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<QuoteRequest>;
+      };
+      saved_assets: {
+        Row: SavedAsset;
+        Insert: Omit<SavedAsset, "id" | "created_at"> & {
+          id?: string;
+          created_at?: string;
+        };
+        Update: Partial<SavedAsset>;
       };
     };
     Views: Record<string, never>;

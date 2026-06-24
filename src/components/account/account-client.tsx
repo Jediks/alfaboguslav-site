@@ -2,8 +2,9 @@
 
 import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -14,10 +15,10 @@ import {
 } from "@/components/ui/table";
 import { useCartStore, type LocalOrder } from "@/stores/cart-store";
 import type { OrderRecord } from "@/lib/actions/orders";
-import { MOCK_PRODUCTS } from "@/lib/data/mock-products";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus } from "@/types/database";
+import type { Product } from "@/types/database";
 
 const statusVariant: Record<OrderStatus, "default" | "secondary" | "outline"> = {
   pending: "outline",
@@ -28,6 +29,7 @@ const statusVariant: Record<OrderStatus, "default" | "secondary" | "outline"> = 
 
 type AccountClientProps = {
   supabaseOrders: OrderRecord[];
+  products: Product[];
 };
 
 type DisplayOrder = {
@@ -36,7 +38,7 @@ type DisplayOrder = {
   company_name: string;
   payment_method: LocalOrder["payment_method"];
   total_estimated_price: number;
-  items: LocalOrder["items"];
+  items: OrderRecord["items"];
 };
 
 function mergeOrders(local: LocalOrder[], remote: OrderRecord[]): DisplayOrder[] {
@@ -69,21 +71,56 @@ function mergeOrders(local: LocalOrder[], remote: OrderRecord[]): DisplayOrder[]
   return Array.from(byRef.values());
 }
 
-export function AccountClient({ supabaseOrders }: AccountClientProps) {
+export function AccountClient({ supabaseOrders, products }: AccountClientProps) {
   const t = useTranslations("account");
   const tCheckout = useTranslations("checkout");
   const locale = useLocale();
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
   const localOrders = useCartStore((s) => s.orders);
+  const addItem = useCartStore((s) => s.addItem);
+  const router = useRouter();
 
   const orders = useMemo(
     () => mergeOrders(localOrders, supabaseOrders),
     [localOrders, supabaseOrders]
   );
+  const productById = useMemo(
+    () => new Map(products.map((product) => [product.id, product])),
+    [products]
+  );
+
+  const repeatOrder = (order: DisplayOrder) => {
+    for (const item of order.items) {
+      addItem({
+        productId: item.productId,
+        quantity: item.quantity,
+        brandingLogoUrl: item.brandingLogoUrl,
+      });
+    }
+    router.push("/cart");
+  };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
-      <h1 className="mb-8 font-display text-3xl font-bold text-brand-blue">{t("title")}</h1>
+      <div className="mb-8">
+        <h1 className="font-display text-3xl font-bold text-brand-blue">{t("title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("dashboardWelcome")}</p>
+      </div>
+
+      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        <Link href="/account/profile" className="glass rounded-2xl p-4 premium-shadow">
+          <p className="font-medium">{t("profile")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkProfile")}</p>
+        </Link>
+        <Link href="/account/assets" className="glass rounded-2xl p-4 premium-shadow">
+          <p className="font-medium">{t("assets")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkAssets")}</p>
+        </Link>
+        <Link href="/account" className="glass rounded-2xl p-4 premium-shadow">
+          <p className="font-medium">{t("orders")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkOrders")}</p>
+        </Link>
+      </div>
 
       <div className="glass rounded-3xl p-6 premium-shadow">
         <h2 className="mb-4 font-display text-xl font-semibold">{t("orders")}</h2>
@@ -122,12 +159,17 @@ export function AccountClient({ supabaseOrders }: AccountClientProps) {
                       {formatPrice(order.total_estimated_price, localeStr)}
                     </TableCell>
                     <TableCell>
-                      <Link
-                        href={`/account/orders/${order.id}`}
-                        className="text-sm text-primary hover:underline"
-                      >
-                        {t("viewOrder")}
-                      </Link>
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/account/orders/${order.id}`}
+                          className="text-sm text-primary hover:underline"
+                        >
+                          {t("viewOrder")}
+                        </Link>
+                        <Button size="sm" variant="outline" onClick={() => repeatOrder(order)}>
+                          {t("repeatOrder")}
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -142,7 +184,7 @@ export function AccountClient({ supabaseOrders }: AccountClientProps) {
           {orders.map((o) => (
             <div key={o.id} className="mb-2">
               {o.items.map((item) => {
-                const p = MOCK_PRODUCTS.find((pr) => pr.id === item.productId);
+                const p = productById.get(item.productId);
                 return p ? (
                   <span key={item.productId} className="mr-2">
                     {getProductTitle(p, locale)} ×{item.quantity}

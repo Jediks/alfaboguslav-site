@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { OrderRecord } from "@/lib/actions/orders";
-import { MOCK_PRODUCTS } from "@/lib/data/mock-products";
+import type { Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import { useCartStore } from "@/stores/cart-store";
@@ -15,6 +15,8 @@ import { useCartStore } from "@/stores/cart-store";
 type AdminOrderDetailProps = {
   serverOrder: OrderRecord | null;
   referenceId: string;
+  products: Product[];
+  showInvoiceLink?: boolean;
 };
 
 const statusVariant = {
@@ -24,7 +26,12 @@ const statusVariant = {
   completed: "default",
 } as const;
 
-export function AdminOrderDetail({ serverOrder, referenceId }: AdminOrderDetailProps) {
+export function AdminOrderDetail({
+  serverOrder,
+  referenceId,
+  products,
+  showInvoiceLink = false,
+}: AdminOrderDetailProps) {
   const t = useTranslations("admin");
   const tAccount = useTranslations("account");
   const tCheckout = useTranslations("checkout");
@@ -46,6 +53,7 @@ export function AdminOrderDetail({ serverOrder, referenceId }: AdminOrderDetailP
       delivery_address: local.delivery_address,
       payment_method: local.payment_method,
       total_estimated_price: local.total_estimated_price,
+      branding_logo_url: null,
       items: local.items,
     };
   }, [serverOrder, localOrders, referenceId]);
@@ -84,7 +92,17 @@ export function AdminOrderDetail({ serverOrder, referenceId }: AdminOrderDetailP
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-blue">{id}</h1>
         </div>
-        <Badge variant={statusVariant[order.status]}>{tAccount(`status.${order.status}`)}</Badge>
+        <div className="flex items-center gap-3">
+          {showInvoiceLink && (
+            <Link
+              href={`/account/orders/${id}/invoice`}
+              className="text-sm text-primary hover:underline"
+            >
+              {tAccount("viewInvoice")}
+            </Link>
+          )}
+          <Badge variant={statusVariant[order.status]}>{tAccount(`status.${order.status}`)}</Badge>
+        </div>
       </div>
 
       <div className="space-y-6">
@@ -107,6 +125,21 @@ export function AdminOrderDetail({ serverOrder, referenceId }: AdminOrderDetailP
               <dt className="text-muted-foreground">{tCheckout("contactPhone")}</dt>
               <dd className="font-medium">{order.contact_phone}</dd>
             </div>
+            {order.branding_logo_url ? (
+              <div className="sm:col-span-2">
+                <dt className="text-muted-foreground">{t("clientLogo")}</dt>
+                <dd className="mt-2">
+                  <a
+                    href={order.branding_logo_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
+                    {order.branding_logo_url}
+                  </a>
+                </dd>
+              </div>
+            ) : null}
           </dl>
         </div>
 
@@ -125,7 +158,7 @@ export function AdminOrderDetail({ serverOrder, referenceId }: AdminOrderDetailP
           <h2 className="mb-4 font-display font-semibold text-brand-blue">{t("orderItems")}</h2>
           <ul className="space-y-3">
             {items.map((item) => {
-              const product = MOCK_PRODUCTS.find((p) => p.id === item.productId);
+              const product = products.find((p) => p.id === item.productId);
               return (
                 <li
                   key={item.productId}

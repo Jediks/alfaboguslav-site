@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -27,12 +28,14 @@ import { useQuoteStore } from "@/stores/quote-store";
 import type { OrderRecord } from "@/lib/actions/orders";
 import type { QuoteRecord } from "@/lib/actions/quotes";
 import { updateOrderStatusAdmin } from "@/lib/actions/orders";
-import { MOCK_PRODUCTS, MOCK_PRICING } from "@/lib/data/mock-products";
+import { updateQuoteStatusAdmin } from "@/lib/actions/quotes";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
-import type { OrderStatus } from "@/types/database";
+import type { OrderStatus, PricingTier, Product } from "@/types/database";
 
 type AdminClientProps = {
+  products: Product[];
+  pricingMap: Record<string, PricingTier[]>;
   supabaseOrders: OrderRecord[];
   supabaseQuotes: QuoteRecord[];
   supabaseEnabled: boolean;
@@ -50,6 +53,8 @@ function toDisplayOrder(o: LocalOrder) {
 }
 
 export function AdminClient({
+  products,
+  pricingMap,
   supabaseOrders,
   supabaseQuotes,
   supabaseEnabled,
@@ -63,6 +68,12 @@ export function AdminClient({
   const updateOrderStatus = useCartStore((s) => s.updateOrderStatus);
   const localQuotes = useQuoteStore((s) => s.quotes);
   const [syncing, setSyncing] = useState<string | null>(null);
+  const [quoteSyncing, setQuoteSyncing] = useState<string | null>(null);
+  const [orderSearch, setOrderSearch] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState<"all" | OrderStatus>("all");
+  const [localQuoteStatuses, setLocalQuoteStatuses] = useState<
+    Record<string, QuoteRecord["status"]>
+  >({});
 
   const orders = useMemo(() => {
     if (supabaseEnabled && supabaseOrders.length > 0) {
@@ -82,6 +93,8 @@ export function AdminClient({
     if (supabaseEnabled && supabaseQuotes.length > 0) {
       return supabaseQuotes.map((q) => ({
         id: q.referenceId,
+        referenceId: q.referenceId,
+        status: q.status,
         company_name: q.company_name,
         contact_name: q.contact_name,
         email: q.email,
@@ -89,8 +102,29 @@ export function AdminClient({
         message: q.message,
       }));
     }
-    return localQuotes;
-  }, [supabaseEnabled, supabaseQuotes, localQuotes]);
+    return localQuotes.map((q) => ({
+      id: q.id,
+      referenceId: q.id,
+      status: localQuoteStatuses[q.id] ?? "new",
+      company_name: q.company_name,
+      contact_name: q.contact_name,
+      email: q.email,
+      phone: q.phone,
+      message: q.message,
+    }));
+  }, [supabaseEnabled, supabaseQuotes, localQuotes, localQuoteStatuses]);
+
+  const filteredOrders = useMemo(() => {
+    const query = orderSearch.trim().toLowerCase();
+    return orders.filter((order) => {
+      const matchesQuery =
+        !query ||
+        order.company_name.toLowerCase().includes(query) ||
+        order.referenceId.toLowerCase().includes(query);
+      const matchesStatus = orderStatusFilter === "all" || order.status === orderStatusFilter;
+      return matchesQuery && matchesStatus;
+    });
+  }, [orders, orderSearch, orderStatusFilter]);
 
   const handleStatusChange = async (referenceId: string, status: OrderStatus) => {
     updateOrderStatus(referenceId, status);
@@ -98,6 +132,15 @@ export function AdminClient({
       setSyncing(referenceId);
       await updateOrderStatusAdmin(referenceId, status);
       setSyncing(null);
+    }
+  };
+
+  const handleQuoteStatusChange = async (referenceId: string, status: QuoteRecord["status"]) => {
+    setLocalQuoteStatuses((prev) => ({ ...prev, [referenceId]: status }));
+    if (supabaseEnabled) {
+      setQuoteSyncing(referenceId);
+      await updateQuoteStatusAdmin(referenceId, status);
+      setQuoteSyncing(null);
     }
   };
 
@@ -129,7 +172,36 @@ export function AdminClient({
 
         <TabsContent value="orders">
           <div className="glass rounded-3xl p-6 premium-shadow">
-            {orders.length === 0 ? (
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <Input
+                  value={orderSearch}
+                  onChange={(event) => setOrderSearch(event.target.value)}
+                  placeholder={t("orderSearchPlaceholder")}
+                  className="w-72"
+                />
+                <Select
+                  value={orderStatusFilter}
+                  onValueChange={(value) => setOrderStatusFilter(value as "all" | OrderStatus)}
+                >
+                  <SelectTrigger className="w-44">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t("allStatuses")}</SelectItem>
+                    {(["pending", "confirmed", "shipped", "completed"] as const).map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {tAccount(`status.${status}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <a href="/api/admin/export-orders" className="inline-flex">
+                <Button variant="outline">{t("exportOrdersCsv")}</Button>
+              </a>
+            </div>
+            {filteredOrders.length === 0 ? (
               <p className="py-8 text-center text-muted-foreground">{t("noOrders")}</p>
             ) : (
               <Table>
@@ -145,7 +217,7 @@ export function AdminClient({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orders.map((order) => (
+                  {filteredOrders.map((order) => (
                     <TableRow key={order.referenceId}>
                       <TableCell className="font-mono text-xs">{order.referenceId}</TableCell>
                       <TableCell className="max-w-[160px] truncate text-sm">
@@ -214,6 +286,7 @@ export function AdminClient({
                     <TableHead>{t("contact")}</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
+                    <TableHead>{t("quoteStatus")}</TableHead>
                     <TableHead>Message</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -225,6 +298,26 @@ export function AdminClient({
                       <TableCell>{quote.contact_name}</TableCell>
                       <TableCell className="text-sm">{quote.email}</TableCell>
                       <TableCell className="whitespace-nowrap text-sm">{quote.phone}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={quote.status}
+                          disabled={quoteSyncing === quote.referenceId}
+                          onValueChange={(value) =>
+                            handleQuoteStatusChange(quote.referenceId, value as QuoteRecord["status"])
+                          }
+                        >
+                          <SelectTrigger className="w-40">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(["new", "in_progress", "quoted", "closed"] as const).map((status) => (
+                              <SelectItem key={status} value={status}>
+                                {t(`quoteStatusValues.${status}`)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
                       <TableCell className="max-w-[240px] truncate text-sm text-muted-foreground">
                         {quote.message || "—"}
                       </TableCell>
@@ -238,7 +331,9 @@ export function AdminClient({
 
         <TabsContent value="products">
           <div className="mb-4 flex justify-end">
-            <Button>{t("addProduct")}</Button>
+            <Link href="/admin/products/new">
+              <Button>{t("addProduct")}</Button>
+            </Link>
           </div>
           <div className="glass rounded-3xl p-6 premium-shadow">
             <Table>
@@ -251,7 +346,7 @@ export function AdminClient({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {MOCK_PRODUCTS.map((product) => (
+                {products.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell className="font-medium">
                       {getProductTitle(product, locale)}
@@ -267,7 +362,7 @@ export function AdminClient({
                       </div>
                     </TableCell>
                     <TableCell className="font-semibold text-primary">
-                      {formatPrice(MOCK_PRICING[product.id]?.[0]?.price ?? 0, localeStr)}
+                      {formatPrice(pricingMap[product.id]?.[0]?.price ?? 0, localeStr)}
                     </TableCell>
                   </TableRow>
                 ))}

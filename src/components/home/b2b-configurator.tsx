@@ -8,20 +8,20 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider, readSliderValue } from "@/components/ui/slider";
-import type { Product } from "@/types/database";
+import type { PricingTier, Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
-import { MOCK_PRICING } from "@/lib/data/mock-products";
 import { formatPrice } from "@/lib/pricing";
 import { ProductImage } from "@/components/catalog/product-image";
 import { cn } from "@/lib/utils";
 
 type B2bConfiguratorProps = {
   products: Product[];
+  pricingByProductId: Record<string, PricingTier[]>;
 };
 
 const STEP_COUNT = 3;
 
-export function B2bConfigurator({ products }: B2bConfiguratorProps) {
+export function B2bConfigurator({ products, pricingByProductId }: B2bConfiguratorProps) {
   const t = useTranslations("home");
   const locale = useLocale();
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
@@ -34,7 +34,7 @@ export function B2bConfigurator({ products }: B2bConfiguratorProps) {
     const budgetPerUnit = budget / Math.max(qty, 1);
 
     const scored = products.map((p) => {
-      const minPrice = MOCK_PRICING[p.id]?.[0]?.price ?? 9999;
+      const minPrice = pricingByProductId[p.id]?.[0]?.price ?? 9999;
       const priceDiff = Math.abs(minPrice - budgetPerUnit);
       const bulkBonus = p.b2b_tags.includes("Bulk") && qty > 100 ? -200 : 0;
       const vipBonus = p.b2b_tags.includes("VIP") && qty < 30 ? -100 : 0;
@@ -43,7 +43,7 @@ export function B2bConfigurator({ products }: B2bConfiguratorProps) {
 
     scored.sort((a, b) => a.score - b.score);
     return scored[0];
-  }, [products, teamSize, budget]);
+  }, [products, pricingByProductId, teamSize, budget]);
 
   const stepLabels = [t("configTeam"), t("configBudget"), t("configResult")];
 

@@ -1,12 +1,24 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import type { User } from "@supabase/supabase-js";
+import type { NextResponse, NextRequest } from "next/server";
 import type { Database } from "@/types/database";
+import type { UserRole } from "@/types/database";
 import { getSupabaseAnonKey } from "./config";
+
+export interface MiddlewareSessionResult {
+  response: NextResponse;
+  user: User | null;
+  role: UserRole | null;
+}
+
+function parseUserRole(value: unknown): UserRole | null {
+  return value === "admin" || value === "client" ? value : null;
+}
 
 export async function updateSession(
   request: NextRequest,
   response: NextResponse
-) {
+): Promise<MiddlewareSessionResult> {
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     getSupabaseAnonKey(),
@@ -27,7 +39,25 @@ export async function updateSession(
     }
   );
 
-  await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data.user;
 
-  return response;
+  const metadataRole = parseUserRole(user?.app_metadata?.role);
+  let role = metadataRole;
+
+  if (user && !role) {
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle<{ role: UserRole }>();
+
+    role = userRow?.role ?? null;
+  }
+
+  return {
+    response,
+    user,
+    role,
+  };
 }
