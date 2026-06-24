@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
 import { getSiteUrl } from "@/lib/site-url";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Toaster } from "@/components/ui/sonner";
