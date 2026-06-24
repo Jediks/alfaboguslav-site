@@ -1,7 +1,19 @@
+export function getSupabaseUrl(): string | undefined {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!raw) return undefined;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return undefined;
+    return raw;
+  } catch {
+    return undefined;
+  }
+}
+
 function supabaseAnonKey(): string | undefined {
   return (
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ??
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim()
   );
 }
 
@@ -12,7 +24,7 @@ function supabaseServiceKey(): string | undefined {
 }
 
 export function hasSupabaseEnv(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && supabaseAnonKey());
+  return Boolean(getSupabaseUrl() && supabaseAnonKey());
 }
 
 export function hasSupabaseAdmin(): boolean {

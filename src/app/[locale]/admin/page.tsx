@@ -8,6 +8,8 @@ type AdminPageProps = {
   params: { locale: string };
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage({ params: { locale } }: AdminPageProps) {
   setRequestLocale(locale);
   const supabaseEnabled = hasSupabaseAdmin();
