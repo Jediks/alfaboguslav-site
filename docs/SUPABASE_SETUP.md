@@ -35,7 +35,33 @@ If you prefer the dashboard: open [SQL Editor](https://supabase.com/dashboard/pr
 
 Create a public bucket named `branding` in **Storage**.
 
-### 5. Verify
+### 5. Auth URL configuration
+
+**Option A — script (recommended):**
+
+1. Create a token at https://supabase.com/dashboard/account/tokens
+2. Add to `.env.local`: `SUPABASE_ACCESS_TOKEN=sbp_...`
+3. Run:
+
+```bash
+npm run supabase:auth-config
+```
+
+**Option B — manual:** [Auth → URL configuration](https://supabase.com/dashboard/project/priavzpomtzjfgkitqmv/auth/url-configuration)
+
+| Field | Value |
+|-------|--------|
+| Site URL | `https://alfaboguslav.site` |
+| Redirect URLs | `http://localhost:3000/**` |
+| | `https://alfaboguslav.site/**` |
+| | `https://www.alfaboguslav.site/**` |
+| | `https://*.vercel.app/**` |
+
+**Google OAuth:** [Auth → Providers → Google](https://supabase.com/dashboard/project/priavzpomtzjfgkitqmv/auth/providers) — enable and add Client ID/Secret from Google Cloud Console.
+
+OAuth callback route in app: `/auth/callback`
+
+### 6. Verify
 
 ```bash
 npm run dev

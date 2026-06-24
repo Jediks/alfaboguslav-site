@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ type AuthFormProps = {
 export function AuthForm({ mode }: AuthFormProps) {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
+  const locale = useLocale();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,9 +68,14 @@ export function AuthForm({ mode }: AuthFormProps) {
       return;
     }
     const supabase = createClient();
+    const base =
+      process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+      window.location.origin;
+    const redirectTo = `${base}/auth/callback?next=/${locale}/account`;
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/uk/account` },
+      options: { redirectTo },
     });
   };
 
