@@ -297,6 +297,9 @@
     "auditActor": "User",
     "auditAction": "Action",
     "auditEntity": "Entity",
+    "auditAllTypes": "All types",
+    "auditCount": "Entries: {count}",
+    "auditShowMore": "Show more",
     "kpi": {
       "ordersThisWeek": "Orders (7 days)",
       "vsPriorWeek": "vs prior 7 days",

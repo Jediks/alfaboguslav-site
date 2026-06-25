@@ -28,6 +28,11 @@ test.describe("Admin audit log (Phase 10.3)", () => {
     await expect(page.getByText(/quote/).first()).toBeVisible();
     await page.screenshot({ path: "/opt/cursor/artifacts/admin_audit_log.png" });
 
+    // Filter by the "quote" entity type.
+    await page.getByRole("combobox").first().click();
+    await page.getByRole("option", { name: "quote", exact: true }).click();
+    await expect(page.getByText(/quote/).first()).toBeVisible();
+
     // Restore original note value.
     await page.getByRole("tab", { name: /Запити|Quotes/ }).click();
     const restore = page

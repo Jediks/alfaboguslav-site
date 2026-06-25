@@ -86,6 +86,20 @@ export function AdminClient({
   >({});
   const [noteEdits, setNoteEdits] = useState<Record<string, string>>({});
   const [noteSaving, setNoteSaving] = useState<string | null>(null);
+  const [auditFilter, setAuditFilter] = useState<string>("all");
+  const [auditVisible, setAuditVisible] = useState(20);
+
+  const auditEntityTypes = useMemo(
+    () => Array.from(new Set(auditLog.map((e) => e.entity_type))).sort(),
+    [auditLog]
+  );
+  const filteredAudit = useMemo(
+    () =>
+      auditFilter === "all"
+        ? auditLog
+        : auditLog.filter((e) => e.entity_type === auditFilter),
+    [auditLog, auditFilter]
+  );
 
   const orders = useMemo(() => {
     if (supabaseEnabled) {
@@ -450,35 +464,71 @@ export function AdminClient({
                 {t("auditEmpty")}
               </p>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("auditTime")}</TableHead>
-                    <TableHead>{t("auditActor")}</TableHead>
-                    <TableHead>{t("auditAction")}</TableHead>
-                    <TableHead>{t("auditEntity")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {auditLog.map((entry) => (
-                    <TableRow key={entry.id}>
-                      <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
-                        {new Date(entry.created_at).toLocaleString(localeStr)}
-                      </TableCell>
-                      <TableCell className="text-sm">
-                        {entry.actor_email || "—"}
-                      </TableCell>
-                      <TableCell className="text-sm font-medium">
-                        {entry.action}
-                      </TableCell>
-                      <TableCell className="font-mono text-xs">
-                        {entry.entity_type}
-                        {entry.entity_id ? ` · ${entry.entity_id}` : ""}
-                      </TableCell>
+              <>
+                <div className="mb-4 flex items-center gap-3">
+                  <Select
+                    value={auditFilter}
+                    onValueChange={(value) => {
+                      setAuditFilter(value ?? "all");
+                      setAuditVisible(20);
+                    }}
+                  >
+                    <SelectTrigger className="w-52">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t("auditAllTypes")}</SelectItem>
+                      {auditEntityTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <span className="text-sm text-muted-foreground">
+                    {t("auditCount", { count: filteredAudit.length })}
+                  </span>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t("auditTime")}</TableHead>
+                      <TableHead>{t("auditActor")}</TableHead>
+                      <TableHead>{t("auditAction")}</TableHead>
+                      <TableHead>{t("auditEntity")}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredAudit.slice(0, auditVisible).map((entry) => (
+                      <TableRow key={entry.id}>
+                        <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                          {new Date(entry.created_at).toLocaleString(localeStr)}
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {entry.actor_email || "—"}
+                        </TableCell>
+                        <TableCell className="text-sm font-medium">
+                          {entry.action}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {entry.entity_type}
+                          {entry.entity_id ? ` · ${entry.entity_id}` : ""}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {auditVisible < filteredAudit.length && (
+                  <div className="mt-4 flex justify-center">
+                    <Button
+                      variant="outline"
+                      onClick={() => setAuditVisible((v) => v + 20)}
+                    >
+                      {t("auditShowMore")}
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </TabsContent>
