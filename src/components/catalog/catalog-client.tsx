@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type { PricingTier, Product } from "@/types/database";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getProductTitle } from "@/lib/data/product-utils";
 import { ProductCard } from "./product-card";
 import { CompareBar } from "./compare-bar";
 import { RecentlyViewed } from "./recently-viewed";
@@ -13,6 +21,8 @@ import {
   type CatalogFilters,
 } from "./catalog-filters";
 
+type SortKey = "featured" | "price-asc" | "price-desc" | "name";
+
 type CatalogClientProps = {
   products: Product[];
   pricingByProductId: Record<string, PricingTier[]>;
@@ -20,11 +30,30 @@ type CatalogClientProps = {
 
 export function CatalogClient({ products, pricingByProductId }: CatalogClientProps) {
   const t = useTranslations("catalog");
+  const locale = useLocale();
   const [filters, setFilters] = useState<CatalogFilters>(() =>
     getDefaultFilters(products, pricingByProductId)
   );
+  const [sort, setSort] = useState<SortKey>("featured");
 
-  const filtered = filterProducts(products, filters, pricingByProductId);
+  const filteredBase = filterProducts(products, filters, pricingByProductId);
+
+  const filtered = useMemo(() => {
+    const minPrice = (id: string) => pricingByProductId[id]?.[0]?.price ?? 0;
+    const list = [...filteredBase];
+    switch (sort) {
+      case "price-asc":
+        return list.sort((a, b) => minPrice(a.id) - minPrice(b.id));
+      case "price-desc":
+        return list.sort((a, b) => minPrice(b.id) - minPrice(a.id));
+      case "name":
+        return list.sort((a, b) =>
+          getProductTitle(a, locale).localeCompare(getProductTitle(b, locale))
+        );
+      default:
+        return list;
+    }
+  }, [filteredBase, sort, pricingByProductId, locale]);
 
   return (
     <div className="min-h-screen">
@@ -53,9 +82,25 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
             products={products}
             pricingByProductId={pricingByProductId}
           />
-          <p className="mb-6 text-sm text-muted-foreground">
-            {t("results", { count: filtered.length })}
-          </p>
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted-foreground">
+              {t("results", { count: filtered.length })}
+            </p>
+            <Select
+              value={sort}
+              onValueChange={(v) => setSort((v ?? "featured") as SortKey)}
+            >
+              <SelectTrigger className="w-52" aria-label={t("sort.label")}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">{t("sort.featured")}</SelectItem>
+                <SelectItem value="price-asc">{t("sort.priceAsc")}</SelectItem>
+                <SelectItem value="price-desc">{t("sort.priceDesc")}</SelectItem>
+                <SelectItem value="name">{t("sort.name")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           {filtered.length === 0 ? (
             <div className="flex h-64 items-center justify-center rounded-3xl border border-dashed border-border bg-white/50">
