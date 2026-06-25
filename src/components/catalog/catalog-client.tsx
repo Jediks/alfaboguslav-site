@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import type { PricingTier, Product } from "@/types/database";
 import { ProductCard } from "./product-card";
 import { CompareBar } from "./compare-bar";
+import { RecentlyViewed } from "./recently-viewed";
 import {
   CatalogFiltersPanel,
   filterProducts,
@@ -48,6 +49,10 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
         />
 
         <div>
+          <RecentlyViewed
+            products={products}
+            pricingByProductId={pricingByProductId}
+          />
           <p className="mb-6 text-sm text-muted-foreground">
             {t("results", { count: filtered.length })}
           </p>

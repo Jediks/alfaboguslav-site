@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { useRecentlyViewedStore } from "@/stores/recently-viewed-store";
 import type { Product, PricingTier } from "@/types/database";
 import { getProductTitle, getProductDesc } from "@/lib/data/product-utils";
 import { ProductGallery } from "./product-gallery";
@@ -20,6 +21,11 @@ export function ProductDetailClient({ product, tiers }: ProductDetailClientProps
   const t = useTranslations("catalog");
   const tProduct = useTranslations("product");
   const [logoUrl, setLogoUrl] = useState("");
+  const recordView = useRecentlyViewedStore((s) => s.record);
+
+  useEffect(() => {
+    recordView(product.id);
+  }, [product.id, recordView]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
