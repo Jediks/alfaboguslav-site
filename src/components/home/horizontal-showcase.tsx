@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -40,6 +40,22 @@ export function HorizontalShowcase({
     const amount = card ? card.clientWidth + 20 : 320;
     el.scrollBy({ left: direction * amount, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onWheel = (event: WheelEvent) => {
+      const verticalIntent = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+      if (!verticalIntent) return;
+
+      event.preventDefault();
+      window.scrollBy({ top: event.deltaY, left: 0, behavior: "auto" });
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
 
   return (
     <section className="dark-section-ambient relative overflow-hidden border-y border-cream/10 bg-brand-blue py-20 text-white grain md:py-28">

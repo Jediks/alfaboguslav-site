@@ -380,6 +380,7 @@
 .showcase-rail {
   scroll-behavior: smooth;
   scroll-padding-inline: 1rem;
+  overscroll-behavior-x: contain;
 }
 
 @media (prefers-reduced-motion: reduce) {
