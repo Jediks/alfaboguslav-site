@@ -7,6 +7,14 @@ import { ShoppingBag, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ProductImage } from "@/components/catalog/product-image";
 import { useCompareStore } from "@/stores/compare-store";
 import { useCartStore } from "@/stores/cart-store";
@@ -47,11 +55,13 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
   if (selected.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <h1 className="font-display text-3xl font-bold text-brand-blue">{t("title")}</h1>
-        <p className="mt-4 text-muted-foreground">{t("empty")}</p>
-        <Link href="/catalog" className="mt-8 inline-block">
-          <Button>{t("browse")}</Button>
-        </Link>
+        <div className="surface-panel rounded-2xl px-6 py-16">
+          <h1 className="font-display text-3xl font-semibold text-brand-blue">{t("title")}</h1>
+          <p className="mt-4 text-muted-foreground">{t("empty")}</p>
+          <Link href="/catalog" className="mt-8 inline-block">
+            <Button>{t("browse")}</Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -59,14 +69,20 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
   const rows: { label: string; render: (p: Product) => React.ReactNode }[] = [
     {
       label: tCommon("from"),
-      render: (p) =>
-        formatPrice(pricingByProductId[p.id]?.[0]?.price ?? 0, localeStr),
+      render: (p) => (
+        <span className="font-semibold tabular-nums text-primary">
+          {formatPrice(pricingByProductId[p.id]?.[0]?.price ?? 0, localeStr)}
+        </span>
+      ),
     },
     {
       label: tCatalog("packaging"),
       render: (p) => tCatalog(`packagingTypes.${p.packaging_type}`),
     },
-    { label: tCatalog("weight"), render: (p) => `${p.weight_grams} г` },
+    {
+      label: tCatalog("weight"),
+      render: (p) => <span className="tabular-nums">{p.weight_grams}g</span>,
+    },
     {
       label: t("tags"),
       render: (p) => (
@@ -81,37 +97,37 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
     },
     {
       label: t("sweetsCount"),
-      render: (p) => `${p.composition.length}`,
+      render: (p) => <span className="tabular-nums">{p.composition.length}</span>,
     },
   ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl font-bold text-brand-blue">{t("title")}</h1>
+        <h1 className="font-display text-3xl font-semibold text-brand-blue">{t("title")}</h1>
         <Link href="/catalog">
           <Button variant="outline">{t("browse")}</Button>
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="w-32" />
+      <div className="surface-panel overflow-hidden rounded-2xl">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-36" />
               {selected.map((p) => (
-                <th key={p.id} className="min-w-[200px] p-3 align-top">
-                  <div className="relative rounded-2xl bg-white p-3 premium-shadow">
+                <TableHead key={p.id} className="min-w-[200px] align-top">
+                  <div className="relative rounded-xl bg-cream/60 p-3">
                     <button
                       type="button"
                       onClick={() => remove(p.id)}
                       title={t("remove")}
-                      className="absolute right-2 top-2 z-10 rounded-full bg-white/90 p-1 text-muted-foreground shadow-sm hover:text-destructive"
+                      className="absolute right-2 top-2 z-10 rounded-full border border-border/50 bg-white p-1 text-muted-foreground shadow-sm transition-colors hover:text-destructive"
                     >
                       <X className="h-4 w-4" />
                     </button>
                     <Link href={`/catalog/${p.id}`}>
-                      <div className="relative aspect-[4/5] overflow-hidden rounded-xl">
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
                         <ProductImage
                           src={p.images[0]}
                           alt={getProductTitle(p, locale)}
@@ -133,25 +149,23 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
                       {t("addToCart")}
                     </Button>
                   </div>
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, ri) => (
-              <tr key={ri} className={ri % 2 === 0 ? "bg-cream/40" : ""}>
-                <td className="p-3 text-sm font-medium text-muted-foreground">
-                  {row.label}
-                </td>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.label}>
+                <TableCell className="font-medium text-muted-foreground">{row.label}</TableCell>
                 {selected.map((p) => (
-                  <td key={p.id} className="p-3 text-sm text-foreground">
+                  <TableCell key={p.id} className="whitespace-normal">
                     {row.render(p)}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

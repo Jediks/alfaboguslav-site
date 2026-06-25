@@ -49,12 +49,10 @@ export function PricingCalculator({
   };
 
   return (
-    <div className="rounded-3xl border border-border/50 bg-white p-6 premium-shadow">
-      <h3 className="mb-5 font-display text-lg font-semibold text-brand-blue">
-        {t("pricingTitle")}
-      </h3>
+    <div className="surface-panel rounded-2xl p-6 md:p-8">
+      <h3 className="ui-section-title">{t("pricingTitle")}</h3>
 
-      <div className="mb-6 space-y-2">
+      <div className="mb-6 mt-4 space-y-2">
         {sortedTiers.map((tier, i) => (
           <div
             key={tier.id}
@@ -90,8 +88,8 @@ export function PricingCalculator({
         <div>
           <Label className="mb-3 block text-brand-blue">{t("quantity")}</Label>
 
-          <div className="mb-3 rounded-2xl bg-cream px-4 py-3 text-center">
-            <span className="font-display text-3xl font-bold tabular-nums text-brand-blue">
+          <div className="mb-3 rounded-xl border border-border/40 bg-[hsl(var(--control-bg))] px-4 py-3 text-center">
+            <span className="text-3xl font-semibold tabular-nums text-brand-blue">
               {quantity}
             </span>
             <span className="ml-2 text-sm text-muted-foreground">
@@ -141,7 +139,7 @@ export function PricingCalculator({
               {formatPrice(unitPrice, localeStr)}
             </span>
           </div>
-          <div className="mt-2 flex justify-between font-display text-xl font-bold text-brand-blue">
+          <div className="mt-2 flex justify-between text-lg font-semibold text-brand-blue">
             <span>{t("estimatedTotal")}</span>
             <span className="tabular-nums text-primary">{formatPrice(total, localeStr)}</span>
           </div>
@@ -149,8 +147,7 @@ export function PricingCalculator({
 
         <Button
           onClick={handleAdd}
-          size="lg"
-          className="h-12 w-full gap-2 text-base shadow-lg shadow-primary/20"
+          className="h-11 w-full gap-2"
         >
           <ShoppingBag className="h-5 w-5" />
           {t("addToCart")}

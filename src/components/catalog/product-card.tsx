@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import type { PricingTier, Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
+import { useReducedMotion } from "@/lib/motion/use-reduced-motion";
 
 type ProductCardProps = {
   product: Product;
@@ -21,8 +22,11 @@ type ProductCardProps = {
 export function ProductCard({ product, pricingByProductId, index = 0 }: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
+  const tCatalog = useTranslations("catalog");
+  const reduceMotion = useReducedMotion();
   const tiers = pricingByProductId[product.id] ?? [];
   const minPrice = tiers[0]?.price ?? 0;
+  const bulkTier = tiers.length > 1 ? tiers[1] : null;
   const cardRef = useRef<HTMLElement>(null);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -30,13 +34,14 @@ export function ProductCard({ product, pricingByProductId, index = 0 }: ProductC
   const springRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 });
 
   const handleMove = (e: React.MouseEvent) => {
+    if (reduceMotion) return;
     const el = cardRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    rotateY.set(px * 10);
-    rotateX.set(-py * 10);
+    rotateY.set(px * 8);
+    rotateX.set(-py * 8);
   };
 
   const handleLeave = () => {
@@ -44,32 +49,36 @@ export function ProductCard({ product, pricingByProductId, index = 0 }: ProductC
     rotateY.set(0);
   };
 
+  const localeStr = locale === "uk" ? "uk-UA" : "en-US";
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28, scale: 0.97 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{
-        delay: Math.min(index * 0.07, 0.45),
-        duration: 0.55,
-        type: "spring",
-        stiffness: 120,
-        damping: 18,
+        delay: Math.min(index * 0.06, 0.4),
+        duration: 0.45,
+        ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <Link href={`/catalog/${product.id}`}>
+      <Link href={`/catalog/${product.id}`} className="group block">
         <motion.article
           ref={cardRef}
           onMouseMove={handleMove}
           onMouseLeave={handleLeave}
-          style={{
-            rotateX: springRotateX,
-            rotateY: springRotateY,
-            transformPerspective: 900,
-          }}
-          className="group overflow-hidden rounded-3xl bg-white premium-shadow transition-shadow duration-500 hover:premium-shadow-hover"
+          style={
+            reduceMotion
+              ? undefined
+              : {
+                  rotateX: springRotateX,
+                  rotateY: springRotateY,
+                  transformPerspective: 900,
+                }
+          }
+          className="surface-panel overflow-hidden rounded-2xl transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-brand-blue/5"
         >
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden bg-cream">
             <CompareToggle productId={product.id} />
             <ProductImage
               src={product.images[0]}
@@ -95,20 +104,27 @@ export function ProductCard({ product, pricingByProductId, index = 0 }: ProductC
           </div>
 
           <div className="p-5">
-            <h3 className="font-display text-base font-semibold leading-snug text-brand-blue">
+            <h3 className="font-display text-base font-semibold leading-snug text-brand-blue group-hover:text-primary">
               {getProductTitle(product, locale)}
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
               {product.weight_grams}g · {product.packaging_type}
             </p>
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                {t("from")}{" "}
-                <span className="text-xl font-bold text-primary">
-                  {formatPrice(minPrice, locale === "uk" ? "uk-UA" : "en-US")}
-                </span>
+            {bulkTier ? (
+              <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {tCatalog("bulkFrom", { min: bulkTier.min_quantity })}
               </p>
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 transition-all group-hover:opacity-100">
+            ) : null}
+            <div className="mt-4 flex items-end justify-between gap-2">
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+                  {t("from")}
+                </p>
+                <p className="text-xl font-semibold tabular-nums text-primary">
+                  {formatPrice(minPrice, localeStr)}
+                </p>
+              </div>
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 transition-opacity group-hover:opacity-100">
                 <ArrowRight className="h-4 w-4" />
               </div>
             </div>

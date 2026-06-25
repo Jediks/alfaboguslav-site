@@ -151,6 +151,8 @@
     "sweetType": "Sweet type",
     "results": "{count} sets",
     "noResults": "No results match your filters",
+    "noResultsHint": "Try adjusting filters or search",
+    "bulkFrom": "Bulk from {min} units",
     "packagingTypes": {
       "cardboard": "Cardboard",
       "tube": "Tube",
@@ -170,6 +172,7 @@
     }
   },
   "product": {
+    "backToCatalog": "Back to catalog",
     "composition": "Set composition",
     "weight": "Weight",
     "packaging": "Packaging",

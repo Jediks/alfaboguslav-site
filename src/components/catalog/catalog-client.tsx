@@ -74,7 +74,7 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
   }, [filteredBase, sort, pricingByProductId, locale]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-cream">
       <div className="relative -mt-[5.75rem] overflow-hidden bg-brand-blue px-4 pb-16 pt-[calc(5.75rem+2rem)] text-white grain md:-mt-[6.25rem] md:pb-24 md:pt-[calc(6.25rem+2.5rem)]">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-brand-blue/50" />
         <div className="relative mx-auto max-w-7xl">
@@ -138,8 +138,9 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
           </div>
 
           {filtered.length === 0 ? (
-            <div className="flex h-64 items-center justify-center rounded-3xl border border-dashed border-border bg-white/50">
-              <p className="text-muted-foreground">{t("noResults")}</p>
+            <div className="surface-panel flex flex-col items-center justify-center rounded-2xl px-6 py-16 text-center">
+              <p className="font-display text-lg font-semibold text-brand-blue">{t("noResults")}</p>
+              <p className="mt-2 max-w-sm text-sm text-muted-foreground">{t("noResultsHint")}</p>
             </div>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">

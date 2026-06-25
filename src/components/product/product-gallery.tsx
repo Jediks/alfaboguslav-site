@@ -30,19 +30,20 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
 
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-3xl premium-shadow">
+      <div className="surface-panel relative overflow-hidden rounded-3xl">
         <div ref={emblaRef} className="overflow-hidden">
           <div className="flex">
             {images.map((src, i) => (
-              <div key={src} className="relative min-w-0 flex-[0_0_100%]">
-                <div className="relative aspect-[4/5] min-h-[420px]">
+              <div key={`${src}-${i}`} className="relative min-w-0 flex-[0_0_100%]">
+                <div className="relative aspect-[4/5] min-h-[420px] overflow-visible bg-cream">
                   <ProductImage
                     src={src}
                     alt={`${title} ${i + 1}`}
                     priority={i === 0}
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    variant="minimal"
+                    variant="card"
                     size="xl"
+                    className="overflow-visible"
                   />
                 </div>
               </div>
@@ -50,46 +51,49 @@ export function ProductGallery({ images, title }: ProductGalleryProps) {
           </div>
         </div>
 
-        {images.length > 1 && (
+        {images.length > 1 ? (
           <>
             <Button
+              type="button"
               variant="ghost"
               size="icon"
               onClick={scrollPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 glass h-10 w-10 rounded-full"
+              className="absolute left-3 top-1/2 z-10 h-10 w-10 -translate-y-1/2 rounded-full border border-border/60 bg-white/90 shadow-sm backdrop-blur-sm"
             >
               <ChevronLeft className="h-5 w-5" />
             </Button>
             <Button
+              type="button"
               variant="ghost"
               size="icon"
               onClick={scrollNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 glass h-10 w-10 rounded-full"
+              className="absolute right-3 top-1/2 z-10 h-10 w-10 -translate-y-1/2 rounded-full border border-border/60 bg-white/90 shadow-sm backdrop-blur-sm"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>
           </>
-        )}
+        ) : null}
       </div>
 
-      {images.length > 1 && (
+      {images.length > 1 ? (
         <div className="flex gap-2">
           {images.map((src, i) => (
             <button
-              key={src}
+              key={`${src}-thumb-${i}`}
+              type="button"
               onClick={() => emblaApi?.scrollTo(i)}
               className={cn(
-                "relative h-16 w-16 overflow-hidden rounded-xl border-2 transition-all",
+                "relative h-16 w-16 overflow-hidden rounded-xl border-2 bg-cream transition-all",
                 selected === i
-                  ? "border-primary shadow-md"
-                  : "border-transparent opacity-60 hover:opacity-100"
+                  ? "border-primary shadow-sm"
+                  : "border-border/40 opacity-70 hover:opacity-100"
               )}
             >
               <ProductImage src={src} alt="" sizes="64px" variant="minimal" />
             </button>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

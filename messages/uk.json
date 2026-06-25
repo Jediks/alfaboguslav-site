@@ -151,6 +151,8 @@
     "sweetType": "Тип солодощів",
     "results": "{count} наборів",
     "noResults": "За вашими фільтрами нічого не знайдено",
+    "noResultsHint": "Спробуйте змінити фільтри або пошук",
+    "bulkFrom": "Опт від {min} шт",
     "packagingTypes": {
       "cardboard": "Картон",
       "tube": "Туба",
@@ -170,6 +172,7 @@
     }
   },
   "product": {
+    "backToCatalog": "Назад до каталогу",
     "composition": "Склад набору",
     "weight": "Вага",
     "packaging": "Упаковка",

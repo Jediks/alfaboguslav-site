@@ -15,5 +15,9 @@ export default async function ComparePage({ params: { locale } }: ComparePagePro
   );
   const pricingByProductId: Record<string, PricingTier[]> = Object.fromEntries(pricingEntries);
 
-  return <CompareClient products={products} pricingByProductId={pricingByProductId} />;
+  return (
+    <div className="min-h-screen bg-cream">
+      <CompareClient products={products} pricingByProductId={pricingByProductId} />
+    </div>
+  );
 }
