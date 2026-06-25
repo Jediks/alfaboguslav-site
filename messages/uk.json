@@ -112,6 +112,7 @@
       "addToCart": "У кошик",
       "addedToCart": "{name} додано в кошик"
     },
+    "recentlyViewed": "Нещодавно переглянуті",
     "filters": "Фільтри",
     "resetFilters": "Скинути",
     "weight": "Вага (г)",
