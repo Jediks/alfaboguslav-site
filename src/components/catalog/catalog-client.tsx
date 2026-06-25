@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Search } from "lucide-react";
+import { Clock, Search } from "lucide-react";
 import type { PricingTier, Product } from "@/types/database";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,10 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { getProductTitle } from "@/lib/data/product-utils";
+import { useRecentlyViewedStore } from "@/stores/recently-viewed-store";
 import { ProductCard } from "./product-card";
 import { CompareBar } from "./compare-bar";
-import { RecentlyViewed } from "./recently-viewed";
 import { QuoteConversionBanner } from "./quote-conversion-banner";
 import { CatalogTagFilters } from "./catalog-tag-filters";
 import {
@@ -41,11 +42,22 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
   const [sort, setSort] = useState<SortKey>("featured");
   const [searchQuery, setSearchQuery] = useState("");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [recentOnly, setRecentOnly] = useState(false);
+  const [recentMounted, setRecentMounted] = useState(false);
+  const recentIds = useRecentlyViewedStore((s) => s.ids);
+
+  useEffect(() => setRecentMounted(true), []);
+
+  const hasRecent = recentMounted && recentIds.length > 0;
 
   const filteredBase = useMemo(() => {
     let list = filterProducts(products, filters, pricingByProductId);
     if (tagFilter) {
       list = list.filter((product) => product.b2b_tags.includes(tagFilter));
+    }
+    if (recentOnly) {
+      const recentSet = new Set(recentIds);
+      list = list.filter((product) => recentSet.has(product.id));
     }
     const query = searchQuery.trim().toLowerCase();
     if (!query) return list;
@@ -54,11 +66,19 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
       if (title.includes(query) || product.id.toLowerCase().includes(query)) return true;
       return product.b2b_tags.some((tag) => tag.toLowerCase().includes(query));
     });
-  }, [products, filters, pricingByProductId, searchQuery, tagFilter, locale]);
+  }, [products, filters, pricingByProductId, searchQuery, tagFilter, recentOnly, recentIds, locale]);
 
   const filtered = useMemo(() => {
     const minPrice = (id: string) => pricingByProductId[id]?.[0]?.price ?? 0;
     const list = [...filteredBase];
+
+    if (recentOnly) {
+      const order = new Map(recentIds.map((id, index) => [id, index]));
+      return list.sort(
+        (a, b) => (order.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (order.get(b.id) ?? Number.MAX_SAFE_INTEGER)
+      );
+    }
+
     switch (sort) {
       case "price-asc":
         return list.sort((a, b) => minPrice(a.id) - minPrice(b.id));
@@ -71,7 +91,7 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
       default:
         return list;
     }
-  }, [filteredBase, sort, pricingByProductId, locale]);
+  }, [filteredBase, sort, pricingByProductId, locale, recentOnly, recentIds]);
 
   return (
     <div className="min-h-screen bg-cream">
@@ -103,10 +123,23 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
             onTagChange={setTagFilter}
             allLabel={t("tagFilters.all")}
           />
-          <RecentlyViewed
-            products={products}
-            pricingByProductId={pricingByProductId}
-          />
+          {hasRecent ? (
+            <div className="mb-4">
+              <button
+                type="button"
+                onClick={() => setRecentOnly((active) => !active)}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+                  recentOnly
+                    ? "bg-primary text-white"
+                    : "bg-white/90 text-brand-blue hover:bg-primary/10"
+                )}
+              >
+                <Clock className="h-3.5 w-3.5" />
+                {t("recentlyViewed")}
+              </button>
+            </div>
+          ) : null}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div className="relative min-w-[220px] flex-1 max-w-md">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -139,8 +172,12 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
 
           {filtered.length === 0 ? (
             <div className="surface-panel flex flex-col items-center justify-center rounded-2xl px-6 py-16 text-center">
-              <p className="font-display text-lg font-semibold text-brand-blue">{t("noResults")}</p>
-              <p className="mt-2 max-w-sm text-sm text-muted-foreground">{t("noResultsHint")}</p>
+              <p className="font-display text-lg font-semibold text-brand-blue">
+                {recentOnly ? t("recentlyViewedEmpty") : t("noResults")}
+              </p>
+              {!recentOnly ? (
+                <p className="mt-2 max-w-sm text-sm text-muted-foreground">{t("noResultsHint")}</p>
+              ) : null}
             </div>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">

@@ -131,6 +131,7 @@
     "title": "Gift catalog",
     "subtitle": "Choose the perfect set for your team",
     "recentlyViewed": "Recently viewed",
+    "recentlyViewedEmpty": "No recently viewed sets match your current filters",
     "searchLabel": "Search sets",
     "searchPlaceholder": "Name, SKU or tag…",
     "tagFilters": {

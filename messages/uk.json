@@ -131,6 +131,7 @@
       "dismiss": "Закрити"
     },
     "recentlyViewed": "Нещодавно переглянуті",
+    "recentlyViewedEmpty": "За поточними фільтрами немає нещодавно переглянутих наборів",
     "searchLabel": "Пошук наборів",
     "searchPlaceholder": "Назва, артикул або тег…",
     "tagFilters": {
