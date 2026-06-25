@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseAdmin } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { logger } from "@/lib/logger";
+import { recordAudit } from "@/lib/actions/audit";
 import { DRAFT_POSITION, PUBLISHED_POSITION } from "@/lib/data/content-blocks";
 import type {
   ContentBlockKey,
@@ -140,6 +141,12 @@ export async function publishContentBlock(input: {
     .delete()
     .eq("block_key", input.block_key)
     .eq("position", DRAFT_POSITION);
+
+  await recordAudit({
+    action: "publish",
+    entity_type: "content_block",
+    entity_id: input.block_key,
+  });
 
   revalidatePath("/", "layout");
   return { ok: true };

@@ -288,6 +288,12 @@
     "backToAdmin": "Назад до адмінки",
     "orderItems": "Позиції замовлення",
     "content": "Контент",
+    "audit": "Журнал",
+    "auditEmpty": "Журнал змін порожній",
+    "auditTime": "Час",
+    "auditActor": "Користувач",
+    "auditAction": "Дія",
+    "auditEntity": "Обʼєкт",
     "kpi": {
       "ordersThisWeek": "Замовлення (7 днів)",
       "vsPriorWeek": "проти попередніх 7 днів",

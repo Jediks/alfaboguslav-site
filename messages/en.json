@@ -288,6 +288,12 @@
     "backToAdmin": "Back to admin",
     "orderItems": "Order items",
     "content": "Content",
+    "audit": "Audit log",
+    "auditEmpty": "Audit log is empty",
+    "auditTime": "Time",
+    "auditActor": "User",
+    "auditAction": "Action",
+    "auditEntity": "Entity",
     "kpi": {
       "ordersThisWeek": "Orders (7 days)",
       "vsPriorWeek": "vs prior 7 days",
