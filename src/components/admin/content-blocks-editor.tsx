@@ -92,6 +92,12 @@ export function ContentBlocksEditor({
   const updateHero = (patch: Partial<HeroBlockData>) =>
     setHero((prev) => ({ ...prev, ...patch }));
 
+  const updateHeroStat = (idx: number, patch: Partial<HeroBlockData["stats"][number]>) =>
+    setHero((prev) => ({
+      ...prev,
+      stats: (prev.stats ?? []).map((s, i) => (i === idx ? { ...s, ...patch } : s)),
+    }));
+
   const updateTestimonials = (patch: Partial<TestimonialsBlockData>) =>
     setTestimonials((prev) => ({ ...prev, ...patch }));
 
@@ -324,6 +330,43 @@ export function ContentBlocksEditor({
               value={hero.vip_badge_en}
               onChange={(e) => updateHero({ vip_badge_en: e.target.value })}
             />
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <h3 className="mb-3 font-medium text-brand-blue">{t("statsTitle")}</h3>
+          <div className="space-y-3">
+            {(hero.stats ?? []).map((stat, idx) => (
+              <div
+                key={idx}
+                className="grid gap-3 rounded-2xl border border-border/50 p-3 md:grid-cols-3"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor={`hero-stat-value-${idx}`}>{t("statValue")}</Label>
+                  <Input
+                    id={`hero-stat-value-${idx}`}
+                    value={stat.value}
+                    onChange={(e) => updateHeroStat(idx, { value: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={`hero-stat-uk-${idx}`}>{t("statLabelUk")}</Label>
+                  <Input
+                    id={`hero-stat-uk-${idx}`}
+                    value={stat.label_uk}
+                    onChange={(e) => updateHeroStat(idx, { label_uk: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={`hero-stat-en-${idx}`}>{t("statLabelEn")}</Label>
+                  <Input
+                    id={`hero-stat-en-${idx}`}
+                    value={stat.label_en}
+                    onChange={(e) => updateHeroStat(idx, { label_en: e.target.value })}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
