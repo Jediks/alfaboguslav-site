@@ -105,7 +105,9 @@
       "empty": "You haven't selected any sets to compare yet.",
       "browse": "Browse catalog",
       "tags": "Tags",
-      "sweetsCount": "Items count"
+      "sweetsCount": "Items count",
+      "addToCart": "Add to cart",
+      "addedToCart": "{name} added to cart"
     },
     "label": "B2B Marketplace",
     "title": "Gift catalog",
