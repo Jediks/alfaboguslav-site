@@ -133,9 +133,3 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 - `PageHeader` with eyebrow + hero size for landing intros
 - Content blocks: `StatCard` grid, vertical timeline, navy story card, `surface-panel` forms
 - Footer: 4 columns — brand, nav, B2B links (catalog, compare, quote, configurator), contact
-
-### GlowingEdgeCard
-- Pointer-reactive mesh border (primary / gold / navy palette)
-- Variants: `dark` (CTA on navy), `light` (cream panels)
-- Intro sweep animation on mount; respects `prefers-reduced-motion`
-- Use for hero CTAs, quote forms — not on dense data tables

@@ -97,7 +97,6 @@
     "quoteMessage": "Message",
     "quoteMessagePlaceholder": "Number of sets, budget, branding preferences...",
     "quoteSubmit": "Send request",
-    "quoteFormHint": "Move your cursor over the form to see the glow",
     "quoteSuccessTitle": "Request sent!",
     "quoteSuccessDesc": "Our manager will contact you within 24 hours.",
     "quoteRateLimitTitle": "Too many attempts",
