@@ -1,13 +1,21 @@
+import type { Metadata } from "next";
 import { Award, Building2, Layers3 } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AboutStoryCard, AboutTimeline } from "@/components/about/about-sections";
 import { MarketingPageShell } from "@/components/layout/marketing-page-shell";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { getPageMetadata } from "@/lib/metadata/get-page-metadata";
 
 type AboutPageProps = {
   params: { locale: string };
 };
+
+export async function generateMetadata({
+  params: { locale },
+}: AboutPageProps): Promise<Metadata> {
+  return getPageMetadata({ locale, page: "about", path: "/about" });
+}
 
 export default async function AboutPage({ params: { locale } }: AboutPageProps) {
   setRequestLocale(locale);

@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { CheckoutClient } from "@/components/checkout/checkout-client";
 import { getPricingTiers, getProducts } from "@/lib/data/products";
+import { getPageMetadata } from "@/lib/metadata/get-page-metadata";
 import { hasSupabaseEnv } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import type { PricingTier } from "@/types/database";
@@ -8,6 +10,12 @@ import type { PricingTier } from "@/types/database";
 type CheckoutPageProps = {
   params: { locale: string };
 };
+
+export async function generateMetadata({
+  params: { locale },
+}: CheckoutPageProps): Promise<Metadata> {
+  return getPageMetadata({ locale, page: "checkout", path: "/checkout", noIndex: true });
+}
 
 export default async function CheckoutPage({ params: { locale } }: CheckoutPageProps) {
   setRequestLocale(locale);

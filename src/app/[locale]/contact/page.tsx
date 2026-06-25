@@ -1,12 +1,20 @@
+import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ContactForm } from "@/components/contact/contact-form";
 import { MarketingPageShell } from "@/components/layout/marketing-page-shell";
 import { PageHeader } from "@/components/ui/page-header";
+import { getPageMetadata } from "@/lib/metadata/get-page-metadata";
 
 type ContactPageProps = {
   params: { locale: string };
 };
+
+export async function generateMetadata({
+  params: { locale },
+}: ContactPageProps): Promise<Metadata> {
+  return getPageMetadata({ locale, page: "contact", path: "/contact" });
+}
 
 export default async function ContactPage({ params: { locale } }: ContactPageProps) {
   setRequestLocale(locale);

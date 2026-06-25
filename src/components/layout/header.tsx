@@ -19,6 +19,7 @@ export function Header() {
   const t = useTranslations("common");
   const tNav = useTranslations("nav");
   const tHome = useTranslations("home");
+  const tA11y = useTranslations("a11y");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const items = useCartStore((s) => s.items);
@@ -78,7 +79,7 @@ export function Header() {
             <BrandLogo variant="header" />
           </I18nLink>
 
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 md:flex" aria-label={tA11y("mainNav")}>
             {navLinks.map((link) => (
               <I18nLink
                 key={link.href}
@@ -102,6 +103,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label={tA11y("cart")}
                 className={cn("relative", headerLight ? "text-brand-blue" : "text-white")}
               >
                 <ShoppingBag className="h-5 w-5" />
@@ -117,6 +119,7 @@ export function Header() {
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger
+                aria-label={tA11y("openMenu")}
                 className={cn(
                   "inline-flex h-8 w-8 items-center justify-center rounded-lg md:hidden",
                   headerLight ? "text-brand-blue" : "text-white"

@@ -1,11 +1,19 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { CartClient } from "@/components/cart/cart-client";
 import { getPricingTiers, getProducts } from "@/lib/data/products";
+import { getPageMetadata } from "@/lib/metadata/get-page-metadata";
 import type { PricingTier } from "@/types/database";
 
 type CartPageProps = {
   params: { locale: string };
 };
+
+export async function generateMetadata({
+  params: { locale },
+}: CartPageProps): Promise<Metadata> {
+  return getPageMetadata({ locale, page: "cart", path: "/cart", noIndex: true });
+}
 
 export default async function CartPage({ params: { locale } }: CartPageProps) {
   setRequestLocale(locale);

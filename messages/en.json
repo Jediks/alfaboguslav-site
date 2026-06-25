@@ -1,7 +1,66 @@
 {
   "metadata": {
     "title": "Alpha Boguslav — Corporate New Year Gifts",
-    "description": "Premium B2B New Year gift sets from a family-owned Ukrainian company with 30 years of experience."
+    "description": "Premium B2B New Year gift sets from a family-owned Ukrainian company with 30 years of experience.",
+    "titleTemplate": "%s | Alpha Boguslav"
+  },
+  "pageMetadata": {
+    "home": {
+      "title": "Alpha Boguslav — Corporate New Year Gifts",
+      "description": "Premium B2B New Year gift sets from a family-owned Ukrainian company with 30 years of experience."
+    },
+    "catalog": {
+      "title": "Gift catalog",
+      "description": "Choose the perfect New Year gift set for your team — Alpha Boguslav B2B catalog."
+    },
+    "about": {
+      "title": "About us",
+      "description": "Alpha Boguslav is a family-owned Ukrainian maker of corporate New Year gifts with 30 years of experience."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Reach the Alpha Boguslav B2B team for corporate gift planning."
+    },
+    "compare": {
+      "title": "Compare sets",
+      "description": "Compare New Year B2B gift sets by price, packaging, and composition."
+    },
+    "cart": {
+      "title": "Cart",
+      "description": "Your Alpha Boguslav order cart."
+    },
+    "checkout": {
+      "title": "Checkout",
+      "description": "Complete your corporate gift order."
+    },
+    "thankYou": {
+      "title": "Thank you for your order",
+      "description": "Your order has been received — a manager will contact you."
+    },
+    "login": {
+      "title": "Sign in",
+      "description": "Sign in to your Alpha Boguslav B2B account."
+    },
+    "register": {
+      "title": "Register",
+      "description": "Create your Alpha Boguslav B2B account."
+    },
+    "account": {
+      "title": "Account",
+      "description": "Manage orders and profile in your Alpha Boguslav B2B account."
+    },
+    "admin": {
+      "title": "Admin panel",
+      "description": "Internal Alpha Boguslav administration."
+    },
+    "productTitle": "{name}",
+    "productDescription": "{description}"
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open menu",
+    "cart": "Cart",
+    "mainNav": "Main navigation"
   },
   "common": {
     "brandName": "Alpha Boguslav",

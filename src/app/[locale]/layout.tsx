@@ -35,10 +35,33 @@ export async function generateMetadata({
   params: { locale },
 }: LocaleLayoutProps): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "metadata" });
+  const siteUrl = getSiteUrl();
   return {
-    metadataBase: new URL(getSiteUrl()),
-    title: t("title"),
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: t("title"),
+      template: t("titleTemplate"),
+    },
     description: t("description"),
+    alternates: {
+      languages: {
+        uk: `${siteUrl}/uk`,
+        en: `${siteUrl}/en`,
+      },
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      url: `${siteUrl}/${locale}`,
+      siteName: "Alpha Boguslav",
+      locale: locale === "uk" ? "uk_UA" : "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+    },
     icons: {
       icon: [{ url: "/brand/logo-mark.svg", type: "image/svg+xml" }],
       apple: [{ url: "/brand/logo-mark.svg", type: "image/svg+xml" }],

@@ -1,7 +1,66 @@
 {
   "metadata": {
     "title": "Alpha Boguslav — Корпоративні новорічні подарунки",
-    "description": "Преміальні B2B новорічні подарунки від сімейної української компанії з 30-річним досвідом."
+    "description": "Преміальні B2B новорічні подарунки від сімейної української компанії з 30-річним досвідом.",
+    "titleTemplate": "%s | Alpha Boguslav"
+  },
+  "pageMetadata": {
+    "home": {
+      "title": "Alpha Boguslav — Корпоративні новорічні подарунки",
+      "description": "Преміальні B2B новорічні подарунки від сімейної української компанії з 30-річним досвідом."
+    },
+    "catalog": {
+      "title": "Каталог подарунків",
+      "description": "Оберіть ідеальний новорічний набір для вашої команди — B2B-каталог Alpha Boguslav."
+    },
+    "about": {
+      "title": "Про нас",
+      "description": "Alpha Boguslav — сімейний український виробник корпоративних новорічних подарунків з 30-річним досвідом."
+    },
+    "contact": {
+      "title": "Контакти",
+      "description": "Зв'яжіться з B2B-командою Alpha Boguslav для підбору корпоративних подарунків."
+    },
+    "compare": {
+      "title": "Порівняння наборів",
+      "description": "Порівняйте новорічні B2B-набори за ціною, упаковкою та складом."
+    },
+    "cart": {
+      "title": "Кошик",
+      "description": "Ваш кошик замовлення Alpha Boguslav."
+    },
+    "checkout": {
+      "title": "Оформлення замовлення",
+      "description": "Оформіть B2B-замовлення корпоративних подарунків."
+    },
+    "thankYou": {
+      "title": "Дякуємо за замовлення",
+      "description": "Ваше замовлення прийнято — менеджер зв'яжеться з вами."
+    },
+    "login": {
+      "title": "Увійти",
+      "description": "Вхід до B2B-кабінету Alpha Boguslav."
+    },
+    "register": {
+      "title": "Реєстрація",
+      "description": "Створіть B2B-акаунт Alpha Boguslav."
+    },
+    "account": {
+      "title": "Особистий кабінет",
+      "description": "Керуйте замовленнями та профілем у B2B-кабінеті Alpha Boguslav."
+    },
+    "admin": {
+      "title": "Адмін-панель",
+      "description": "Внутрішня панель керування Alpha Boguslav."
+    },
+    "productTitle": "{name}",
+    "productDescription": "{description}"
+  },
+  "a11y": {
+    "skipToContent": "Перейти до основного вмісту",
+    "openMenu": "Відкрити меню",
+    "cart": "Кошик",
+    "mainNav": "Головна навігація"
   },
   "common": {
     "brandName": "Alpha Boguslav",
