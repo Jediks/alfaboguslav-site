@@ -42,8 +42,8 @@ export function HorizontalShowcase({
   };
 
   return (
-    <section className="relative overflow-hidden bg-brand-blue py-24 text-white grain md:py-32">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-black/20" />
+    <section className="relative overflow-hidden border-y border-cream/10 bg-brand-blue py-20 text-white grain md:py-28">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cream/[0.07] via-primary/5 to-brand-blue" />
 
       <div className="relative mx-auto mb-8 max-w-7xl px-4 md:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/40">

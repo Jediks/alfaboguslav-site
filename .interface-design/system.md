@@ -91,3 +91,31 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 - Playfair on all KPI numbers → tabular Inter semibold
 - Raw English table headers in admin → i18n + styled TableHead
 - Duplicate order metadata below account table → removed
+
+## Marketing (home page)
+
+**Rhythm:** alternate cream (`bg-cream`, `bg-white`) and navy blocks; navy sections use `border-cream/10` and a soft cream gradient at the top to avoid harsh transitions.
+
+### Section header (marketing)
+- Eyebrow: 11–12px uppercase / tracking 0.28em / primary
+- Title: Playfair 3xl–5xl semibold / brand-blue / text-balance
+- Subtitle: 14px muted / max-w-xl / left-aligned (not centered)
+
+### Why-us tab panel
+- Left: step tabs with primary left border when active
+- Right: `surface-panel` detail with watermark number, bottom progress bar
+
+### Stat strip (DeliveryGoal)
+- Reuse `StatCard` in 3-column grid on cream canvas
+- Metrics: Inter tabular semibold — never Playfair on numbers
+- Optional count-up animation; respect `prefers-reduced-motion`
+
+### B2B configurator
+- Mobile: sticky live preview bar (`top-[5.75rem]`) updating with sliders
+- Steps: compact pill buttons + progress bar; inset control-bg for values
+- Desktop: sticky glass-dark product staging (signature pattern)
+
+### Dark rails (showcase, CTA)
+- `bg-brand-blue grain` + cream top fade (`from-cream/[0.06–0.07]`)
+- Product cards: `glass-dark`, gold price accent
+- CTA: layered gradients, quote form below headline

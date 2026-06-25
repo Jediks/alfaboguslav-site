@@ -16,6 +16,15 @@ test.describe("Home page", () => {
     await page.getByRole("tab", { name: /логістика/i }).click();
     await expect(page.getByRole("tabpanel")).toContainText(/логістика/i);
   });
+
+  test("delivery goal stats and configurator preview", async ({ page }) => {
+    await page.goto("/uk", { waitUntil: "networkidle" });
+    await page.getByTestId("delivery-goal").scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("delivery-goal")).toBeVisible();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator("#configurator").scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("config-mobile-preview")).toBeVisible();
+  });
 });
 
 test.describe("Quote form", () => {

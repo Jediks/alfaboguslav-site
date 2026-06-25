@@ -9,9 +9,10 @@ export function CtaSection() {
   const t = useTranslations("home");
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden border-t border-cream/10">
       <div className="absolute inset-0 bg-brand-blue grain" />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-gold/10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-cream/[0.06] via-brand-blue to-brand-blue" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/12 via-transparent to-gold/8" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center md:py-32">
         <motion.div
