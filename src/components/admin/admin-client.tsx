@@ -33,6 +33,7 @@ import { updateOrderStatusAdmin } from "@/lib/actions/orders";
 import { updateQuoteStatusAdmin } from "@/lib/actions/quotes";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
+import { parseQuoteRefFromDelivery, stripQuoteRefLine } from "@/lib/quote-ref";
 import type { OrderStatus, PricingTier, Product } from "@/types/database";
 import type { AdminContentBlock } from "@/lib/data/content-blocks";
 import type { AuditEntry } from "@/lib/data/audit";
@@ -320,14 +321,25 @@ export function AdminClient({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredOrders.map((order) => (
+                  {filteredOrders.map((order) => {
+                    const linkedQuoteRef = parseQuoteRefFromDelivery(order.delivery_address);
+                    const deliveryDisplay =
+                      stripQuoteRefLine(order.delivery_address) || order.delivery_address;
+                    return (
                     <TableRow key={order.referenceId}>
-                      <TableCell className="font-mono text-xs">{order.referenceId}</TableCell>
+                      <TableCell className="font-mono text-xs">
+                        <div>{order.referenceId}</div>
+                        {linkedQuoteRef ? (
+                          <Badge variant="secondary" className="mt-1 text-[10px]">
+                            {linkedQuoteRef}
+                          </Badge>
+                        ) : null}
+                      </TableCell>
                       <TableCell className="max-w-[160px] truncate text-sm">
                         {order.company_name || "—"}
                       </TableCell>
                       <TableCell className="max-w-[200px] truncate text-sm">
-                        {order.delivery_address}
+                        {deliveryDisplay}
                       </TableCell>
                       <TableCell className="text-sm">
                         {order.payment_method === "invoice"
@@ -369,7 +381,8 @@ export function AdminClient({
                         </Link>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}

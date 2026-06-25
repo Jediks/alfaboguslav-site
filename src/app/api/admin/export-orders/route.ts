@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { fetchOrdersAdmin } from "@/lib/actions/orders";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { parseQuoteRefFromDelivery } from "@/lib/quote-ref";
 
 function escapeCsvCell(value: string | number | null | undefined): string {
   const raw = String(value ?? "");
@@ -20,6 +21,7 @@ export async function GET() {
   const orders = await fetchOrdersAdmin();
   const header = [
     "reference_id",
+    "linked_quote_ref",
     "status",
     "company_name",
     "contact_name",
@@ -35,6 +37,7 @@ export async function GET() {
   const rows = orders.map((order) =>
     [
       order.referenceId,
+      parseQuoteRefFromDelivery(order.delivery_address) ?? "",
       order.status,
       order.company_name,
       order.contact_name,
