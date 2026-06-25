@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/stores/cart-store";
+import { SavedCarts } from "@/components/cart/saved-carts";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { getPriceForQuantity, formatPrice } from "@/lib/pricing";
 import type { PricingTier, Product } from "@/types/database";
@@ -33,6 +34,9 @@ export function CartClient({ products, pricingByProductId }: CartClientProps) {
         <Link href="/catalog" className="mt-6">
           <Button>{t("emptyCta")}</Button>
         </Link>
+        <div className="mt-10 w-full text-left">
+          <SavedCarts />
+        </div>
       </div>
     );
   }
@@ -141,6 +145,8 @@ export function CartClient({ products, pricingByProductId }: CartClientProps) {
           </Link>
         </div>
       </div>
+
+      <SavedCarts />
     </div>
   );
 }
