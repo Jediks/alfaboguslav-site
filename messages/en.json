@@ -109,6 +109,13 @@
       "addToCart": "Add to cart",
       "addedToCart": "{name} added to cart"
     },
+    "quoteConversion": {
+      "title": "Quote {reference} — pick gift sets",
+      "subtitle": "Client: {company}",
+      "goCheckout": "Go to checkout",
+      "pickProducts": "Add sets to cart",
+      "dismiss": "Dismiss"
+    },
     "label": "B2B Marketplace",
     "title": "Gift catalog",
     "subtitle": "Choose the perfect set for your team",
@@ -280,6 +287,7 @@
     "products": "Products",
     "orders": "Orders",
     "addProduct": "Add product",
+    "manageProducts": "Manage products",
     "exportOrdersCsv": "Export orders CSV",
     "orderSearchPlaceholder": "Search by company or reference",
     "allStatuses": "All statuses",
@@ -299,6 +307,8 @@
     "saveNotes": "Save notes",
     "savingNotes": "Saving...",
     "noQuotes": "No quote requests yet",
+    "convertQuoteToOrder": "Create order",
+    "actions": "Actions",
     "noOrders": "No orders yet",
     "contact": "Contact",
     "company": "Company",

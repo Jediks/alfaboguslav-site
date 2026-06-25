@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { ExternalLink } from "lucide-react";
+import { Link, useRouter } from "@/i18n/navigation";
+import { ExternalLink, ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCartStore, type LocalOrder } from "@/stores/cart-store";
 import { useQuoteStore } from "@/stores/quote-store";
+import { useQuotePrefillStore } from "@/stores/quote-prefill-store";
 import type { OrderRecord } from "@/lib/actions/orders";
 import type { QuoteRecord } from "@/lib/actions/quotes";
 import { updateOrderStatusAdmin } from "@/lib/actions/orders";
@@ -74,6 +75,8 @@ export function AdminClient({
   const tCheckout = useTranslations("checkout");
   const locale = useLocale();
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
+  const router = useRouter();
+  const setQuotePrefill = useQuotePrefillStore((s) => s.setFromQuote);
   const localOrders = useCartStore((s) => s.orders);
   const updateOrderStatus = useCartStore((s) => s.updateOrderStatus);
   const localQuotes = useQuoteStore((s) => s.quotes);
@@ -196,6 +199,21 @@ export function AdminClient({
     setNoteSaving(null);
   };
 
+  const handleConvertQuoteToOrder = (quote: (typeof quotes)[number]) => {
+    setQuotePrefill({
+      referenceId: quote.referenceId,
+      company_name: quote.company_name,
+      contact_name: quote.contact_name,
+      email: quote.email,
+      phone: quote.phone,
+      message: quote.message,
+    });
+    if (quote.status === "new") {
+      void handleQuoteStatusChange(quote.referenceId, "in_progress");
+    }
+    router.push("/catalog");
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -216,6 +234,24 @@ export function AdminClient({
         products={products}
         quotesThisWeek={quotesThisWeek}
       />
+
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Link href="/admin/products/new">
+          <Button size="sm">{t("addProduct")}</Button>
+        </Link>
+        <Link href="/admin/products">
+          <Button size="sm" variant="outline">
+            {t("manageProducts")}
+          </Button>
+        </Link>
+        {supabaseEnabled && (
+          <a href="/api/admin/export-orders">
+            <Button size="sm" variant="outline">
+              {t("exportOrdersCsv")}
+            </Button>
+          </a>
+        )}
+      </div>
 
       <Tabs defaultValue="orders">
         <TabsList className="mb-6">
@@ -349,6 +385,7 @@ export function AdminClient({
                     <TableHead>{t("quoteStatus")}</TableHead>
                     <TableHead>Message</TableHead>
                     <TableHead>{t("notes")}</TableHead>
+                    <TableHead>{t("actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -411,6 +448,17 @@ export function AdminClient({
                             {noteSaving === quote.referenceId ? t("savingNotes") : t("saveNotes")}
                           </Button>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="gap-1.5 whitespace-nowrap"
+                          onClick={() => handleConvertQuoteToOrder(quote)}
+                        >
+                          <ShoppingCart className="h-4 w-4" />
+                          {t("convertQuoteToOrder")}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -112,6 +112,13 @@
       "addToCart": "У кошик",
       "addedToCart": "{name} додано в кошик"
     },
+    "quoteConversion": {
+      "title": "Запит {reference} — підберіть набори",
+      "subtitle": "Клієнт: {company}",
+      "goCheckout": "До оформлення",
+      "pickProducts": "Додайте набори в кошик",
+      "dismiss": "Закрити"
+    },
     "recentlyViewed": "Нещодавно переглянуті",
     "searchLabel": "Пошук наборів",
     "searchPlaceholder": "Назва, артикул або тег…",
@@ -280,6 +287,7 @@
     "products": "Товари",
     "orders": "Замовлення",
     "addProduct": "Додати товар",
+    "manageProducts": "Керувати товарами",
     "exportOrdersCsv": "Експортувати CSV замовлень",
     "orderSearchPlaceholder": "Пошук за компанією або референсом",
     "allStatuses": "Усі статуси",
@@ -299,6 +307,8 @@
     "saveNotes": "Зберегти нотатки",
     "savingNotes": "Зберігаємо...",
     "noQuotes": "Запитів на прорахунок ще немає",
+    "convertQuoteToOrder": "Оформити замовлення",
+    "actions": "Дії",
     "noOrders": "Замовлень ще немає",
     "contact": "Контакт",
     "company": "Компанія",

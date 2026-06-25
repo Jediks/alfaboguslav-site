@@ -16,6 +16,7 @@ import { getProductTitle } from "@/lib/data/product-utils";
 import { ProductCard } from "./product-card";
 import { CompareBar } from "./compare-bar";
 import { RecentlyViewed } from "./recently-viewed";
+import { QuoteConversionBanner } from "./quote-conversion-banner";
 import {
   CatalogFiltersPanel,
   filterProducts,
@@ -90,6 +91,7 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
         />
 
         <div>
+          <QuoteConversionBanner />
           <RecentlyViewed
             products={products}
             pricingByProductId={pricingByProductId}

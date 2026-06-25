@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCartStore } from "@/stores/cart-store";
+import { useQuotePrefillStore } from "@/stores/quote-prefill-store";
 import { getPriceForQuantity, formatPrice } from "@/lib/pricing";
 import type { PaymentMethod, PricingTier } from "@/types/database";
 
@@ -31,6 +32,8 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
   const router = useRouter();
   const { items, clearCart, addOrder } = useCartStore();
+  const quotePrefill = useQuotePrefillStore((s) => s.active);
+  const clearQuotePrefill = useQuotePrefillStore((s) => s.clear);
   const [delivery, setDelivery] = useState("");
   const [company, setCompany] = useState(profilePrefill?.companyName ?? "");
   const [contactName, setContactName] = useState(profilePrefill?.contactName ?? "");
@@ -43,6 +46,20 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted || !quotePrefill) return;
+    setCompany((prev) => prev || quotePrefill.company_name);
+    setContactName((prev) => prev || quotePrefill.contact_name);
+    setContactEmail((prev) => prev || quotePrefill.email);
+    setContactPhone((prev) => prev || quotePrefill.phone);
+    setDelivery((prev) => {
+      if (prev.trim()) return prev;
+      const refLine = `[Quote ${quotePrefill.referenceId}]`;
+      const msg = quotePrefill.message?.trim();
+      return msg ? `${refLine}\n${msg}` : refLine;
+    });
+  }, [mounted, quotePrefill]);
 
   useEffect(() => {
     if (mounted && items.length === 0) {
@@ -125,6 +142,7 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
     }
 
     clearCart();
+    clearQuotePrefill();
     router.push(`/thank-you?order=${orderId}`);
   };
 
