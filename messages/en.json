@@ -162,7 +162,18 @@
     "managerNotice": "Final price and details will be confirmed by a manager",
     "checkout": "Proceed to checkout",
     "remove": "Remove",
-    "continueShopping": "Continue shopping"
+    "continueShopping": "Continue shopping",
+    "savedCarts": {
+      "title": "Saved carts",
+      "save": "Save cart",
+      "namePlaceholder": "Cart name",
+      "restore": "Restore",
+      "delete": "Delete",
+      "empty": "No saved carts",
+      "itemsCount": "{count} items",
+      "saved": "Cart saved",
+      "restored": "Cart restored"
+    }
   },
   "checkout": {
     "title": "Checkout",

@@ -8,6 +8,13 @@ export interface CartItem {
   brandingLogoUrl?: string;
 }
 
+export interface SavedCart {
+  id: string;
+  name: string;
+  items: CartItem[];
+  savedAt: string;
+}
+
 export interface LocalOrder {
   id: string;
   status: OrderStatus;
@@ -26,12 +33,16 @@ export interface LocalOrder {
 interface CartState {
   items: CartItem[];
   orders: LocalOrder[];
+  savedCarts: SavedCart[];
   addItem: (item: CartItem) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   addOrder: (order: LocalOrder) => void;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+  saveCart: (name: string) => void;
+  restoreCart: (id: string) => void;
+  deleteSavedCart: (id: string) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -39,6 +50,7 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       items: [],
       orders: [],
+      savedCarts: [],
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find(
@@ -77,6 +89,27 @@ export const useCartStore = create<CartState>()(
           orders: state.orders.map((o) =>
             o.id === orderId ? { ...o, status } : o
           ),
+        })),
+      saveCart: (name) =>
+        set((state) => {
+          if (state.items.length === 0) return state;
+          const saved: SavedCart = {
+            id: `cart-${Date.now().toString(36)}`,
+            name: name.trim() || new Date().toLocaleString(),
+            items: state.items.map((i) => ({ ...i })),
+            savedAt: new Date().toISOString(),
+          };
+          return { savedCarts: [saved, ...state.savedCarts] };
+        }),
+      restoreCart: (id) =>
+        set((state) => {
+          const found = state.savedCarts.find((c) => c.id === id);
+          if (!found) return state;
+          return { items: found.items.map((i) => ({ ...i })) };
+        }),
+      deleteSavedCart: (id) =>
+        set((state) => ({
+          savedCarts: state.savedCarts.filter((c) => c.id !== id),
         })),
     }),
     { name: "alpha-boguslav-cart" }
