@@ -22,5 +22,10 @@ test.describe("Product compare (Phase 9.5)", () => {
     // comparison rows
     await expect(page.getByText("Упаковка")).toBeVisible();
     await expect(page.getByText("Кількість позицій")).toBeVisible();
+
+    // add-to-cart from the compare page
+    await page.getByRole("button", { name: "У кошик", exact: true }).first().click();
+    await page.goto("/uk/cart", { waitUntil: "networkidle" });
+    await expect(page.getByText("Орієнтовна сума")).toBeVisible();
   });
 });

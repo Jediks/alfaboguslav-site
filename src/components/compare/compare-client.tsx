@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { X } from "lucide-react";
+import { toast } from "sonner";
+import { ShoppingBag, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductImage } from "@/components/catalog/product-image";
 import { useCompareStore } from "@/stores/compare-store";
+import { useCartStore } from "@/stores/cart-store";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { PricingTier, Product } from "@/types/database";
@@ -25,7 +27,14 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
   const ids = useCompareStore((s) => s.ids);
   const remove = useCompareStore((s) => s.remove);
+  const addItem = useCartStore((s) => s.addItem);
   const [mounted, setMounted] = useState(false);
+
+  const addToCart = (product: Product) => {
+    const minQty = pricingByProductId[product.id]?.[0]?.min_quantity ?? 1;
+    addItem({ productId: product.id, quantity: minQty });
+    toast.success(t("addedToCart", { name: getProductTitle(product, locale) }));
+  };
 
   useEffect(() => setMounted(true), []);
 
@@ -115,6 +124,14 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
                         {getProductTitle(p, locale)}
                       </p>
                     </Link>
+                    <Button
+                      size="sm"
+                      className="mt-3 w-full gap-1.5"
+                      onClick={() => addToCart(p)}
+                    >
+                      <ShoppingBag className="h-4 w-4" />
+                      {t("addToCart")}
+                    </Button>
                   </div>
                 </th>
               ))}
