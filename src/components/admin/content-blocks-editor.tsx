@@ -3,16 +3,22 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { upsertContentBlock } from "@/lib/actions/content-blocks";
+import { Link } from "@/i18n/navigation";
+import {
+  publishContentBlock,
+  saveContentBlockDraft,
+} from "@/lib/actions/content-blocks";
 import type { AdminContentBlock } from "@/lib/data/content-blocks";
 import {
   DEFAULT_HERO_BLOCK,
   DEFAULT_TESTIMONIALS_BLOCK,
+  type ContentBlockKey,
   type HeroBlockData,
   type TestimonialItem,
   type TestimonialsBlockData,
@@ -25,11 +31,40 @@ type ContentBlocksEditorProps = {
 
 function findBlock<T>(
   blocks: AdminContentBlock[],
-  key: "hero" | "testimonials",
+  key: ContentBlockKey,
   fallback: T
 ): T {
   const found = blocks.find((b) => b.block_key === key);
   return (found?.data as T) ?? fallback;
+}
+
+type BlockStatus = { hasDraft: boolean; hasPublished: boolean };
+
+function findStatus(blocks: AdminContentBlock[], key: ContentBlockKey): BlockStatus {
+  const found = blocks.find((b) => b.block_key === key);
+  return {
+    hasDraft: found?.has_draft ?? false,
+    hasPublished: found?.has_published ?? false,
+  };
+}
+
+function StatusBadge({ status }: { status: BlockStatus }) {
+  const t = useTranslations("admin.contentBlocks");
+  if (status.hasDraft) {
+    return (
+      <Badge variant="outline" className="border-amber-400 text-amber-600">
+        {t("statusDraft")}
+      </Badge>
+    );
+  }
+  if (status.hasPublished) {
+    return (
+      <Badge variant="secondary" className="text-emerald-700">
+        {t("statusLive")}
+      </Badge>
+    );
+  }
+  return <Badge variant="outline">{t("statusUnpublished")}</Badge>;
 }
 
 export function ContentBlocksEditor({
@@ -43,8 +78,16 @@ export function ContentBlocksEditor({
   const [testimonials, setTestimonials] = useState<TestimonialsBlockData>(() =>
     findBlock(blocks, "testimonials", DEFAULT_TESTIMONIALS_BLOCK)
   );
-  const [savingHero, setSavingHero] = useState(false);
-  const [savingTestimonials, setSavingTestimonials] = useState(false);
+  const [heroStatus, setHeroStatus] = useState<BlockStatus>(() =>
+    findStatus(blocks, "hero")
+  );
+  const [testimonialsStatus, setTestimonialsStatus] = useState<BlockStatus>(() =>
+    findStatus(blocks, "testimonials")
+  );
+  const [heroPending, setHeroPending] = useState<null | "draft" | "publish">(null);
+  const [testimonialsPending, setTestimonialsPending] = useState<
+    null | "draft" | "publish"
+  >(null);
 
   const updateHero = (patch: Partial<HeroBlockData>) =>
     setHero((prev) => ({ ...prev, ...patch }));
@@ -81,39 +124,57 @@ export function ContentBlocksEditor({
         .filter(Boolean),
     });
 
-  const saveHero = async () => {
+  const runBlockAction = async (
+    mode: "draft" | "publish",
+    block_key: ContentBlockKey,
+    data: HeroBlockData | TestimonialsBlockData,
+    setPending: (v: null | "draft" | "publish") => void,
+    setStatus: (updater: (prev: BlockStatus) => BlockStatus) => void
+  ) => {
     if (!supabaseEnabled) {
       toast.error(t("supabaseRequired"));
       return;
     }
-    setSavingHero(true);
-    const res = await upsertContentBlock({
-      block_key: "hero",
-      position: 0,
-      is_published: true,
-      data: hero,
-    });
-    setSavingHero(false);
-    if (res.ok) toast.success(t("saved"));
-    else toast.error(t("saveFailed"), { description: res.error });
+    setPending(mode);
+    const res =
+      mode === "draft"
+        ? await saveContentBlockDraft({ block_key, data })
+        : await publishContentBlock({ block_key, data });
+    setPending(null);
+
+    if (!res.ok) {
+      toast.error(t("saveFailed"), { description: res.error });
+      return;
+    }
+    if (mode === "draft") {
+      toast.success(t("draftSaved"));
+      setStatus((prev) => ({ ...prev, hasDraft: true }));
+    } else {
+      toast.success(t("published"));
+      setStatus(() => ({ hasDraft: false, hasPublished: true }));
+    }
   };
 
-  const saveTestimonials = async () => {
-    if (!supabaseEnabled) {
-      toast.error(t("supabaseRequired"));
-      return;
-    }
-    setSavingTestimonials(true);
-    const res = await upsertContentBlock({
-      block_key: "testimonials",
-      position: 0,
-      is_published: true,
-      data: testimonials,
-    });
-    setSavingTestimonials(false);
-    if (res.ok) toast.success(t("saved"));
-    else toast.error(t("saveFailed"), { description: res.error });
-  };
+  const saveHeroDraft = () =>
+    runBlockAction("draft", "hero", hero, setHeroPending, setHeroStatus);
+  const publishHero = () =>
+    runBlockAction("publish", "hero", hero, setHeroPending, setHeroStatus);
+  const saveTestimonialsDraft = () =>
+    runBlockAction(
+      "draft",
+      "testimonials",
+      testimonials,
+      setTestimonialsPending,
+      setTestimonialsStatus
+    );
+  const publishTestimonials = () =>
+    runBlockAction(
+      "publish",
+      "testimonials",
+      testimonials,
+      setTestimonialsPending,
+      setTestimonialsStatus
+    );
 
   return (
     <div className="space-y-8">
@@ -124,9 +185,22 @@ export function ContentBlocksEditor({
       )}
 
       <section className="glass rounded-3xl p-6 premium-shadow">
-        <h2 className="mb-4 font-display text-xl font-semibold text-brand-blue">
-          {t("heroTitle")}
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="font-display text-xl font-semibold text-brand-blue">
+              {t("heroTitle")}
+            </h2>
+            <StatusBadge status={heroStatus} />
+          </div>
+          <Link
+            href="/preview/home"
+            target="_blank"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <Eye className="h-4 w-4" />
+            {t("preview")}
+          </Link>
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
@@ -253,17 +327,37 @@ export function ContentBlocksEditor({
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
-          <Button onClick={saveHero} disabled={savingHero}>
-            {savingHero ? t("saving") : t("saveHero")}
+        <div className="mt-6 flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={saveHeroDraft}
+            disabled={heroPending !== null}
+          >
+            {heroPending === "draft" ? t("saving") : t("saveDraft")}
+          </Button>
+          <Button onClick={publishHero} disabled={heroPending !== null}>
+            {heroPending === "publish" ? t("publishing") : t("publish")}
           </Button>
         </div>
       </section>
 
       <section className="glass rounded-3xl p-6 premium-shadow">
-        <h2 className="mb-4 font-display text-xl font-semibold text-brand-blue">
-          {t("testimonialsTitle")}
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="font-display text-xl font-semibold text-brand-blue">
+              {t("testimonialsTitle")}
+            </h2>
+            <StatusBadge status={testimonialsStatus} />
+          </div>
+          <Link
+            href="/preview/home"
+            target="_blank"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <Eye className="h-4 w-4" />
+            {t("preview")}
+          </Link>
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
@@ -380,9 +474,16 @@ export function ContentBlocksEditor({
           ))}
         </div>
 
-        <div className="mt-6 flex justify-end">
-          <Button onClick={saveTestimonials} disabled={savingTestimonials}>
-            {savingTestimonials ? t("saving") : t("saveTestimonials")}
+        <div className="mt-6 flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={saveTestimonialsDraft}
+            disabled={testimonialsPending !== null}
+          >
+            {testimonialsPending === "draft" ? t("saving") : t("saveDraft")}
+          </Button>
+          <Button onClick={publishTestimonials} disabled={testimonialsPending !== null}>
+            {testimonialsPending === "publish" ? t("publishing") : t("publish")}
           </Button>
         </div>
       </section>
