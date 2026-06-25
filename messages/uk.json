@@ -113,6 +113,13 @@
       "addedToCart": "{name} додано в кошик"
     },
     "recentlyViewed": "Нещодавно переглянуті",
+    "sort": {
+      "label": "Сортування",
+      "featured": "Рекомендовані",
+      "priceAsc": "Ціна: за зростанням",
+      "priceDesc": "Ціна: за спаданням",
+      "name": "За назвою"
+    },
     "filters": "Фільтри",
     "resetFilters": "Скинути",
     "weight": "Вага (г)",

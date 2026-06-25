@@ -113,6 +113,13 @@
     "title": "Gift catalog",
     "subtitle": "Choose the perfect set for your team",
     "recentlyViewed": "Recently viewed",
+    "sort": {
+      "label": "Sort",
+      "featured": "Featured",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "name": "By name"
+    },
     "filters": "Filters",
     "resetFilters": "Reset",
     "weight": "Weight (g)",
