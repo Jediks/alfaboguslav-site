@@ -311,6 +311,7 @@
       "removeReview": "Видалити",
       "reviewName": "Ім'я",
       "reviewCompany": "Компанія",
+      "reviewRating": "Рейтинг (1–5)",
       "reviewTextUk": "Текст (uk)",
       "reviewTextEn": "Текст (en)"
     }

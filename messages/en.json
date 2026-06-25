@@ -311,6 +311,7 @@
       "removeReview": "Remove",
       "reviewName": "Name",
       "reviewCompany": "Company",
+      "reviewRating": "Rating (1–5)",
       "reviewTextUk": "Text (uk)",
       "reviewTextEn": "Text (en)"
     }
