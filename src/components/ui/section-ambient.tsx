@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/utils";
+import { LightSectionParticles } from "@/components/ui/light-section-particles";
 
 export type SectionAmbientTone = "white" | "cream" | "warm";
 
@@ -6,12 +9,16 @@ type SectionAmbientProps = {
   tone?: SectionAmbientTone;
   className?: string;
   blobs?: boolean;
+  particles?: boolean;
+  particleDensity?: number;
 };
 
 export function SectionAmbient({
   tone = "cream",
   className,
   blobs = true,
+  particles = true,
+  particleDensity,
 }: SectionAmbientProps) {
   return (
     <div
@@ -27,6 +34,7 @@ export function SectionAmbient({
           <div className="section-ambient-blob section-ambient-blob--gold" />
         </>
       ) : null}
+      {particles ? <LightSectionParticles density={particleDensity} /> : null}
       <div className="absolute inset-0 grain opacity-[0.35]" />
     </div>
   );

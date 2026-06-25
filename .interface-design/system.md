@@ -124,5 +124,6 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 ### Global & section ambient
 - **`canvas-ambient`** (fixed, site-wide): warm gradient + diagonal ribbon crosshatch + color blooms + grain
 - **`SectionAmbient`** component: tones `white | cream | warm` — gradient base, dot/line pattern, drifting color blobs, grain
+- **`LightSectionParticles`**: falling flakes on light sections (white paper dots + navy + gold), mirror of hero snow; `particles={false}` to disable
 - Use on all light marketing sections; disable blobs on busy sections (`blobs={false}`)
 - Blobs respect `prefers-reduced-motion`
