@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { GlowingEdgeCard } from "@/components/ui/glowing-edge-card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -73,99 +74,107 @@ export function QuoteRequestForm() {
 
   if (sent) {
     return (
-      <div
-        className="relative mx-auto mt-10 max-w-lg overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-8 backdrop-blur-md"
-        role="status"
-        aria-live="polite"
-      >
-        <SparkleBurst active />
-        <p className="font-display text-xl font-semibold text-white">{t("quoteSuccessTitle")}</p>
-        <p className="mt-2 text-sm text-white/65">{t("quoteSuccessDesc")}</p>
-      </div>
+      <GlowingEdgeCard variant="dark" className="mx-auto mt-10 max-w-xl">
+        <div
+          className="relative p-8 text-left md:p-10"
+          role="status"
+          aria-live="polite"
+        >
+          <SparkleBurst active />
+          <p className="font-display text-xl font-semibold text-white">{t("quoteSuccessTitle")}</p>
+          <p className="mt-2 text-sm text-white/65">{t("quoteSuccessDesc")}</p>
+        </div>
+      </GlowingEdgeCard>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto mt-10 max-w-xl space-y-4 rounded-2xl border border-white/15 bg-white/10 p-6 text-left backdrop-blur-md md:p-8"
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
+    <GlowingEdgeCard variant="dark" className="mx-auto mt-10 max-w-xl text-left">
+      <form onSubmit={handleSubmit} className="space-y-4 p-6 md:p-8">
+        <p className="text-center text-[11px] font-medium uppercase tracking-[0.14em] text-white/45">
+          {t("quoteFormHint")}
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="quote-company" className="text-white/80">
+              {t("quoteCompany")}
+            </Label>
+            <Input
+              id="quote-company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              required
+              className="border-white/20 bg-white/95"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="quote-name" className="text-white/80">
+              {t("quoteName")}
+            </Label>
+            <Input
+              id="quote-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="border-white/20 bg-white/95"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="quote-email" className="text-white/80">
+              {t("quoteEmail")}
+            </Label>
+            <Input
+              id="quote-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="border-white/20 bg-white/95"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="quote-phone" className="text-white/80">
+              {t("quotePhone")}
+            </Label>
+            <Input
+              id="quote-phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              className="border-white/20 bg-white/95"
+            />
+          </div>
+        </div>
+
         <div className="space-y-2">
-          <Label htmlFor="quote-company" className="text-white/80">
-            {t("quoteCompany")}
+          <Label htmlFor="quote-message" className="text-white/80">
+            {t("quoteMessage")}
           </Label>
-          <Input
-            id="quote-company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            required
-            className="border-white/20 bg-white/95"
+          <Textarea
+            id="quote-message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={3}
+            placeholder={t("quoteMessagePlaceholder")}
+            className="resize-none border-white/20 bg-white/95"
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="quote-name" className="text-white/80">
-            {t("quoteName")}
-          </Label>
-          <Input
-            id="quote-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="border-white/20 bg-white/95"
-          />
-        </div>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="quote-email" className="text-white/80">
-            {t("quoteEmail")}
-          </Label>
-          <Input
-            id="quote-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="border-white/20 bg-white/95"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="quote-phone" className="text-white/80">
-            {t("quotePhone")}
-          </Label>
-          <Input
-            id="quote-phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-            className="border-white/20 bg-white/95"
-          />
-        </div>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="quote-message" className="text-white/80">
-          {t("quoteMessage")}
-        </Label>
-        <Textarea
-          id="quote-message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows={3}
-          placeholder={t("quoteMessagePlaceholder")}
-          className="resize-none border-white/20 bg-white/95"
-        />
-      </div>
-      <Button
-        type="submit"
-        size="lg"
-        disabled={submitting}
-        className="h-12 w-full gap-2 rounded-full bg-white text-brand-blue hover:bg-white/90"
-      >
-        <Send className="h-4 w-4" />
-        {t("quoteSubmit")}
-      </Button>
-    </form>
+
+        <Button
+          type="submit"
+          size="lg"
+          disabled={submitting}
+          className="h-12 w-full gap-2 rounded-full bg-white text-brand-blue hover:bg-white/90"
+        >
+          <Send className="h-4 w-4" />
+          {t("quoteSubmit")}
+        </Button>
+      </form>
+    </GlowingEdgeCard>
   );
 }
