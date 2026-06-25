@@ -276,6 +276,10 @@
       "quoted": "Quoted",
       "closed": "Closed"
     },
+    "notes": "Notes",
+    "notesPlaceholder": "Internal notes for the team",
+    "saveNotes": "Save notes",
+    "savingNotes": "Saving...",
     "noQuotes": "No quote requests yet",
     "noOrders": "No orders yet",
     "contact": "Contact",
