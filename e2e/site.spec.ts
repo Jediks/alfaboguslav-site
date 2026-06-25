@@ -14,8 +14,10 @@ test.describe("Home page", () => {
     await page.getByTestId("why-us-section").scrollIntoViewIfNeeded();
     await expect(page.getByTestId("why-us-sticky")).toBeVisible();
     await expect(page.getByTestId("why-us-detail")).toContainText(/персоналізація/i);
-    await page.getByTestId("why-us-panel-2").scrollIntoViewIfNeeded();
-    await expect(page.getByTestId("why-us-detail")).toContainText(/якість/i);
+    await page.evaluate(() => window.scrollBy(0, window.innerHeight * 1.6));
+    await expect(page.getByTestId("why-us-detail")).toContainText(/якість/i, {
+      timeout: 5000,
+    });
   });
 
   test("delivery goal stats and configurator preview", async ({ page }) => {

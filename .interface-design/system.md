@@ -101,10 +101,9 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 - Title: Playfair 3xl–5xl semibold / brand-blue / text-balance
 - Subtitle: 14px muted / max-w-xl / left-aligned (not centered)
 
-### Why-us tab panel
-- Desktop: **sticky content switch** — left sticky copy updates via Intersection Observer as right visual panels scroll
-- Mobile / reduced motion: stacked cards with tap-to-expand text
-- Visual panels: brand gradient + icon staging (no stock photos required)
+### Why-us sticky content switch
+- Desktop: section height `N × 100vh`, GSAP ScrollTrigger **pins** split layout; right track scrubs while left headline updates
+- Mobile / reduced motion: stacked cards
 
 ### Stat strip (DeliveryGoal)
 - Reuse `StatCard` in 3-column grid on cream canvas
