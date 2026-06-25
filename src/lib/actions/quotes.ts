@@ -5,6 +5,7 @@ import { hasSupabaseAdmin } from "@/lib/supabase/config";
 import { notifyNewQuote } from "@/lib/email/notify";
 import { checkRateLimit, getClientIp, RateLimitError } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { recordAudit } from "@/lib/actions/audit";
 
 export type SubmitQuoteInput = {
   referenceId: string;
@@ -127,5 +128,11 @@ export async function updateQuoteStatusAdmin(
     console.error("[updateQuoteStatusAdmin]", error);
     return { ok: false };
   }
+  await recordAudit({
+    action: "update",
+    entity_type: "quote",
+    entity_id: referenceId,
+    details: { status, notes_changed: typeof adminNotes === "string" },
+  });
   return { ok: true };
 }

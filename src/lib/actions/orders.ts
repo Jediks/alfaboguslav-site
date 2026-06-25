@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notifyNewOrder, notifyClientOrderConfirmation } from "@/lib/email/notify";
 import { checkRateLimit, getClientIp, RateLimitError } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { recordAudit } from "@/lib/actions/audit";
 import type { OrderRecord } from "@/lib/data/orders";
 import type { OrderStatus, PaymentMethod } from "@/types/database";
 
@@ -260,5 +261,11 @@ export async function updateOrderStatusAdmin(
     console.error("[updateOrderStatusAdmin]", error);
     return { ok: false };
   }
+  await recordAudit({
+    action: "status_change",
+    entity_type: "order",
+    entity_id: referenceId,
+    details: { status },
+  });
   return { ok: true };
 }

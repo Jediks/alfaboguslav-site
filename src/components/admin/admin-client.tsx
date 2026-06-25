@@ -34,6 +34,7 @@ import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus, PricingTier, Product } from "@/types/database";
 import type { AdminContentBlock } from "@/lib/data/content-blocks";
+import type { AuditEntry } from "@/lib/data/audit";
 import type { KpiOrderInput } from "@/lib/data/admin-kpis";
 import { ContentBlocksEditor } from "./content-blocks-editor";
 import { AdminKpiCards } from "./admin-kpi-cards";
@@ -45,6 +46,7 @@ type AdminClientProps = {
   supabaseQuotes: QuoteRecord[];
   supabaseEnabled: boolean;
   contentBlocks: AdminContentBlock[];
+  auditLog?: AuditEntry[];
 };
 
 function toDisplayOrder(o: LocalOrder) {
@@ -65,6 +67,7 @@ export function AdminClient({
   supabaseQuotes,
   supabaseEnabled,
   contentBlocks,
+  auditLog = [],
 }: AdminClientProps) {
   const t = useTranslations("admin");
   const tAccount = useTranslations("account");
@@ -198,6 +201,7 @@ export function AdminClient({
           </TabsTrigger>
           <TabsTrigger value="products">{t("products")}</TabsTrigger>
           <TabsTrigger value="content">{t("content")}</TabsTrigger>
+          <TabsTrigger value="audit">{t("audit")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="orders">
@@ -437,6 +441,46 @@ export function AdminClient({
             blocks={contentBlocks}
             supabaseEnabled={supabaseEnabled}
           />
+        </TabsContent>
+
+        <TabsContent value="audit">
+          <div className="glass rounded-3xl p-6 premium-shadow">
+            {auditLog.length === 0 ? (
+              <p className="py-8 text-center text-muted-foreground">
+                {t("auditEmpty")}
+              </p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("auditTime")}</TableHead>
+                    <TableHead>{t("auditActor")}</TableHead>
+                    <TableHead>{t("auditAction")}</TableHead>
+                    <TableHead>{t("auditEntity")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {auditLog.map((entry) => (
+                    <TableRow key={entry.id}>
+                      <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                        {new Date(entry.created_at).toLocaleString(localeStr)}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {entry.actor_email || "—"}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium">
+                        {entry.action}
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        {entry.entity_type}
+                        {entry.entity_id ? ` · ${entry.entity_id}` : ""}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

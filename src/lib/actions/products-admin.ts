@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { hasSupabaseAdmin } from "@/lib/supabase/config";
+import { recordAudit } from "@/lib/actions/audit";
 import type { PackagingType, SweetCompositionItem } from "@/types/database";
 
 export type ProductFormInput = {
@@ -75,6 +76,12 @@ export async function createProduct(input: ProductFormInput): Promise<{ ok: true
   revalidatePath("/uk/catalog");
   revalidatePath("/en/catalog");
   revalidatePath("/uk/admin/products");
+  await recordAudit({
+    action: "create",
+    entity_type: "product",
+    entity_id: id,
+    details: { title: input.title_uk },
+  });
   return { ok: true, id };
 }
 
@@ -124,6 +131,12 @@ export async function updateProduct(input: ProductFormInput): Promise<{ ok: true
   revalidatePath(`/uk/catalog/${input.id}`);
   revalidatePath(`/en/catalog/${input.id}`);
   revalidatePath("/uk/admin/products");
+  await recordAudit({
+    action: "update",
+    entity_type: "product",
+    entity_id: input.id,
+    details: { title: input.title_uk },
+  });
   return { ok: true };
 }
 
@@ -137,5 +150,6 @@ export async function deleteProduct(id: string): Promise<{ ok: true }> {
 
   revalidatePath("/uk/catalog");
   revalidatePath("/uk/admin/products");
+  await recordAudit({ action: "delete", entity_type: "product", entity_id: id });
   return { ok: true };
 }
