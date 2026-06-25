@@ -76,7 +76,7 @@ export function TestimonialsMarquee({
   return (
     <section className="relative overflow-hidden py-20 md:py-24">
       <SectionAmbient tone="white" blobs={false} />
-      <div className="relative mb-10 px-4 text-center">
+      <div className="relative z-[2] mb-10 px-4 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
           {label}
         </p>
@@ -85,12 +85,12 @@ export function TestimonialsMarquee({
         </h2>
       </div>
 
-      <div className="relative mb-12 border-y border-border/50 bg-cream/80 py-3 backdrop-blur-sm">
+      <div className="relative z-[2] mb-12 border-y border-border/50 bg-cream/80 py-3 backdrop-blur-sm">
         <MarqueeText items={brands} className="text-brand-blue/25" speed="slow" />
       </div>
 
       <div
-        className="relative flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6 md:snap-none"
+        className="relative z-[2] flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6 md:snap-none"
         role="list"
       >
         {items.map((review, i) => (

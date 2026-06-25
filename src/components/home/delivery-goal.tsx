@@ -63,7 +63,7 @@ export function DeliveryGoal() {
       className="relative overflow-hidden border-y border-border/40 py-16 md:py-24"
     >
       <SectionAmbient tone="cream" />
-      <div className="relative mx-auto max-w-7xl px-4">
+      <div className="relative z-[2] mx-auto max-w-7xl px-4">
         <header className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             {t("goalLabel")}

@@ -26,7 +26,7 @@ export function ProcessSection() {
     >
       <SectionAmbient tone="white" />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-24 md:py-32">
+      <div className="relative z-[2] mx-auto max-w-7xl px-4 py-24 md:py-32">
         <header className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             {t("featuresLabel")}

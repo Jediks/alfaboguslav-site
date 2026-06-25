@@ -98,7 +98,7 @@ export function B2bConfigurator({ products, pricingByProductId }: B2bConfigurato
     <section id="configurator" className="relative overflow-hidden py-16 md:py-28">
       <SectionAmbient tone="warm" />
 
-      <div className="relative mx-auto max-w-7xl px-4">
+      <div className="relative z-[2] mx-auto max-w-7xl px-4">
         <header className="mb-8 max-w-2xl md:mb-12">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             {t("configLabel")}
