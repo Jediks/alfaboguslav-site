@@ -4,7 +4,7 @@ import { useRef, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { HeroAmbience } from "./hero-ambience";
@@ -19,7 +19,6 @@ function pickLocalized(uk: string, en: string, locale: string) {
 }
 
 export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
-  const t = useTranslations("home");
   const locale = useLocale();
   const imageRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -149,18 +148,18 @@ export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
             transition={{ delay: 0.85 }}
             className="mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-8 md:mt-14 md:max-w-md md:gap-6"
           >
-            {[
-              { val: "30+", label: t("statsYears") },
-              { val: "500+", label: t("statsClients") },
-              { val: "98%", label: t("statsSatisfaction") },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className="font-display text-xl font-bold md:text-2xl">{s.val}</p>
-                <p className="mt-1 text-[10px] uppercase tracking-wider text-white/40 md:text-xs">
-                  {s.label}
-                </p>
-              </div>
-            ))}
+            {(block.stats?.length ? block.stats : DEFAULT_HERO_BLOCK.stats).map(
+              (s, i) => (
+                <div key={`${s.value}-${i}`}>
+                  <p className="font-display text-xl font-bold md:text-2xl">
+                    {s.value}
+                  </p>
+                  <p className="mt-1 text-[10px] uppercase tracking-wider text-white/40 md:text-xs">
+                    {pickLocalized(s.label_uk, s.label_en, locale)}
+                  </p>
+                </div>
+              )
+            )}
           </motion.div>
         </div>
 

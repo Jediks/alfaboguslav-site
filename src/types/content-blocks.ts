@@ -1,5 +1,11 @@
 export type ContentBlockKey = "hero" | "testimonials";
 
+export interface HeroStat {
+  value: string;
+  label_uk: string;
+  label_en: string;
+}
+
 export interface HeroBlockData {
   badge_uk: string;
   badge_en: string;
@@ -16,6 +22,7 @@ export interface HeroBlockData {
   image_url: string;
   vip_badge_uk: string;
   vip_badge_en: string;
+  stats: HeroStat[];
 }
 
 export interface TestimonialItem {
@@ -66,6 +73,19 @@ export const DEFAULT_HERO_BLOCK: HeroBlockData = {
   image_url: "/catalog/cutouts/hero-main.png?v=20260626e",
   vip_badge_uk: "Преміальні набори",
   vip_badge_en: "Premium sets",
+  stats: [
+    { value: "30+", label_uk: "років на ринку", label_en: "years on market" },
+    {
+      value: "500+",
+      label_uk: "корпоративних клієнтів",
+      label_en: "corporate clients",
+    },
+    {
+      value: "98%",
+      label_uk: "задоволених клієнтів",
+      label_en: "satisfied clients",
+    },
+  ],
 };
 
 export const DEFAULT_TESTIMONIALS_BLOCK: TestimonialsBlockData = {
