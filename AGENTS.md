@@ -36,6 +36,11 @@ Tailwind/shadcn, Supabase (Postgres/Auth/Storage), Zustand (cart), and next-intl
 
 - There is **no `npm run lint` script**. Run lint with `npx next lint`.
 - Build: `npm run build` (also typechecks; TypeScript is strict).
+- **Do NOT run `npm run build` while `npm run dev` is running** — they share the
+  `.next/` directory and the build corrupts the dev server's cache, producing
+  `Error: Invariant: missing bootstrap script` 500s on every route. If you hit this,
+  stop dev, `rm -rf .next`, and restart `npm run dev`. For a type-only check while dev
+  runs, use `npx tsc --noEmit` (it does not touch `.next`).
 - E2E: `npm run test:e2e` (or `npx playwright test`). Requires browsers once:
   `npx playwright install chromium`. The config (`playwright.config.ts`) auto-starts
   `npm run dev` and reuses an already-running server on port 3000.

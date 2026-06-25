@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseAdmin } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { logger } from "@/lib/logger";
+import { DRAFT_POSITION, PUBLISHED_POSITION } from "@/lib/data/content-blocks";
 import type {
   ContentBlockKey,
   HeroBlockData,
@@ -52,6 +53,93 @@ export async function upsertContentBlock(
     });
     return { ok: false, error: error.message };
   }
+
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+type ContentBlockData = HeroBlockData | TestimonialsBlockData;
+
+/**
+ * Save a working DRAFT (position 1, unpublished). The public site is unaffected.
+ */
+export async function saveContentBlockDraft(input: {
+  block_key: ContentBlockKey;
+  data: ContentBlockData;
+}): Promise<{ ok: boolean; error?: string }> {
+  try {
+    await requireAdmin();
+  } catch {
+    return { ok: false, error: "unauthorized" };
+  }
+  if (!hasSupabaseAdmin()) {
+    return { ok: false, error: "supabase_not_configured" };
+  }
+
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("content_blocks").upsert(
+    {
+      block_key: input.block_key,
+      position: DRAFT_POSITION,
+      is_published: false,
+      data: input.data as unknown,
+      updated_at: new Date().toISOString(),
+    } as never,
+    { onConflict: "block_key,position" }
+  );
+
+  if (error) {
+    logger.error("saveContentBlockDraft.failed", {
+      block_key: input.block_key,
+      error: error.message,
+    });
+    return { ok: false, error: error.message };
+  }
+  return { ok: true };
+}
+
+/**
+ * Publish content to the LIVE slot (position 0) and clear any pending draft.
+ */
+export async function publishContentBlock(input: {
+  block_key: ContentBlockKey;
+  data: ContentBlockData;
+}): Promise<{ ok: boolean; error?: string }> {
+  try {
+    await requireAdmin();
+  } catch {
+    return { ok: false, error: "unauthorized" };
+  }
+  if (!hasSupabaseAdmin()) {
+    return { ok: false, error: "supabase_not_configured" };
+  }
+
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("content_blocks").upsert(
+    {
+      block_key: input.block_key,
+      position: PUBLISHED_POSITION,
+      is_published: true,
+      data: input.data as unknown,
+      updated_at: new Date().toISOString(),
+    } as never,
+    { onConflict: "block_key,position" }
+  );
+
+  if (error) {
+    logger.error("publishContentBlock.failed", {
+      block_key: input.block_key,
+      error: error.message,
+    });
+    return { ok: false, error: error.message };
+  }
+
+  // Drop the now-consumed draft so preview matches the live version.
+  await supabase
+    .from("content_blocks")
+    .delete()
+    .eq("block_key", input.block_key)
+    .eq("position", DRAFT_POSITION);
 
   revalidatePath("/", "layout");
   return { ok: true };
