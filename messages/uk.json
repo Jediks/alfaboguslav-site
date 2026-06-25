@@ -423,6 +423,8 @@
       "totalOrders": "Усього замовлень",
       "topSet": "Топ-набір",
       "quotesThisWeek": "Запити (7 днів)",
+      "quoteConversionRate": "Конверсія quote → order",
+      "quotesConverted": "{converted} з {total} запитів",
       "units": "шт.",
       "noData": "Немає даних"
     },

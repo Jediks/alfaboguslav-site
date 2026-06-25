@@ -10,9 +10,16 @@ import {
   ArrowUpRight,
   TrendingDown,
   FileText,
+  Percent,
 } from "lucide-react";
 import { StatCard } from "@/components/ui/stat-card";
-import { computeAdminKpis, type KpiOrderInput } from "@/lib/data/admin-kpis";
+import {
+  computeAdminKpis,
+  computeQuoteConversion,
+  type KpiOrderInput,
+  type KpiOrderQuoteLinkInput,
+  type KpiQuoteInput,
+} from "@/lib/data/admin-kpis";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { Product } from "@/types/database";
@@ -20,15 +27,25 @@ import type { Product } from "@/types/database";
 type AdminKpiCardsProps = {
   orders: KpiOrderInput[];
   products: Product[];
-  quotesThisWeek?: number;
+  quotes?: KpiQuoteInput[];
+  orderQuoteLinks?: KpiOrderQuoteLinkInput[];
 };
 
-export function AdminKpiCards({ orders, products, quotesThisWeek }: AdminKpiCardsProps) {
+export function AdminKpiCards({
+  orders,
+  products,
+  quotes = [],
+  orderQuoteLinks = [],
+}: AdminKpiCardsProps) {
   const t = useTranslations("admin.kpi");
   const locale = useLocale();
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
 
   const kpis = useMemo(() => computeAdminKpis(orders), [orders]);
+  const quoteKpis = useMemo(
+    () => computeQuoteConversion(quotes, orderQuoteLinks),
+    [quotes, orderQuoteLinks]
+  );
   const productById = useMemo(
     () => new Map(products.map((p) => [p.id, p])),
     [products]
@@ -45,9 +62,10 @@ export function AdminKpiCards({ orders, products, quotesThisWeek }: AdminKpiCard
 
   const delta = kpis.ordersDeltaPct;
   const deltaPositive = delta !== null && delta >= 0;
+  const showQuoteKpis = quotes.length > 0 || orderQuoteLinks.length > 0;
 
   return (
-    <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       <StatCard
         label={t("ordersThisWeek")}
         value={kpis.ordersThisWeek}
@@ -88,14 +106,36 @@ export function AdminKpiCards({ orders, products, quotesThisWeek }: AdminKpiCard
         value={<span className="text-base font-semibold leading-snug">{topProductLabel}</span>}
         icon={Award}
       />
-      {typeof quotesThisWeek === "number" && (
-        <StatCard
-          label={t("quotesThisWeek")}
-          value={quotesThisWeek}
-          icon={FileText}
-          hero
-        />
-      )}
+      {showQuoteKpis ? (
+        <>
+          <StatCard
+            label={t("quotesThisWeek")}
+            value={quoteKpis.quotesThisWeek}
+            icon={FileText}
+            hero
+          />
+          <StatCard
+            label={t("quoteConversionRate")}
+            value={
+              quoteKpis.conversionRatePct !== null
+                ? `${quoteKpis.conversionRatePct}%`
+                : t("noData")
+            }
+            icon={Percent}
+            hero
+            hint={
+              quoteKpis.totalQuotes > 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  {t("quotesConverted", {
+                    converted: quoteKpis.convertedQuotes,
+                    total: quoteKpis.totalQuotes,
+                  })}
+                </p>
+              ) : undefined
+            }
+          />
+        </>
+      ) : null}
     </div>
   );
 }

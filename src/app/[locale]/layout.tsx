@@ -7,6 +7,7 @@ import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { getSiteUrl } from "@/lib/site-url";
 import { SiteShell } from "@/components/layout/site-shell";
+import { SiteAnalytics } from "@/components/analytics/site-analytics";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${inter.variable} ${playfair.variable}`}>
       <body className="min-h-screen bg-cream font-sans antialiased">
+        <SiteAnalytics />
         <NextIntlClientProvider messages={messages}>
           <SiteShell>{children}</SiteShell>
           <Toaster />

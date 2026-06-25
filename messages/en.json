@@ -423,6 +423,8 @@
       "totalOrders": "Total orders",
       "topSet": "Top set",
       "quotesThisWeek": "Quotes (7 days)",
+      "quoteConversionRate": "Quote → order conversion",
+      "quotesConverted": "{converted} of {total} quotes",
       "units": "pcs",
       "noData": "No data"
     },

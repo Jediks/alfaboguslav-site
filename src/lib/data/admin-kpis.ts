@@ -4,10 +4,21 @@
  * `OrderRecord` and local `LocalOrder` objects.
  */
 
+import { parseQuoteRefFromDelivery } from "@/lib/quote-ref";
+
 export interface KpiOrderInput {
   created_at: string;
   total_estimated_price: number;
   items: { productId: string; quantity: number }[];
+}
+
+export interface KpiQuoteInput {
+  referenceId: string;
+  created_at: string;
+}
+
+export interface KpiOrderQuoteLinkInput {
+  delivery_address: string;
 }
 
 export interface TopProduct {
@@ -22,6 +33,13 @@ export interface AdminKpis {
   ordersDeltaPct: number | null;
   revenueThisWeek: number;
   topProducts: TopProduct[];
+}
+
+export interface QuoteConversionKpis {
+  totalQuotes: number;
+  convertedQuotes: number;
+  conversionRatePct: number | null;
+  quotesThisWeek: number;
 }
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -82,5 +100,43 @@ export function computeAdminKpis(
     ordersDeltaPct,
     revenueThisWeek,
     topProducts,
+  };
+}
+
+export function computeQuoteConversion(
+  quotes: KpiQuoteInput[],
+  orders: KpiOrderQuoteLinkInput[],
+  now: number = Date.now()
+): QuoteConversionKpis {
+  const weekAgo = now - WEEK_MS;
+  const convertedRefs = new Set<string>();
+
+  for (const order of orders) {
+    const ref = parseQuoteRefFromDelivery(order.delivery_address);
+    if (ref) convertedRefs.add(ref.toUpperCase());
+  }
+
+  let convertedQuotes = 0;
+  let quotesThisWeek = 0;
+
+  for (const quote of quotes) {
+    const ref = quote.referenceId.toUpperCase();
+    const isConverted = convertedRefs.has(ref);
+    if (isConverted) convertedQuotes += 1;
+
+    const created = parseTime(quote.created_at);
+    if (created >= weekAgo && created <= now) {
+      quotesThisWeek += 1;
+    }
+  }
+
+  const conversionRatePct =
+    quotes.length > 0 ? Math.round((convertedQuotes / quotes.length) * 100) : null;
+
+  return {
+    totalQuotes: quotes.length,
+    convertedQuotes,
+    conversionRatePct,
+    quotesThisWeek,
   };
 }

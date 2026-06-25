@@ -37,7 +37,7 @@ import { parseQuoteRefFromDelivery, stripQuoteRefLine } from "@/lib/quote-ref";
 import type { OrderStatus, PricingTier, Product } from "@/types/database";
 import type { AdminContentBlock } from "@/lib/data/content-blocks";
 import type { AuditEntry } from "@/lib/data/audit";
-import type { KpiOrderInput } from "@/lib/data/admin-kpis";
+import type { KpiOrderInput, KpiOrderQuoteLinkInput, KpiQuoteInput } from "@/lib/data/admin-kpis";
 import { ContentBlocksEditor } from "./content-blocks-editor";
 import { AdminKpiCards } from "./admin-kpi-cards";
 
@@ -124,13 +124,25 @@ export function AdminClient({
     [supabaseEnabled, supabaseOrders, localOrders]
   );
 
-  const quotesThisWeek = useMemo(() => {
-    if (!supabaseEnabled) return undefined;
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    return supabaseQuotes.filter(
-      (q) => new Date(q.created_at).getTime() >= weekAgo
-    ).length;
-  }, [supabaseEnabled, supabaseQuotes]);
+  const kpiQuotes = useMemo<KpiQuoteInput[]>(() => {
+    if (supabaseEnabled) {
+      return supabaseQuotes.map((quote) => ({
+        referenceId: quote.referenceId,
+        created_at: quote.created_at,
+      }));
+    }
+    return localQuotes.map((quote) => ({
+      referenceId: quote.id,
+      created_at: quote.created_at,
+    }));
+  }, [supabaseEnabled, supabaseQuotes, localQuotes]);
+
+  const kpiOrderQuoteLinks = useMemo<KpiOrderQuoteLinkInput[]>(
+    () => (supabaseEnabled ? supabaseOrders : localOrders).map((order) => ({
+      delivery_address: order.delivery_address,
+    })),
+    [supabaseEnabled, supabaseOrders, localOrders]
+  );
 
   const quotes = useMemo(() => {
     if (supabaseEnabled) {
@@ -233,7 +245,8 @@ export function AdminClient({
       <AdminKpiCards
         orders={kpiOrders}
         products={products}
-        quotesThisWeek={quotesThisWeek}
+        quotes={kpiQuotes}
+        orderQuoteLinks={kpiOrderQuoteLinks}
       />
 
       <div className="mb-6 flex flex-wrap gap-2">

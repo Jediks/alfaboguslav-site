@@ -11,6 +11,7 @@ import { Slider, readSliderValue } from "@/components/ui/slider";
 import type { PricingTier } from "@/types/database";
 import { getPriceForQuantity, formatPrice } from "@/lib/pricing";
 import { useCartStore } from "@/stores/cart-store";
+import { trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 type PricingCalculatorProps = {
@@ -43,6 +44,7 @@ export function PricingCalculator({
 
   const handleAdd = () => {
     addItem({ productId, quantity, brandingLogoUrl });
+    trackEvent("add_to_cart", { product_id: productId, quantity });
     toast.success(tCart("title"), {
       description: `${quantity} ${t("addToCart").toLowerCase()}`,
     });

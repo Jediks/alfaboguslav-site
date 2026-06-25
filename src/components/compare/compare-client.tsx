@@ -20,6 +20,7 @@ import { useCompareStore } from "@/stores/compare-store";
 import { useCartStore } from "@/stores/cart-store";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
+import { trackEvent } from "@/lib/analytics/track";
 import type { PricingTier, Product } from "@/types/database";
 
 type CompareClientProps = {
@@ -41,6 +42,7 @@ export function CompareClient({ products, pricingByProductId }: CompareClientPro
   const addToCart = (product: Product) => {
     const minQty = pricingByProductId[product.id]?.[0]?.min_quantity ?? 1;
     addItem({ productId: product.id, quantity: minQty });
+    trackEvent("add_to_cart", { product_id: product.id, quantity: minQty, source: "compare" });
     toast.success(t("addedToCart", { name: getProductTitle(product, locale) }));
   };
 

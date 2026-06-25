@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQuoteStore } from "@/stores/quote-store";
+import { trackEvent } from "@/lib/analytics/track";
 import { SparkleBurst } from "./sparkle-burst";
 import { QuoteNextSteps } from "./quote-next-steps";
 
@@ -69,6 +70,7 @@ export function QuoteRequestForm() {
 
     setSent(true);
     setSubmitting(false);
+    trackEvent("quote_submit", { reference_id: id, persisted });
     toast.success(t("quoteSuccessTitle"), { description: t("quoteSuccessDesc") });
   };
 
