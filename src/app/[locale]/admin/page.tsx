@@ -23,7 +23,7 @@ export default async function AdminPage({ params: { locale } }: AdminPageProps) 
       supabaseEnabled ? fetchOrdersAdmin() : Promise.resolve([]),
       supabaseEnabled ? fetchQuotesAdmin() : Promise.resolve([]),
       getAdminContentBlocks(),
-      supabaseEnabled ? getAuditLog() : Promise.resolve([]),
+      supabaseEnabled ? getAuditLog(100) : Promise.resolve([]),
     ]);
 
   return (

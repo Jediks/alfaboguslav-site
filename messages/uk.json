@@ -297,6 +297,9 @@
     "auditActor": "Користувач",
     "auditAction": "Дія",
     "auditEntity": "Обʼєкт",
+    "auditAllTypes": "Усі типи",
+    "auditCount": "Записів: {count}",
+    "auditShowMore": "Показати ще",
     "kpi": {
       "ordersThisWeek": "Замовлення (7 днів)",
       "vsPriorWeek": "проти попередніх 7 днів",
