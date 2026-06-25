@@ -5,7 +5,7 @@ import { Gift } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { QuoteRequestForm } from "./quote-request-form";
 
-export function CtaSection() {
+export function CtaSection({ remotePersistenceEnabled = false }: { remotePersistenceEnabled?: boolean }) {
   const t = useTranslations("home");
 
   return (
@@ -29,7 +29,7 @@ export function CtaSection() {
           <p className="mx-auto mt-6 max-w-xl text-lg text-white/65">
             {t("ctaSubtitle")}
           </p>
-          <QuoteRequestForm />
+          <QuoteRequestForm remotePersistenceEnabled={remotePersistenceEnabled} />
         </motion.div>
       </div>
     </section>

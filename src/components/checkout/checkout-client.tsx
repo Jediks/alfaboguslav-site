@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCartStore } from "@/stores/cart-store";
 import { useQuotePrefillStore } from "@/stores/quote-prefill-store";
 import { getPriceForQuantity, formatPrice } from "@/lib/pricing";
+import { trackEvent } from "@/lib/analytics/track";
 import type { PaymentMethod, PricingTier } from "@/types/database";
 
 type CheckoutClientProps = {
@@ -24,9 +25,14 @@ type CheckoutClientProps = {
     contactEmail?: string;
     contactPhone?: string;
   };
+  remotePersistenceEnabled?: boolean;
 };
 
-export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutClientProps) {
+export function CheckoutClient({
+  pricingByProductId,
+  profilePrefill,
+  remotePersistenceEnabled = false,
+}: CheckoutClientProps) {
   const t = useTranslations("checkout");
   const tCart = useTranslations("cart");
   const locale = useLocale();
@@ -92,6 +98,7 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
     const orderId = `ORD-${Date.now().toString(36).toUpperCase()}`;
 
     let persisted: "supabase" | "local" = "local";
+    let submitFailed = false;
     try {
       const { submitOrder } = await import("@/lib/actions/orders");
       const result = await submitOrder({
@@ -122,10 +129,21 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
         });
         return;
       }
+      submitFailed = true;
       console.error("[checkout] submitOrder failed", err);
     }
 
-    if (persisted !== "supabase") {
+    if (remotePersistenceEnabled) {
+      if (persisted !== "supabase") {
+        setSubmitting(false);
+        toast.error(t("submitFailed"));
+        return;
+      }
+    } else if (submitFailed) {
+      setSubmitting(false);
+      toast.error(t("submitFailed"));
+      return;
+    } else if (persisted !== "supabase") {
       addOrder({
         id: orderId,
         status: "pending",
@@ -142,8 +160,10 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
       });
     }
 
+    trackEvent("begin_checkout", { order_id: orderId, total });
     clearCart();
     clearQuotePrefill();
+    setSubmitting(false);
     router.push(`/thank-you?order=${orderId}`);
   };
 

@@ -13,7 +13,11 @@ import { trackEvent } from "@/lib/analytics/track";
 import { SparkleBurst } from "./sparkle-burst";
 import { QuoteNextSteps } from "./quote-next-steps";
 
-export function QuoteRequestForm() {
+export function QuoteRequestForm({
+  remotePersistenceEnabled = false,
+}: {
+  remotePersistenceEnabled?: boolean;
+}) {
   const t = useTranslations("home");
   const addQuote = useQuoteStore((s) => s.addQuote);
   const [company, setCompany] = useState("");
@@ -32,6 +36,7 @@ export function QuoteRequestForm() {
     const id = `Q-${Date.now().toString(36).toUpperCase()}`;
 
     let persisted: "supabase" | "local" = "local";
+    let submitFailed = false;
     try {
       const { submitQuote } = await import("@/lib/actions/quotes");
       const result = await submitQuote({
@@ -53,10 +58,21 @@ export function QuoteRequestForm() {
         });
         return;
       }
+      submitFailed = true;
       console.error("[quote] submitQuote failed", err);
     }
 
-    if (persisted !== "supabase") {
+    if (remotePersistenceEnabled) {
+      if (persisted !== "supabase") {
+        setSubmitting(false);
+        toast.error(t("quoteSubmitFailed"));
+        return;
+      }
+    } else if (submitFailed) {
+      setSubmitting(false);
+      toast.error(t("quoteSubmitFailed"));
+      return;
+    } else if (persisted !== "supabase") {
       addQuote({
         id,
         company_name: company.trim(),

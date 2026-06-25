@@ -167,7 +167,8 @@
     "quoteStep3Title": "Замовлення",
     "quoteStep3Desc": "Після погодження — рахунок, виробництво та доставка по Україні.",
     "quoteRateLimitTitle": "Забагато спроб",
-    "quoteRateLimitDescription": "Спробуйте ще раз через {seconds} с."
+    "quoteRateLimitDescription": "Спробуйте ще раз через {seconds} с.",
+    "quoteSubmitFailed": "Не вдалося надіслати заявку. Спробуйте пізніше."
   },
   "catalog": {
     "label": "B2B Маркетплейс",
@@ -293,7 +294,8 @@
     "submit": "Підтвердити замовлення",
     "managerNotice": "Після оформлення з вами зв'яжеться менеджер для уточнення деталей",
     "rateLimitTitle": "Забагато спроб",
-    "rateLimitDescription": "Спробуйте ще раз через {seconds} с."
+    "rateLimitDescription": "Спробуйте ще раз через {seconds} с.",
+    "submitFailed": "Не вдалося оформити замовлення. Спробуйте пізніше."
   },
   "thankYou": {
     "title": "Дякуємо за замовлення!",

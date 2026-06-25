@@ -12,6 +12,7 @@ import { DeliveryGoal } from "@/components/home/delivery-goal";
 import { TestimonialsMarquee } from "@/components/home/testimonials-marquee";
 import { CtaSection } from "@/components/home/cta-section";
 import type { PricingTier } from "@/types/database";
+import { hasSupabaseAdmin } from "@/lib/supabase/config";
 
 type HomePageProps = {
   params: { locale: string };
@@ -49,7 +50,7 @@ export default async function HomePage({ params: { locale } }: HomePageProps) {
       <ProcessSection />
       <DeliveryGoal />
       <TestimonialsMarquee block={testimonialsBlock} />
-      <CtaSection />
+      <CtaSection remotePersistenceEnabled={hasSupabaseAdmin()} />
     </>
   );
 }

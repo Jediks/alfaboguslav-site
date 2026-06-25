@@ -3,7 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { CheckoutClient } from "@/components/checkout/checkout-client";
 import { getPricingTiers, getProducts } from "@/lib/data/products";
 import { getPageMetadata } from "@/lib/metadata/get-page-metadata";
-import { hasSupabaseEnv } from "@/lib/supabase/config";
+import { hasSupabaseAdmin, hasSupabaseEnv } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import type { PricingTier } from "@/types/database";
 
@@ -61,5 +61,11 @@ export default async function CheckoutPage({ params: { locale } }: CheckoutPageP
     }
   }
 
-  return <CheckoutClient pricingByProductId={pricingByProductId} profilePrefill={profilePrefill} />;
+  return (
+    <CheckoutClient
+      pricingByProductId={pricingByProductId}
+      profilePrefill={profilePrefill}
+      remotePersistenceEnabled={hasSupabaseAdmin()}
+    />
+  );
 }

@@ -14,6 +14,7 @@ export type BuildPageMetadataOptions = {
   description: string;
   noIndex?: boolean;
   absoluteTitle?: boolean;
+  image?: string;
 };
 
 function isLocale(value: string): value is Locale {
@@ -27,6 +28,7 @@ export function buildPageMetadata({
   description,
   noIndex = false,
   absoluteTitle = false,
+  image,
 }: BuildPageMetadataOptions): Metadata {
   const siteUrl = getSiteUrl();
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -40,6 +42,8 @@ export function buildPageMetadata({
   const alternateLocales = routing.locales
     .filter((loc) => loc !== locale && isLocale(loc))
     .map((loc) => OPEN_GRAPH_LOCALE[loc]);
+
+  const ogImages = image ? [{ url: image, alt: title }] : undefined;
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
@@ -56,11 +60,13 @@ export function buildPageMetadata({
       locale: isLocale(locale) ? OPEN_GRAPH_LOCALE[locale] : locale,
       alternateLocale: alternateLocales,
       type: "website",
+      images: ogImages,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ogImages?.map((entry) => entry.url),
     },
     robots: noIndex
       ? { index: false, follow: false }

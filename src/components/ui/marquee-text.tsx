@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/motion/use-reduced-motion";
 
 type MarqueeTextProps = {
   items: string[];
@@ -15,8 +16,26 @@ export function MarqueeText({
   className,
   reverse = false,
 }: MarqueeTextProps) {
+  const reduceMotion = useReducedMotion();
   const duration = { slow: "50s", normal: "32s", fast: "22s" }[speed];
   const doubled = [...items, ...items];
+
+  if (reduceMotion) {
+    return (
+      <div className={cn("overflow-hidden", className)}>
+        <div className="flex h-8 flex-wrap items-center justify-center gap-x-6 gap-y-2 md:h-9">
+          {items.map((item) => (
+            <span
+              key={item}
+              className="text-xs font-medium uppercase tracking-[0.14em] md:text-sm"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("overflow-hidden", className)} aria-hidden>

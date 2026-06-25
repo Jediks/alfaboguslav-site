@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { getProductById, getPricingTiers, getProducts } from "@/lib/data/products";
 import { getProductTitle, getProductDesc } from "@/lib/data/product-utils";
 import { buildPageMetadata } from "@/lib/metadata/build-page-metadata";
+import { toAbsoluteAssetUrl } from "@/lib/site-url";
 import { ProductDetailClient } from "@/components/product/product-detail-client";
 
 type ProductPageProps = {
@@ -33,6 +34,7 @@ export async function generateMetadata({
     path: `/catalog/${id}`,
     title: t("productTitle", { name }),
     description: t("productDescription", { description }),
+    image: product.images[0] ? toAbsoluteAssetUrl(product.images[0]) : undefined,
   });
 }
 

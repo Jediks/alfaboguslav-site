@@ -167,7 +167,8 @@
     "quoteStep3Title": "Order",
     "quoteStep3Desc": "After approval — invoice, production, and delivery across Ukraine.",
     "quoteRateLimitTitle": "Too many attempts",
-    "quoteRateLimitDescription": "Please try again in {seconds}s."
+    "quoteRateLimitDescription": "Please try again in {seconds}s.",
+    "quoteSubmitFailed": "Could not send your request. Please try again later."
   },
   "catalog": {
     "compare": {
@@ -293,7 +294,8 @@
     "submit": "Confirm order",
     "managerNotice": "After submission, a manager will contact you to confirm details",
     "rateLimitTitle": "Too many attempts",
-    "rateLimitDescription": "Please try again in {seconds}s."
+    "rateLimitDescription": "Please try again in {seconds}s.",
+    "submitFailed": "Could not place your order. Please try again later."
   },
   "thankYou": {
     "title": "Thank you for your order!",

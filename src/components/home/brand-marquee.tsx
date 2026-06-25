@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { getBrandMonogram } from "@/lib/utils/initials";
+import { useReducedMotion } from "@/lib/motion/use-reduced-motion";
 
 type BrandMarqueeProps = {
   brands: string[];
@@ -20,7 +21,20 @@ function BrandChip({ name }: { name: string }) {
 }
 
 export function BrandMarquee({ brands, className }: BrandMarqueeProps) {
+  const reduceMotion = useReducedMotion();
   const doubled = [...brands, ...brands];
+
+  if (reduceMotion) {
+    return (
+      <div className={cn("overflow-hidden", className)}>
+        <div className="flex flex-wrap items-center justify-center gap-3 px-4 py-1">
+          {brands.map((brand) => (
+            <BrandChip key={brand} name={brand} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("overflow-hidden", className)}>
