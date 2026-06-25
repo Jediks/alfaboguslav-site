@@ -8,13 +8,14 @@ test.describe("Home page", () => {
     await expect(page.locator(".showcase-rail")).toBeVisible();
   });
 
-  test("why us section loads with detail panel", async ({ page }) => {
+  test("why us sticky content switch", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/uk", { waitUntil: "networkidle" });
     await page.getByTestId("why-us-section").scrollIntoViewIfNeeded();
-    await expect(page.getByTestId("why-us-detail")).toBeVisible();
-    await expect(page.getByRole("tab", { name: /персоналізація/i })).toBeVisible();
-    await page.getByRole("tab", { name: /логістика/i }).click();
-    await expect(page.getByRole("tabpanel")).toContainText(/логістика/i);
+    await expect(page.getByTestId("why-us-sticky")).toBeVisible();
+    await expect(page.getByTestId("why-us-detail")).toContainText(/персоналізація/i);
+    await page.getByTestId("why-us-panel-2").scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("why-us-detail")).toContainText(/якість/i);
   });
 
   test("delivery goal stats and configurator preview", async ({ page }) => {

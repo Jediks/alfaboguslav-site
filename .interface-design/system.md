@@ -102,8 +102,9 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 - Subtitle: 14px muted / max-w-xl / left-aligned (not centered)
 
 ### Why-us tab panel
-- Left: step tabs with primary left border when active
-- Right: `surface-panel` detail with watermark number, bottom progress bar
+- Desktop: **sticky content switch** — left sticky copy updates via Intersection Observer as right visual panels scroll
+- Mobile / reduced motion: stacked cards with tap-to-expand text
+- Visual panels: brand gradient + icon staging (no stock photos required)
 
 ### Stat strip (DeliveryGoal)
 - Reuse `StatCard` in 3-column grid on cream canvas
