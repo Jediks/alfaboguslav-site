@@ -10,6 +10,7 @@ import type { OrderRecord } from "@/lib/actions/orders";
 import type { Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
+import { parseQuoteRefFromDelivery, stripQuoteRefLine } from "@/lib/quote-ref";
 import { useCartStore } from "@/stores/cart-store";
 
 type AdminOrderDetailProps = {
@@ -74,6 +75,8 @@ export function AdminOrderDetail({
 
   const id = order.referenceId;
   const items = order.items;
+  const linkedQuoteRef = parseQuoteRefFromDelivery(order.delivery_address);
+  const deliveryNotes = stripQuoteRefLine(order.delivery_address);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
@@ -91,6 +94,11 @@ export function AdminOrderDetail({
             {t("orderDetails")}
           </p>
           <h1 className="mt-2 font-display text-3xl font-bold text-brand-blue">{id}</h1>
+          {linkedQuoteRef ? (
+            <Badge variant="secondary" className="mt-2">
+              {t("linkedQuote", { reference: linkedQuoteRef })}
+            </Badge>
+          ) : null}
         </div>
         <div className="flex items-center gap-3">
           {showInvoiceLink && (
@@ -145,7 +153,7 @@ export function AdminOrderDetail({
 
         <div className="glass rounded-3xl p-6 premium-shadow">
           <h2 className="mb-4 font-display font-semibold text-brand-blue">{tCheckout("delivery")}</h2>
-          <p className="text-sm leading-relaxed">{order.delivery_address}</p>
+          <p className="text-sm leading-relaxed">{deliveryNotes || order.delivery_address}</p>
           <p className="mt-4 text-sm text-muted-foreground">
             {tCheckout("payment")}:{" "}
             {order.payment_method === "invoice"

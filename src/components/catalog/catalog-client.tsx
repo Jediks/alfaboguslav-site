@@ -17,6 +17,7 @@ import { ProductCard } from "./product-card";
 import { CompareBar } from "./compare-bar";
 import { RecentlyViewed } from "./recently-viewed";
 import { QuoteConversionBanner } from "./quote-conversion-banner";
+import { CatalogTagFilters } from "./catalog-tag-filters";
 import {
   CatalogFiltersPanel,
   filterProducts,
@@ -39,9 +40,13 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
   );
   const [sort, setSort] = useState<SortKey>("featured");
   const [searchQuery, setSearchQuery] = useState("");
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
 
   const filteredBase = useMemo(() => {
     let list = filterProducts(products, filters, pricingByProductId);
+    if (tagFilter) {
+      list = list.filter((product) => product.b2b_tags.includes(tagFilter));
+    }
     const query = searchQuery.trim().toLowerCase();
     if (!query) return list;
     return list.filter((product) => {
@@ -49,7 +54,7 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
       if (title.includes(query) || product.id.toLowerCase().includes(query)) return true;
       return product.b2b_tags.some((tag) => tag.toLowerCase().includes(query));
     });
-  }, [products, filters, pricingByProductId, searchQuery, locale]);
+  }, [products, filters, pricingByProductId, searchQuery, tagFilter, locale]);
 
   const filtered = useMemo(() => {
     const minPrice = (id: string) => pricingByProductId[id]?.[0]?.price ?? 0;
@@ -92,6 +97,12 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
 
         <div>
           <QuoteConversionBanner />
+          <CatalogTagFilters
+            products={products}
+            activeTag={tagFilter}
+            onTagChange={setTagFilter}
+            allLabel={t("tagFilters.all")}
+          />
           <RecentlyViewed
             products={products}
             pricingByProductId={pricingByProductId}

@@ -122,6 +122,9 @@
     "recentlyViewed": "Recently viewed",
     "searchLabel": "Search sets",
     "searchPlaceholder": "Name, SKU or tag…",
+    "tagFilters": {
+      "all": "All tags"
+    },
     "sort": {
       "label": "Sort",
       "featured": "Featured",
@@ -275,6 +278,7 @@
     "invoiceUnitPrice": "Unit price",
     "invoiceLineTotal": "Line total",
     "invoicePrintHint": "Use browser print to export",
+    "invoiceQuoteRef": "Quote request",
     "status": {
       "pending": "Pending",
       "confirmed": "Confirmed",
@@ -289,6 +293,7 @@
     "addProduct": "Add product",
     "manageProducts": "Manage products",
     "exportOrdersCsv": "Export orders CSV",
+    "exportQuotesCsv": "Export quotes CSV",
     "orderSearchPlaceholder": "Search by company or reference",
     "allStatuses": "All statuses",
     "orderDetails": "Order details",
@@ -315,6 +320,7 @@
     "orderNotFound": "Order not found",
     "backToAdmin": "Back to admin",
     "orderItems": "Order items",
+    "linkedQuote": "Quote {reference}",
     "content": "Content",
     "audit": "Audit log",
     "auditEmpty": "Audit log is empty",

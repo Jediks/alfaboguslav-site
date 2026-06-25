@@ -7,6 +7,7 @@ import { getProductTitle } from "@/lib/data/product-utils";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseEnv } from "@/lib/supabase/config";
 import { formatPrice } from "@/lib/pricing";
+import { parseQuoteRefFromDelivery, stripQuoteRefLine } from "@/lib/quote-ref";
 
 type InvoicePageProps = {
   params: { locale: string; id: string };
@@ -34,6 +35,9 @@ export default async function AccountInvoicePage({ params: { locale, id } }: Inv
     notFound();
   }
 
+  const linkedQuoteRef = parseQuoteRefFromDelivery(order.delivery_address);
+  const deliveryNotes = stripQuoteRefLine(order.delivery_address);
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 print:px-0 print:py-0">
       <div className="mb-6 flex items-center justify-between print:hidden">
@@ -54,6 +58,11 @@ export default async function AccountInvoicePage({ params: { locale, id } }: Inv
           <p className="mt-1 text-sm text-neutral-600">
             {t("invoiceDate")}: {new Date(order.created_at).toLocaleDateString(localeStr)}
           </p>
+          {linkedQuoteRef ? (
+            <p className="mt-1 text-sm text-neutral-600">
+              {t("invoiceQuoteRef")}: <span className="font-mono">{linkedQuoteRef}</span>
+            </p>
+          ) : null}
         </header>
 
         <div className="mb-6 grid gap-4 sm:grid-cols-2">
@@ -70,7 +79,7 @@ export default async function AccountInvoicePage({ params: { locale, id } }: Inv
             <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-600">
               {t("invoiceDelivery")}
             </h2>
-            <p className="mt-2 whitespace-pre-line text-sm">{order.delivery_address || "-"}</p>
+            <p className="mt-2 whitespace-pre-line text-sm">{deliveryNotes || order.delivery_address || "-"}</p>
           </div>
         </div>
 

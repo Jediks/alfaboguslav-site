@@ -122,6 +122,9 @@
     "recentlyViewed": "Нещодавно переглянуті",
     "searchLabel": "Пошук наборів",
     "searchPlaceholder": "Назва, артикул або тег…",
+    "tagFilters": {
+      "all": "Усі теги"
+    },
     "sort": {
       "label": "Сортування",
       "featured": "Рекомендовані",
@@ -275,6 +278,7 @@
     "invoiceUnitPrice": "Ціна за од.",
     "invoiceLineTotal": "Сума",
     "invoicePrintHint": "Скористайтесь друком у браузері",
+    "invoiceQuoteRef": "Запит на прорахунок",
     "status": {
       "pending": "Очікує",
       "confirmed": "Підтверджено",
@@ -289,6 +293,7 @@
     "addProduct": "Додати товар",
     "manageProducts": "Керувати товарами",
     "exportOrdersCsv": "Експортувати CSV замовлень",
+    "exportQuotesCsv": "Експортувати CSV запитів",
     "orderSearchPlaceholder": "Пошук за компанією або референсом",
     "allStatuses": "Усі статуси",
     "orderDetails": "Деталі замовлення",
@@ -315,6 +320,7 @@
     "orderNotFound": "Замовлення не знайдено",
     "backToAdmin": "Назад до адмінки",
     "orderItems": "Позиції замовлення",
+    "linkedQuote": "Запит {reference}",
     "content": "Контент",
     "audit": "Журнал",
     "auditEmpty": "Журнал змін порожній",

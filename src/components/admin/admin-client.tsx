@@ -251,6 +251,13 @@ export function AdminClient({
             </Button>
           </a>
         )}
+        {supabaseEnabled && (
+          <a href="/api/admin/export-quotes">
+            <Button size="sm" variant="outline">
+              {t("exportQuotesCsv")}
+            </Button>
+          </a>
+        )}
       </div>
 
       <Tabs defaultValue="orders">
@@ -374,6 +381,12 @@ export function AdminClient({
             {quotes.length === 0 ? (
               <p className="py-8 text-center text-muted-foreground">{t("noQuotes")}</p>
             ) : (
+              <>
+                <div className="mb-4 flex justify-end">
+                  <a href="/api/admin/export-quotes" className="inline-flex">
+                    <Button variant="outline">{t("exportQuotesCsv")}</Button>
+                  </a>
+                </div>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -464,6 +477,7 @@ export function AdminClient({
                   ))}
                 </TableBody>
               </Table>
+              </>
             )}
           </div>
         </TabsContent>
