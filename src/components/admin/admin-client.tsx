@@ -33,7 +33,9 @@ import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus, PricingTier, Product } from "@/types/database";
 import type { AdminContentBlock } from "@/lib/data/content-blocks";
+import type { KpiOrderInput } from "@/lib/data/admin-kpis";
 import { ContentBlocksEditor } from "./content-blocks-editor";
+import { AdminKpiCards } from "./admin-kpi-cards";
 
 type AdminClientProps = {
   products: Product[];
@@ -92,6 +94,11 @@ export function AdminClient({
     }
     return localOrders.map(toDisplayOrder);
   }, [supabaseEnabled, supabaseOrders, localOrders]);
+
+  const kpiOrders = useMemo<KpiOrderInput[]>(
+    () => (supabaseEnabled ? supabaseOrders : localOrders),
+    [supabaseEnabled, supabaseOrders, localOrders]
+  );
 
   const quotes = useMemo(() => {
     if (supabaseEnabled) {
@@ -162,6 +169,8 @@ export function AdminClient({
           </Badge>
         )}
       </div>
+
+      <AdminKpiCards orders={kpiOrders} products={products} />
 
       <Tabs defaultValue="orders">
         <TabsList className="mb-6">
