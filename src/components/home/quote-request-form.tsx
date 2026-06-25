@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQuoteStore } from "@/stores/quote-store";
 import { SparkleBurst } from "./sparkle-burst";
+import { QuoteNextSteps } from "./quote-next-steps";
 
 export function QuoteRequestForm() {
   const t = useTranslations("home");
@@ -81,6 +82,9 @@ export function QuoteRequestForm() {
         <SparkleBurst active />
         <p className="font-display text-xl font-semibold text-white">{t("quoteSuccessTitle")}</p>
         <p className="mt-2 text-sm text-white/65">{t("quoteSuccessDesc")}</p>
+        <div className="mt-6">
+          <QuoteNextSteps />
+        </div>
       </div>
     );
   }
@@ -166,6 +170,7 @@ export function QuoteRequestForm() {
         <Send className="h-4 w-4" />
         {t("quoteSubmit")}
       </Button>
+      <QuoteNextSteps />
     </form>
   );
 }

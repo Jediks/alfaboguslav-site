@@ -11,13 +11,14 @@ import type {
   ContentBlockKey,
   HeroBlockData,
   TestimonialsBlockData,
+  AboutBlockData,
 } from "@/types/content-blocks";
 
 type UpsertInput = {
   block_key: ContentBlockKey;
   position?: number;
   is_published?: boolean;
-  data: HeroBlockData | TestimonialsBlockData;
+  data: HeroBlockData | TestimonialsBlockData | AboutBlockData;
 };
 
 export async function upsertContentBlock(
@@ -59,7 +60,7 @@ export async function upsertContentBlock(
   return { ok: true };
 }
 
-type ContentBlockData = HeroBlockData | TestimonialsBlockData;
+type ContentBlockData = HeroBlockData | TestimonialsBlockData | AboutBlockData;
 
 /**
  * Save a working DRAFT (position 1, unpublished). The public site is unaffected.

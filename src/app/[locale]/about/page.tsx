@@ -6,6 +6,7 @@ import { MarketingPageShell } from "@/components/layout/marketing-page-shell";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { getPageMetadata } from "@/lib/metadata/get-page-metadata";
+import { getAboutBlock } from "@/lib/data/content-blocks";
 
 type AboutPageProps = {
   params: { locale: string };
@@ -19,7 +20,19 @@ export async function generateMetadata({
 
 export default async function AboutPage({ params: { locale } }: AboutPageProps) {
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "about" });
+  const [t, aboutBlock] = await Promise.all([
+    getTranslations({ locale, namespace: "about" }),
+    getAboutBlock(),
+  ]);
+
+  const intro = locale === "en" ? aboutBlock.intro_en : aboutBlock.intro_uk;
+  const missionTitle =
+    locale === "en" ? aboutBlock.mission_title_en : aboutBlock.mission_title_uk;
+  const missionDescription =
+    locale === "en" ? aboutBlock.mission_description_en : aboutBlock.mission_description_uk;
+  const values = aboutBlock.values.map((value) =>
+    locale === "en" ? value.text_en : value.text_uk
+  );
 
   const highlights = [
     {
@@ -42,14 +55,12 @@ export default async function AboutPage({ params: { locale } }: AboutPageProps) 
     },
   ] as const;
 
-  const values = [t("values.quality"), t("values.personalization"), t("values.reliability")];
-
   return (
     <MarketingPageShell tone="cream" maxWidth="5xl">
       <PageHeader
         eyebrow={t("eyebrow")}
         title={t("title")}
-        description={t("intro")}
+        description={intro}
         size="hero"
       />
 
@@ -73,10 +84,10 @@ export default async function AboutPage({ params: { locale } }: AboutPageProps) 
 
       <div className="surface-panel mt-8 rounded-2xl p-6 md:p-8">
         <h2 className="font-display text-xl font-semibold text-brand-blue md:text-2xl">
-          {t("missionTitle")}
+          {missionTitle}
         </h2>
         <p className="mt-3 max-w-3xl leading-relaxed text-muted-foreground">
-          {t("missionDescription")}
+          {missionDescription}
         </p>
         <h3 className="ui-section-title mt-8">{t("valuesTitle")}</h3>
         <ul className="mt-4 grid gap-3 md:grid-cols-3">

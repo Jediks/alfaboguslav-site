@@ -14,6 +14,7 @@ import {
   publishContentBlock,
   saveContentBlockDraft,
 } from "@/lib/actions/content-blocks";
+import { AboutContentEditor } from "@/components/admin/about-content-editor";
 import type { AdminContentBlock } from "@/lib/data/content-blocks";
 import {
   DEFAULT_HERO_BLOCK,
@@ -480,6 +481,19 @@ export function ContentBlocksEditor({
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor={`t-avatar-${idx}`}>{t("reviewAvatarUrl")}</Label>
+                  <Input
+                    id={`t-avatar-${idx}`}
+                    value={item.avatar_url ?? ""}
+                    onChange={(e) =>
+                      updateTestimonialItem(idx, {
+                        avatar_url: e.target.value.trim() || undefined,
+                      })
+                    }
+                    placeholder="https://..."
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor={`t-rating-${idx}`}>{t("reviewRating")}</Label>
                   <Input
                     id={`t-rating-${idx}`}
@@ -549,6 +563,8 @@ export function ContentBlocksEditor({
           </Button>
         </div>
       </section>
+
+      <AboutContentEditor blocks={blocks} supabaseEnabled={supabaseEnabled} />
     </div>
   );
 }

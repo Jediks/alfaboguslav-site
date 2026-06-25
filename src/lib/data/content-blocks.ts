@@ -5,9 +5,11 @@ import { logger } from "@/lib/logger";
 import {
   DEFAULT_HERO_BLOCK,
   DEFAULT_TESTIMONIALS_BLOCK,
+  DEFAULT_ABOUT_BLOCK,
   type ContentBlockKey,
   type HeroBlockData,
   type TestimonialsBlockData,
+  type AboutBlockData,
 } from "@/types/content-blocks";
 
 type RawRow = {
@@ -37,7 +39,7 @@ export const DRAFT_POSITION = 1;
 
 export type AdminContentBlock = {
   block_key: ContentBlockKey;
-  data: HeroBlockData | TestimonialsBlockData;
+  data: HeroBlockData | TestimonialsBlockData | AboutBlockData;
   has_draft: boolean;
   has_published: boolean;
 };
@@ -89,9 +91,31 @@ export async function getTestimonialsBlock(): Promise<TestimonialsBlockData> {
   }
 }
 
-const BLOCK_DEFAULTS: Record<ContentBlockKey, HeroBlockData | TestimonialsBlockData> = {
+export async function getAboutBlock(): Promise<AboutBlockData> {
+  if (!hasSupabaseEnv()) return DEFAULT_ABOUT_BLOCK;
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("content_blocks")
+      .select("*")
+      .eq("block_key", "about")
+      .eq("is_published", true)
+      .order("position", { ascending: true })
+      .limit(1)
+      .maybeSingle<RawRow>();
+    if (error || !data) return DEFAULT_ABOUT_BLOCK;
+    return asObject(data.data, DEFAULT_ABOUT_BLOCK);
+  } catch (err) {
+    logger.warn("getAboutBlock.failed", { error: (err as Error).message });
+    return DEFAULT_ABOUT_BLOCK;
+  }
+}
+
+const BLOCK_DEFAULTS: Record<ContentBlockKey, HeroBlockData | TestimonialsBlockData | AboutBlockData> = {
   hero: DEFAULT_HERO_BLOCK,
   testimonials: DEFAULT_TESTIMONIALS_BLOCK,
+  about: DEFAULT_ABOUT_BLOCK,
 };
 
 function pickRows(rows: RawRow[], key: ContentBlockKey) {
@@ -103,7 +127,7 @@ function pickRows(rows: RawRow[], key: ContentBlockKey) {
 }
 
 export async function getAdminContentBlocks(): Promise<AdminContentBlock[]> {
-  const keys: ContentBlockKey[] = ["hero", "testimonials"];
+  const keys: ContentBlockKey[] = ["hero", "testimonials", "about"];
   const defaults: AdminContentBlock[] = keys.map((key) => ({
     block_key: key,
     data: BLOCK_DEFAULTS[key],

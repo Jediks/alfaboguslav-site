@@ -1,4 +1,4 @@
-export type ContentBlockKey = "hero" | "testimonials";
+export type ContentBlockKey = "hero" | "testimonials" | "about";
 
 export interface HeroStat {
   value: string;
@@ -31,6 +31,7 @@ export interface TestimonialItem {
   text_uk: string;
   text_en: string;
   rating?: number;
+  avatar_url?: string;
 }
 
 export interface TestimonialsBlockData {
@@ -54,6 +55,18 @@ export interface ContentBlock<TData = Record<string, unknown>> {
 
 export type HeroBlock = ContentBlock<HeroBlockData>;
 export type TestimonialsBlock = ContentBlock<TestimonialsBlockData>;
+
+export interface AboutBlockData {
+  intro_uk: string;
+  intro_en: string;
+  mission_title_uk: string;
+  mission_title_en: string;
+  mission_description_uk: string;
+  mission_description_en: string;
+  values: { text_uk: string; text_en: string }[];
+}
+
+export type AboutBlock = ContentBlock<AboutBlockData>;
 
 export const DEFAULT_HERO_BLOCK: HeroBlockData = {
   badge_uk: "30 років довіри B2B",
@@ -133,6 +146,33 @@ export const DEFAULT_TESTIMONIALS_BLOCK: TestimonialsBlockData = {
         "Дерев'яні VIP-набори вразили партнерів. Прозоре ціноутворення за обсягом — зручно для закупівельного відділу.",
       text_en:
         "Wooden VIP sets impressed our partners. Transparent volume pricing — easy for procurement.",
+    },
+  ],
+};
+
+export const DEFAULT_ABOUT_BLOCK: AboutBlockData = {
+  intro_uk:
+    "Alpha Boguslav — сімейний український виробник B2B подарункових наборів. Понад 30 років ми допомагаємо компаніям вітати команди, партнерів і клієнтів преміальними солодкими колекціями та брендованою упаковкою.",
+  intro_en:
+    "Alpha Boguslav is a family-owned Ukrainian maker of B2B gift sets. For over 30 years we help companies celebrate teams, partners, and clients with premium sweet collections and branded packaging.",
+  mission_title_uk: "Наша місія",
+  mission_title_en: "Our mission",
+  mission_description_uk:
+    "Створювати подарункові рішення, які зміцнюють ділові відносини та допомагають висловити вдячність кожному отримувачу.",
+  mission_description_en:
+    "Create gift solutions that strengthen business relationships and help express gratitude to every recipient.",
+  values: [
+    {
+      text_uk: "Якість перш за все: ретельно підібрані солодощі та надійна упаковка.",
+      text_en: "Quality first: carefully selected sweets and reliable packaging.",
+    },
+    {
+      text_uk: "Персоналізація: кожне замовлення може відображати ідентичність вашого бренду.",
+      text_en: "Personalization: every order can reflect your brand identity.",
+    },
+    {
+      text_uk: "Надійність: чіткі терміни, персональний менеджер та прозорі документи.",
+      text_en: "Reliability: clear timelines, a dedicated manager, and transparent paperwork.",
     },
   ],
 };
