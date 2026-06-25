@@ -255,8 +255,7 @@
 
   .hero-float,
   .hero-float-wrap,
-  .product-float,
-  .process-step {
+  .product-float {
     animation: none !important;
     transition: none !important;
   }

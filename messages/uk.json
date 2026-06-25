@@ -71,6 +71,8 @@
     "configStepOf": "Крок {current} з {total}",
     "showcaseLabel": "Колекція 2025",
     "featuresTitle": "Чому обирають нас",
+    "featuresLabel": "Переваги для B2B",
+    "featuresStepLabel": "Крок {step} з {total}",
     "featuresSubtitle": "Три десятиліття досвіду у створенні подарунків, яким довіряють найбільші компанії України.",
     "feature1Title": "Персоналізація бренду",
     "feature1Desc": "Нанесення логотипу вашої компанії на упаковку — від тиснення до повноцінного брендування.",

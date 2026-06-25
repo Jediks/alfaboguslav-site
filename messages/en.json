@@ -71,6 +71,8 @@
     "configStepOf": "Step {current} of {total}",
     "showcaseLabel": "Collection 2025",
     "featuresTitle": "Why choose us",
+    "featuresLabel": "B2B advantages",
+    "featuresStepLabel": "Step {step} of {total}",
     "featuresSubtitle": "Three decades of experience crafting gifts trusted by Ukraine's leading companies.",
     "feature1Title": "Brand personalization",
     "feature1Desc": "Your company logo on packaging — from embossing to full branding.",

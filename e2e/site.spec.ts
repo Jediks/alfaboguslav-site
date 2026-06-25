@@ -8,10 +8,13 @@ test.describe("Home page", () => {
     await expect(page.locator(".showcase-rail")).toBeVisible();
   });
 
-  test("process section with progress bar", async ({ page }) => {
+  test("why us section loads with detail panel", async ({ page }) => {
     await page.goto("/uk", { waitUntil: "networkidle" });
-    await page.locator(".process-step").first().scrollIntoViewIfNeeded();
-    await expect(page.locator(".process-step").first()).toBeVisible();
+    await page.getByTestId("why-us-section").scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("why-us-detail")).toBeVisible();
+    await expect(page.getByRole("tab", { name: /персоналізація/i })).toBeVisible();
+    await page.getByRole("tab", { name: /логістика/i }).click();
+    await expect(page.getByRole("tabpanel")).toContainText(/логістика/i);
   });
 });
 
