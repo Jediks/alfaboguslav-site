@@ -48,6 +48,52 @@
     @apply bg-cream text-foreground;
   }
 
+  .canvas-ambient {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      168deg,
+      hsl(38 36% 97%) 0%,
+      hsl(38 30% 94%) 42%,
+      hsl(38 33% 96%) 100%
+    );
+  }
+
+  .canvas-ambient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 8% 12%, hsl(352 78% 44% / 0.055) 0%, transparent 58%),
+      radial-gradient(ellipse 55% 45% at 92% 8%, hsl(212 55% 24% / 0.06) 0%, transparent 52%),
+      radial-gradient(ellipse 65% 50% at 50% 100%, hsl(42 80% 55% / 0.04) 0%, transparent 55%);
+  }
+
+  .canvas-ambient::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.45;
+    background-image:
+      repeating-linear-gradient(
+        -28deg,
+        transparent,
+        transparent 56px,
+        hsl(212 55% 24% / 0.016) 56px,
+        hsl(212 55% 24% / 0.016) 57px
+      ),
+      repeating-linear-gradient(
+        28deg,
+        transparent,
+        transparent 56px,
+        hsl(352 78% 44% / 0.01) 56px,
+        hsl(352 78% 44% / 0.01) 57px
+      );
+    mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  }
+
   .grain::before {
     content: "";
     position: absolute;
@@ -91,6 +137,94 @@
       radial-gradient(at 0% 0%, hsl(348 72% 42% / 0.08) 0, transparent 50%),
       radial-gradient(at 100% 0%, hsl(212 55% 24% / 0.06) 0, transparent 50%),
       radial-gradient(at 50% 100%, hsl(38 40% 90% / 0.8) 0, transparent 50%);
+  }
+
+  .section-ambient-base--white {
+    background: linear-gradient(
+      180deg,
+      hsl(0 0% 100% / 0.97) 0%,
+      hsl(38 33% 98% / 0.94) 100%
+    );
+  }
+
+  .section-ambient-base--cream {
+    background: linear-gradient(
+      165deg,
+      hsl(38 33% 96% / 0.98) 0%,
+      hsl(38 28% 93% / 0.96) 50%,
+      hsl(38 33% 96% / 0.98) 100%
+    );
+  }
+
+  .section-ambient-base--warm {
+    background: linear-gradient(145deg, hsl(38 38% 97%) 0%, hsl(34 32% 94%) 100%);
+  }
+
+  .section-ambient-pattern {
+    opacity: 0.55;
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(212 55% 24% / 0.045) 1px, transparent 0),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 80px,
+        hsl(352 78% 44% / 0.012) 80px,
+        hsl(352 78% 44% / 0.012) 81px
+      );
+    background-size: 24px 24px, 100% 100%;
+    mask-image: radial-gradient(ellipse 85% 75% at 50% 45%, black 20%, transparent 72%);
+  }
+
+  .section-ambient-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(72px);
+    will-change: transform;
+  }
+
+  .section-ambient-blob--primary {
+    width: min(420px, 55vw);
+    height: min(420px, 55vw);
+    top: -12%;
+    right: -8%;
+    background: hsl(352 78% 44% / 0.07);
+    animation: ambient-drift-a 22s ease-in-out infinite;
+  }
+
+  .section-ambient-blob--navy {
+    width: min(360px, 48vw);
+    height: min(360px, 48vw);
+    bottom: -10%;
+    left: -6%;
+    background: hsl(212 55% 24% / 0.06);
+    animation: ambient-drift-b 26s ease-in-out infinite;
+  }
+
+  .section-ambient-blob--gold {
+    width: min(280px, 40vw);
+    height: min(280px, 40vw);
+    top: 42%;
+    left: 38%;
+    background: hsl(42 80% 55% / 0.05);
+    animation: ambient-drift-c 30s ease-in-out infinite;
+  }
+
+  .dark-section-ambient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image: radial-gradient(circle at 1px 1px, hsl(0 0% 100% / 0.06) 1px, transparent 0);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+  }
+
+  .dark-section-ambient::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 60% at 50% -10%, hsl(42 80% 55% / 0.08) 0%, transparent 55%);
+    pointer-events: none;
   }
 
   .premium-shadow {
@@ -259,6 +393,10 @@
     animation: none !important;
     transition: none !important;
   }
+
+  .section-ambient-blob {
+    animation: none !important;
+  }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
@@ -273,4 +411,19 @@
 @keyframes pulse-glow-soft {
   0%, 100% { opacity: 0.75; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.06); }
+}
+
+@keyframes ambient-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-24px, 18px) scale(1.05); }
+}
+
+@keyframes ambient-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -16px) scale(1.04); }
+}
+
+@keyframes ambient-drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-14px, 12px) scale(1.06); }
 }

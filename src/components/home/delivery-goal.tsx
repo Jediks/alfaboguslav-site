@@ -5,6 +5,7 @@ import { useInView } from "framer-motion";
 import { CalendarRange, Layers, Package } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { StatCard } from "@/components/ui/stat-card";
+import { SectionAmbient } from "@/components/ui/section-ambient";
 import { useReducedMotion } from "@/lib/motion/use-reduced-motion";
 
 const SEASONS_TARGET = 28;
@@ -59,9 +60,10 @@ export function DeliveryGoal() {
     <section
       ref={ref}
       data-testid="delivery-goal"
-      className="border-y border-border/40 bg-cream py-16 md:py-24"
+      className="relative overflow-hidden border-y border-border/40 py-16 md:py-24"
     >
-      <div className="mx-auto max-w-7xl px-4">
+      <SectionAmbient tone="cream" />
+      <div className="relative mx-auto max-w-7xl px-4">
         <header className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             {t("goalLabel")}

@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CheckCircle2, Package, Palette, Truck, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { SectionAmbient } from "@/components/ui/section-ambient";
 
 const STEP_KEYS = ["feature1", "feature2", "feature3", "feature4"] as const;
 const STEP_ICONS: LucideIcon[] = [Palette, Package, CheckCircle2, Truck];
@@ -20,17 +21,10 @@ export function ProcessSection() {
   return (
     <section
       data-testid="why-us-section"
-      className="relative overflow-hidden border-y border-border/40 bg-white"
+      className="relative overflow-hidden border-y border-border/40"
       aria-labelledby="why-us-heading"
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        aria-hidden
-        style={{
-          backgroundImage:
-            "radial-gradient(at 0% 0%, hsl(352 78% 44% / 0.04) 0, transparent 55%), radial-gradient(at 100% 100%, hsl(212 55% 24% / 0.05) 0, transparent 50%)",
-        }}
-      />
+      <SectionAmbient tone="white" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-24 md:py-32">
         <header className="max-w-2xl">

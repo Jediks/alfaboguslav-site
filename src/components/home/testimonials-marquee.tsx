@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { useLocale } from "next-intl";
 import { MarqueeText } from "@/components/ui/marquee-text";
+import { SectionAmbient } from "@/components/ui/section-ambient";
 import {
   DEFAULT_TESTIMONIALS_BLOCK,
   type TestimonialsBlockData,
@@ -73,8 +74,9 @@ export function TestimonialsMarquee({
     : DEFAULT_TESTIMONIALS_BLOCK.marquee_brands;
 
   return (
-    <section className="overflow-hidden bg-white py-20 md:py-24">
-      <div className="mb-10 px-4 text-center">
+    <section className="relative overflow-hidden py-20 md:py-24">
+      <SectionAmbient tone="white" blobs={false} />
+      <div className="relative mb-10 px-4 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
           {label}
         </p>
@@ -83,12 +85,12 @@ export function TestimonialsMarquee({
         </h2>
       </div>
 
-      <div className="mb-12 border-y border-border/50 bg-cream py-3">
+      <div className="relative mb-12 border-y border-border/50 bg-cream/80 py-3 backdrop-blur-sm">
         <MarqueeText items={brands} className="text-brand-blue/25" speed="slow" />
       </div>
 
       <div
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6 md:snap-none"
+        className="relative flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6 md:snap-none"
         role="list"
       >
         {items.map((review, i) => (

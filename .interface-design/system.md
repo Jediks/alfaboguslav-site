@@ -116,6 +116,13 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 - Desktop: sticky glass-dark product staging (signature pattern)
 
 ### Dark rails (showcase, CTA)
-- `bg-brand-blue grain` + cream top fade (`from-cream/[0.06–0.07]`)
+- `bg-brand-blue grain` + `dark-section-ambient` (dot grid + gold top glow)
+- Cream top fade (`from-cream/[0.06–0.07]`) + `border-cream/10`
 - Product cards: `glass-dark`, gold price accent
 - CTA: layered gradients, quote form below headline
+
+### Global & section ambient
+- **`canvas-ambient`** (fixed, site-wide): warm gradient + diagonal ribbon crosshatch + color blooms + grain
+- **`SectionAmbient`** component: tones `white | cream | warm` — gradient base, dot/line pattern, drifting color blobs, grain
+- Use on all light marketing sections; disable blobs on busy sections (`blobs={false}`)
+- Blobs respect `prefers-reduced-motion`

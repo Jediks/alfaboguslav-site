@@ -12,6 +12,7 @@ import type { PricingTier, Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import { ProductImage } from "@/components/catalog/product-image";
+import { SectionAmbient } from "@/components/ui/section-ambient";
 import { cn } from "@/lib/utils";
 
 type B2bConfiguratorProps = {
@@ -94,8 +95,8 @@ export function B2bConfigurator({ products, pricingByProductId }: B2bConfigurato
   const stepLabels = [t("configTeam"), t("configBudget"), t("configResult")];
 
   return (
-    <section id="configurator" className="relative overflow-hidden bg-white py-16 md:py-28">
-      <div className="absolute inset-0 mesh-gradient opacity-40" />
+    <section id="configurator" className="relative overflow-hidden py-16 md:py-28">
+      <SectionAmbient tone="warm" />
 
       <div className="relative mx-auto max-w-7xl px-4">
         <header className="mb-8 max-w-2xl md:mb-12">
