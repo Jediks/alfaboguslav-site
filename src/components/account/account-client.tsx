@@ -30,6 +30,7 @@ const statusVariant: Record<OrderStatus, "default" | "secondary" | "outline"> = 
 type AccountClientProps = {
   supabaseOrders: OrderRecord[];
   products: Product[];
+  supabaseEnabled?: boolean;
 };
 
 type DisplayOrder = {
@@ -71,7 +72,11 @@ function mergeOrders(local: LocalOrder[], remote: OrderRecord[]): DisplayOrder[]
   return Array.from(byRef.values());
 }
 
-export function AccountClient({ supabaseOrders, products }: AccountClientProps) {
+export function AccountClient({
+  supabaseOrders,
+  products,
+  supabaseEnabled = false,
+}: AccountClientProps) {
   const t = useTranslations("account");
   const tCheckout = useTranslations("checkout");
   const locale = useLocale();
@@ -81,8 +86,11 @@ export function AccountClient({ supabaseOrders, products }: AccountClientProps) 
   const router = useRouter();
 
   const orders = useMemo(
-    () => mergeOrders(localOrders, supabaseOrders),
-    [localOrders, supabaseOrders]
+    () =>
+      supabaseEnabled
+        ? mergeOrders([], supabaseOrders)
+        : mergeOrders(localOrders, supabaseOrders),
+    [localOrders, supabaseOrders, supabaseEnabled]
   );
   const productById = useMemo(
     () => new Map(products.map((product) => [product.id, product])),

@@ -88,7 +88,9 @@
     "quoteMessagePlaceholder": "Number of sets, budget, branding preferences...",
     "quoteSubmit": "Send request",
     "quoteSuccessTitle": "Request sent!",
-    "quoteSuccessDesc": "Our manager will contact you within 24 hours."
+    "quoteSuccessDesc": "Our manager will contact you within 24 hours.",
+    "quoteRateLimitTitle": "Too many attempts",
+    "quoteRateLimitDescription": "Please try again in {seconds}s."
   },
   "catalog": {
     "label": "B2B Marketplace",
@@ -161,7 +163,9 @@
     "paymentOnline": "Online payment (acquiring)",
     "paymentInvoice": "Invoice / IBAN payment",
     "submit": "Confirm order",
-    "managerNotice": "After submission, a manager will contact you to confirm details"
+    "managerNotice": "After submission, a manager will contact you to confirm details",
+    "rateLimitTitle": "Too many attempts",
+    "rateLimitDescription": "Please try again in {seconds}s."
   },
   "thankYou": {
     "title": "Thank you for your order!",
@@ -253,7 +257,44 @@
     "company": "Company",
     "orderNotFound": "Order not found",
     "backToAdmin": "Back to admin",
-    "orderItems": "Order items"
+    "orderItems": "Order items",
+    "content": "Content",
+    "contentBlocks": {
+      "heroTitle": "Hero block",
+      "testimonialsTitle": "Testimonials",
+      "supabaseRequired": "Supabase (service role) is required. Configure environment variables to save CMS blocks.",
+      "saved": "Saved",
+      "saving": "Saving...",
+      "saveHero": "Save hero",
+      "saveTestimonials": "Save testimonials",
+      "saveFailed": "Failed to save",
+      "badgeUk": "Badge (uk)",
+      "badgeEn": "Badge (en)",
+      "titleUk": "Title (uk)",
+      "titleEn": "Title (en)",
+      "subtitleUk": "Subtitle (uk)",
+      "subtitleEn": "Subtitle (en)",
+      "ctaPrimaryUk": "Primary CTA (uk)",
+      "ctaPrimaryEn": "Primary CTA (en)",
+      "ctaPrimaryHref": "Primary CTA href",
+      "ctaSecondaryUk": "Secondary CTA (uk)",
+      "ctaSecondaryEn": "Secondary CTA (en)",
+      "ctaSecondaryHref": "Secondary CTA href",
+      "imageUrl": "Image URL",
+      "vipBadgeUk": "VIP badge (uk)",
+      "vipBadgeEn": "VIP badge (en)",
+      "labelUk": "Label (uk)",
+      "labelEn": "Label (en)",
+      "marqueeBrands": "Brands (one per line)",
+      "marqueeBrandsHint": "SoftServe, PrivatBank…",
+      "reviewsTitle": "Reviews",
+      "addReview": "Add review",
+      "removeReview": "Remove",
+      "reviewName": "Name",
+      "reviewCompany": "Company",
+      "reviewTextUk": "Text (uk)",
+      "reviewTextEn": "Text (en)"
+    }
   },
   "about": {
     "eyebrow": "About Alpha Boguslav",
@@ -290,7 +331,19 @@
     "successTitle": "Request sent",
     "successDescription": "Thank you! Our manager will contact you shortly.",
     "errorTitle": "Failed to send",
-    "errorDescription": "Please try again in a moment or contact us by phone."
+    "errorDescription": "Please try again in a moment or contact us by phone.",
+    "rateLimitTitle": "Too many attempts",
+    "rateLimitDescription": "Please try again in {seconds}s."
+  },
+  "errors": {
+    "eyebrow": "Error",
+    "title": "Something went wrong",
+    "adminTitle": "Admin panel error",
+    "accountTitle": "Account error",
+    "description": "An unexpected error occurred. Try again or return home. If the issue persists, contact our manager.",
+    "reference": "Error reference",
+    "retry": "Try again",
+    "home": "Back home"
   },
   "footer": {
     "description": "Family-owned Ukrainian company with 30 years of experience in corporate New Year gifts.",

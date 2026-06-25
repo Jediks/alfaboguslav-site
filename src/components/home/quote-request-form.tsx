@@ -29,9 +29,10 @@ export function QuoteRequestForm() {
     setSubmitting(true);
     const id = `Q-${Date.now().toString(36).toUpperCase()}`;
 
+    let persisted: "supabase" | "local" = "local";
     try {
       const { submitQuote } = await import("@/lib/actions/quotes");
-      await submitQuote({
+      const result = await submitQuote({
         referenceId: id,
         company_name: company.trim(),
         contact_name: name.trim(),
@@ -39,19 +40,31 @@ export function QuoteRequestForm() {
         phone: phone.trim(),
         message: message.trim(),
       });
-    } catch {
-      // Still save locally if Supabase fails
+      persisted = result.persisted;
+    } catch (err) {
+      if (err instanceof Error && err.name === "RateLimitError") {
+        setSubmitting(false);
+        const retry =
+          (err as Error & { retryAfterSec?: number }).retryAfterSec ?? 60;
+        toast.error(t("quoteRateLimitTitle"), {
+          description: t("quoteRateLimitDescription", { seconds: retry }),
+        });
+        return;
+      }
+      console.error("[quote] submitQuote failed", err);
     }
 
-    addQuote({
-      id,
-      company_name: company.trim(),
-      contact_name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      message: message.trim(),
-      created_at: new Date().toISOString(),
-    });
+    if (persisted !== "supabase") {
+      addQuote({
+        id,
+        company_name: company.trim(),
+        contact_name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        message: message.trim(),
+        created_at: new Date().toISOString(),
+      });
+    }
 
     setSent(true);
     setSubmitting(false);

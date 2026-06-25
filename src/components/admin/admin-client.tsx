@@ -32,6 +32,8 @@ import { updateQuoteStatusAdmin } from "@/lib/actions/quotes";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus, PricingTier, Product } from "@/types/database";
+import type { AdminContentBlock } from "@/lib/data/content-blocks";
+import { ContentBlocksEditor } from "./content-blocks-editor";
 
 type AdminClientProps = {
   products: Product[];
@@ -39,6 +41,7 @@ type AdminClientProps = {
   supabaseOrders: OrderRecord[];
   supabaseQuotes: QuoteRecord[];
   supabaseEnabled: boolean;
+  contentBlocks: AdminContentBlock[];
 };
 
 function toDisplayOrder(o: LocalOrder) {
@@ -58,6 +61,7 @@ export function AdminClient({
   supabaseOrders,
   supabaseQuotes,
   supabaseEnabled,
+  contentBlocks,
 }: AdminClientProps) {
   const t = useTranslations("admin");
   const tAccount = useTranslations("account");
@@ -76,7 +80,7 @@ export function AdminClient({
   >({});
 
   const orders = useMemo(() => {
-    if (supabaseEnabled && supabaseOrders.length > 0) {
+    if (supabaseEnabled) {
       return supabaseOrders.map((o) => ({
         referenceId: o.referenceId,
         company_name: o.company_name,
@@ -90,7 +94,7 @@ export function AdminClient({
   }, [supabaseEnabled, supabaseOrders, localOrders]);
 
   const quotes = useMemo(() => {
-    if (supabaseEnabled && supabaseQuotes.length > 0) {
+    if (supabaseEnabled) {
       return supabaseQuotes.map((q) => ({
         id: q.referenceId,
         referenceId: q.referenceId,
@@ -168,6 +172,7 @@ export function AdminClient({
             {t("quotes")} {quotes.length > 0 && `(${quotes.length})`}
           </TabsTrigger>
           <TabsTrigger value="products">{t("products")}</TabsTrigger>
+          <TabsTrigger value="content">{t("content")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="orders">
@@ -369,6 +374,13 @@ export function AdminClient({
               </TableBody>
             </Table>
           </div>
+        </TabsContent>
+
+        <TabsContent value="content">
+          <ContentBlocksEditor
+            blocks={contentBlocks}
+            supabaseEnabled={supabaseEnabled}
+          />
         </TabsContent>
       </Tabs>
     </div>

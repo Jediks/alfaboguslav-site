@@ -88,7 +88,9 @@
     "quoteMessagePlaceholder": "Кількість наборів, бюджет, побажання до брендування...",
     "quoteSubmit": "Надіслати заявку",
     "quoteSuccessTitle": "Заявку надіслано!",
-    "quoteSuccessDesc": "Менеджер зв'яжеться з вами протягом 24 годин."
+    "quoteSuccessDesc": "Менеджер зв'яжеться з вами протягом 24 годин.",
+    "quoteRateLimitTitle": "Забагато спроб",
+    "quoteRateLimitDescription": "Спробуйте ще раз через {seconds} с."
   },
   "catalog": {
     "label": "B2B Маркетплейс",
@@ -161,7 +163,9 @@
     "paymentOnline": "Онлайн-оплата (еквайринг)",
     "paymentInvoice": "Рахунок / оплата за IBAN",
     "submit": "Підтвердити замовлення",
-    "managerNotice": "Після оформлення з вами зв'яжеться менеджер для уточнення деталей"
+    "managerNotice": "Після оформлення з вами зв'яжеться менеджер для уточнення деталей",
+    "rateLimitTitle": "Забагато спроб",
+    "rateLimitDescription": "Спробуйте ще раз через {seconds} с."
   },
   "thankYou": {
     "title": "Дякуємо за замовлення!",
@@ -253,7 +257,44 @@
     "company": "Компанія",
     "orderNotFound": "Замовлення не знайдено",
     "backToAdmin": "Назад до адмінки",
-    "orderItems": "Позиції замовлення"
+    "orderItems": "Позиції замовлення",
+    "content": "Контент",
+    "contentBlocks": {
+      "heroTitle": "Hero-блок",
+      "testimonialsTitle": "Відгуки",
+      "supabaseRequired": "Потрібен Supabase (service role). Налаштуйте змінні середовища, щоб зберігати CMS-блоки.",
+      "saved": "Збережено",
+      "saving": "Зберігаємо...",
+      "saveHero": "Зберегти Hero",
+      "saveTestimonials": "Зберегти відгуки",
+      "saveFailed": "Не вдалося зберегти",
+      "badgeUk": "Бейдж (uk)",
+      "badgeEn": "Бейдж (en)",
+      "titleUk": "Заголовок (uk)",
+      "titleEn": "Заголовок (en)",
+      "subtitleUk": "Підзаголовок (uk)",
+      "subtitleEn": "Підзаголовок (en)",
+      "ctaPrimaryUk": "Основна CTA (uk)",
+      "ctaPrimaryEn": "Основна CTA (en)",
+      "ctaPrimaryHref": "Посилання основної CTA",
+      "ctaSecondaryUk": "Додаткова CTA (uk)",
+      "ctaSecondaryEn": "Додаткова CTA (en)",
+      "ctaSecondaryHref": "Посилання додаткової CTA",
+      "imageUrl": "URL зображення",
+      "vipBadgeUk": "VIP-бейдж (uk)",
+      "vipBadgeEn": "VIP-бейдж (en)",
+      "labelUk": "Підпис (uk)",
+      "labelEn": "Підпис (en)",
+      "marqueeBrands": "Бренди (по одному в рядок)",
+      "marqueeBrandsHint": "SoftServe, PrivatBank…",
+      "reviewsTitle": "Відгуки",
+      "addReview": "Додати відгук",
+      "removeReview": "Видалити",
+      "reviewName": "Ім'я",
+      "reviewCompany": "Компанія",
+      "reviewTextUk": "Текст (uk)",
+      "reviewTextEn": "Текст (en)"
+    }
   },
   "about": {
     "eyebrow": "Про Alpha Boguslav",
@@ -290,7 +331,19 @@
     "successTitle": "Запит надіслано",
     "successDescription": "Дякуємо! Наш менеджер зв'яжеться з вами найближчим часом.",
     "errorTitle": "Не вдалося надіслати",
-    "errorDescription": "Спробуйте ще раз трохи пізніше або зв'яжіться з нами телефоном."
+    "errorDescription": "Спробуйте ще раз трохи пізніше або зв'яжіться з нами телефоном.",
+    "rateLimitTitle": "Забагато спроб",
+    "rateLimitDescription": "Спробуйте ще раз через {seconds} с."
+  },
+  "errors": {
+    "eyebrow": "Помилка",
+    "title": "Щось пішло не так",
+    "adminTitle": "Помилка в адмін-панелі",
+    "accountTitle": "Помилка в кабінеті",
+    "description": "Сталася неочікувана помилка. Спробуйте ще раз або поверніться на головну. Якщо проблема повторюється — повідомте менеджера.",
+    "reference": "Код помилки",
+    "retry": "Спробувати ще раз",
+    "home": "На головну"
   },
   "footer": {
     "description": "Сімейна українська компанія з 30-річним досвідом у виробництві корпоративних новорічних подарунків.",

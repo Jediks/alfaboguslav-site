@@ -2,33 +2,29 @@
 
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { MarqueeText } from "@/components/ui/marquee-text";
+import {
+  DEFAULT_TESTIMONIALS_BLOCK,
+  type TestimonialsBlockData,
+  type TestimonialItem,
+} from "@/types/content-blocks";
 
-const reviews = [
-  {
-    name: "Олена К.",
-    company: "SoftServe",
-    text: "Замовили 200 наборів для IT-команди. Якість упаковки та солодощів на найвищому рівні. Менеджер супроводжував на кожному етапі.",
-  },
-  {
-    name: "Андрій М.",
-    company: "PrivatBank",
-    text: "Персоналізація логотипом виглядала преміально. Рахунок для бухгалтерії — за один день. Рекомендуємо для B2B.",
-  },
-  {
-    name: "Марія С.",
-    company: "Nova Poshta",
-    text: "Третій рік поспіль замовляємо корпоративні подарунки. Стабільна якість, гнучкі оптові ціни, швидка доставка.",
-  },
-  {
-    name: "Дмитро В.",
-    company: "EPAM",
-    text: "Дерев'яні VIP-набори вразили партнерів. Прозоре ціноутворення за обсягом — зручно для закупівельного відділу.",
-  },
-];
+type TestimonialsMarqueeProps = {
+  block?: TestimonialsBlockData;
+};
 
-function ReviewCard({ review }: { review: (typeof reviews)[0] }) {
+type Review = { name: string; company: string; text: string };
+
+function localize(item: TestimonialItem, locale: string): Review {
+  return {
+    name: item.name,
+    company: item.company,
+    text: locale === "en" ? item.text_en : item.text_uk,
+  };
+}
+
+function ReviewCard({ review }: { review: Review }) {
   return (
     <div className="w-[min(90vw,380px)] shrink-0 rounded-2xl border border-border/50 bg-white p-6 premium-shadow">
       <div className="mb-4 flex gap-1">
@@ -45,32 +41,38 @@ function ReviewCard({ review }: { review: (typeof reviews)[0] }) {
   );
 }
 
-export function TestimonialsMarquee() {
-  const t = useTranslations("home");
+export function TestimonialsMarquee({
+  block = DEFAULT_TESTIMONIALS_BLOCK,
+}: TestimonialsMarqueeProps) {
+  const locale = useLocale();
+  const label = locale === "en" ? block.label_en : block.label_uk;
+  const title = locale === "en" ? block.title_en : block.title_uk;
+  const items = (block.items?.length ? block.items : DEFAULT_TESTIMONIALS_BLOCK.items).map(
+    (item) => localize(item, locale)
+  );
+  const brands = block.marquee_brands?.length
+    ? block.marquee_brands
+    : DEFAULT_TESTIMONIALS_BLOCK.marquee_brands;
 
   return (
     <section className="overflow-hidden bg-white py-20 md:py-24">
       <div className="mb-10 px-4 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-          {t("testimonialsLabel")}
+          {label}
         </p>
         <h2 className="mt-3 font-display text-3xl font-bold text-brand-blue md:text-4xl">
-          {t("testimonialsTitle")}
+          {title}
         </h2>
       </div>
 
       <div className="mb-12 border-y border-border/50 bg-cream py-3">
-        <MarqueeText
-          items={["SoftServe", "PrivatBank", "EPAM", "Nova Poshta", "Monobank", "Genesis"]}
-          className="text-brand-blue/25"
-          speed="slow"
-        />
+        <MarqueeText items={brands} className="text-brand-blue/25" speed="slow" />
       </div>
 
       <div className="flex gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6">
-        {reviews.map((review, i) => (
+        {items.map((review, i) => (
           <motion.div
-            key={review.name}
+            key={`${review.name}-${i}`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
