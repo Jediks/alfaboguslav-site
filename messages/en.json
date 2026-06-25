@@ -259,6 +259,15 @@
     "backToAdmin": "Back to admin",
     "orderItems": "Order items",
     "content": "Content",
+    "kpi": {
+      "ordersThisWeek": "Orders (7 days)",
+      "vsPriorWeek": "vs prior 7 days",
+      "revenueThisWeek": "Revenue (7 days)",
+      "totalOrders": "Total orders",
+      "topSet": "Top set",
+      "units": "pcs",
+      "noData": "No data"
+    },
     "contentBlocks": {
       "heroTitle": "Hero block",
       "testimonialsTitle": "Testimonials",

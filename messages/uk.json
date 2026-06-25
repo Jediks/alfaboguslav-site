@@ -259,6 +259,15 @@
     "backToAdmin": "Назад до адмінки",
     "orderItems": "Позиції замовлення",
     "content": "Контент",
+    "kpi": {
+      "ordersThisWeek": "Замовлення (7 днів)",
+      "vsPriorWeek": "проти попередніх 7 днів",
+      "revenueThisWeek": "Дохід (7 днів)",
+      "totalOrders": "Усього замовлень",
+      "topSet": "Топ-набір",
+      "units": "шт.",
+      "noData": "Немає даних"
+    },
     "contentBlocks": {
       "heroTitle": "Hero-блок",
       "testimonialsTitle": "Відгуки",
