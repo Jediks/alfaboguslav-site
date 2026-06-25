@@ -24,6 +24,7 @@ export type QuoteRecord = {
   email: string;
   phone: string;
   message: string;
+  admin_notes: string;
   created_at: string;
 };
 
@@ -99,6 +100,7 @@ export async function fetchQuotesAdmin(): Promise<QuoteRecord[]> {
     email: q.email,
     phone: q.phone,
     message: q.message,
+    admin_notes: q.admin_notes ?? "",
     created_at: q.created_at,
   }));
 }

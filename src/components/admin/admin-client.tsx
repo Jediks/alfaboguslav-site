@@ -7,6 +7,7 @@ import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -80,6 +81,8 @@ export function AdminClient({
   const [localQuoteStatuses, setLocalQuoteStatuses] = useState<
     Record<string, QuoteRecord["status"]>
   >({});
+  const [noteEdits, setNoteEdits] = useState<Record<string, string>>({});
+  const [noteSaving, setNoteSaving] = useState<string | null>(null);
 
   const orders = useMemo(() => {
     if (supabaseEnabled) {
@@ -111,6 +114,7 @@ export function AdminClient({
         email: q.email,
         phone: q.phone,
         message: q.message,
+        admin_notes: q.admin_notes ?? "",
       }));
     }
     return localQuotes.map((q) => ({
@@ -122,6 +126,7 @@ export function AdminClient({
       email: q.email,
       phone: q.phone,
       message: q.message,
+      admin_notes: "",
     }));
   }, [supabaseEnabled, supabaseQuotes, localQuotes, localQuoteStatuses]);
 
@@ -153,6 +158,17 @@ export function AdminClient({
       await updateQuoteStatusAdmin(referenceId, status);
       setQuoteSyncing(null);
     }
+  };
+
+  const handleSaveQuoteNotes = async (
+    referenceId: string,
+    status: QuoteRecord["status"],
+    notes: string
+  ) => {
+    if (!supabaseEnabled) return;
+    setNoteSaving(referenceId);
+    await updateQuoteStatusAdmin(referenceId, status, notes);
+    setNoteSaving(null);
   };
 
   return (
@@ -302,6 +318,7 @@ export function AdminClient({
                     <TableHead>Phone</TableHead>
                     <TableHead>{t("quoteStatus")}</TableHead>
                     <TableHead>Message</TableHead>
+                    <TableHead>{t("notes")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -334,6 +351,36 @@ export function AdminClient({
                       </TableCell>
                       <TableCell className="max-w-[240px] truncate text-sm text-muted-foreground">
                         {quote.message || "—"}
+                      </TableCell>
+                      <TableCell className="min-w-[220px]">
+                        <div className="flex flex-col gap-1.5">
+                          <Textarea
+                            rows={2}
+                            className="text-sm"
+                            placeholder={t("notesPlaceholder")}
+                            value={noteEdits[quote.referenceId] ?? quote.admin_notes}
+                            onChange={(e) =>
+                              setNoteEdits((prev) => ({
+                                ...prev,
+                                [quote.referenceId]: e.target.value,
+                              }))
+                            }
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!supabaseEnabled || noteSaving === quote.referenceId}
+                            onClick={() =>
+                              handleSaveQuoteNotes(
+                                quote.referenceId,
+                                quote.status,
+                                noteEdits[quote.referenceId] ?? quote.admin_notes
+                              )
+                            }
+                          >
+                            {noteSaving === quote.referenceId ? t("savingNotes") : t("saveNotes")}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
