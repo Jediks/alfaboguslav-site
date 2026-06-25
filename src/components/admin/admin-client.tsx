@@ -120,6 +120,14 @@ export function AdminClient({
     [supabaseEnabled, supabaseOrders, localOrders]
   );
 
+  const quotesThisWeek = useMemo(() => {
+    if (!supabaseEnabled) return undefined;
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return supabaseQuotes.filter(
+      (q) => new Date(q.created_at).getTime() >= weekAgo
+    ).length;
+  }, [supabaseEnabled, supabaseQuotes]);
+
   const quotes = useMemo(() => {
     if (supabaseEnabled) {
       return supabaseQuotes.map((q) => ({
@@ -203,7 +211,11 @@ export function AdminClient({
         )}
       </div>
 
-      <AdminKpiCards orders={kpiOrders} products={products} />
+      <AdminKpiCards
+        orders={kpiOrders}
+        products={products}
+        quotesThisWeek={quotesThisWeek}
+      />
 
       <Tabs defaultValue="orders">
         <TabsList className="mb-6">
