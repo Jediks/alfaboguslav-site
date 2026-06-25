@@ -10,6 +10,8 @@ const LIGHT_PREFIXES = [
   "/login",
   "/thank-you",
   "/admin",
+  "/about",
+  "/contact",
 ];
 
 /** Pages with cream/light background where header should start in light mode. */

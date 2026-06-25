@@ -11,45 +11,97 @@ export function Footer() {
   const tCommon = useTranslations("common");
   const year = new Date().getFullYear();
 
+  const navLinks = [
+    { href: "/", label: tNav("home") },
+    { href: "/catalog", label: tNav("catalog") },
+    { href: "/about", label: tNav("about") },
+    { href: "/contact", label: tNav("contact") },
+  ] as const;
+
+  const b2bLinks = [
+    { href: "/catalog", label: t("b2bCatalog") },
+    { href: "/compare", label: t("b2bCompare") },
+    { href: "/contact", label: t("b2bQuote") },
+    { href: "/#configurator", label: t("b2bConfigurator") },
+  ] as const;
+
   return (
-    <footer className="border-t border-border/50 bg-brand-blue text-white">
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-3">
-        <div>
+    <footer className="relative border-t border-white/10 bg-brand-blue text-white grain">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
+
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-2 md:gap-12 lg:grid-cols-4 lg:py-16">
+        <div className="md:col-span-2 lg:col-span-1">
           <Link href="/" className="mb-4 inline-block">
             <BrandLogo variant="footer" />
           </Link>
-          <p className="text-sm leading-relaxed text-white/70">{t("description")}</p>
+          <p className="max-w-xs text-sm leading-relaxed text-white/70">{t("description")}</p>
         </div>
 
         <div>
-          <h3 className="mb-4 font-display font-semibold">{t("navigation")}</h3>
+          <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">
+            {t("navigation")}
+          </h3>
           <nav className="flex flex-col gap-2 text-sm text-white/70">
-            <Link href="/" className="hover:text-white transition-colors">{tNav("home")}</Link>
-            <Link href="/catalog" className="hover:text-white transition-colors">{tNav("catalog")}</Link>
-            <Link href="/about" className="hover:text-white transition-colors">{tNav("about")}</Link>
-            <Link href="/contact" className="hover:text-white transition-colors">{tNav("contact")}</Link>
-            <Link href="/account" className="hover:text-white transition-colors">{tCommon("account")}</Link>
-            <Link href="/login" className="hover:text-white transition-colors">{tCommon("login")}</Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Link href="/account" className="transition-colors hover:text-white">
+              {tCommon("account")}
+            </Link>
           </nav>
         </div>
 
         <div>
-          <h3 className="mb-4 font-display font-semibold">{t("contact")}</h3>
+          <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">
+            {t("b2bTitle")}
+          </h3>
+          <nav className="flex flex-col gap-2 text-sm text-white/70">
+            {b2bLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors hover:text-white"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">
+            {t("contact")}
+          </h3>
           <div className="flex flex-col gap-3 text-sm text-white/70">
-            <a href={`tel:${t("phone")}`} className="flex items-center gap-2 hover:text-white transition-colors">
-              <Phone className="h-4 w-4" /> {t("phone")}
+            <a
+              href={`tel:${t("phone")}`}
+              className="flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <Phone className="h-4 w-4 shrink-0" />
+              {t("phone")}
             </a>
-            <a href={`mailto:${t("email")}`} className="flex items-center gap-2 hover:text-white transition-colors">
-              <Mail className="h-4 w-4" /> {t("email")}
+            <a
+              href={`mailto:${t("email")}`}
+              className="flex items-center gap-2 transition-colors hover:text-white"
+            >
+              <Mail className="h-4 w-4 shrink-0" />
+              {t("email")}
             </a>
-            <p className="flex items-center gap-2">
-              <MapPin className="h-4 w-4" /> {t("address")}
+            <p className="flex items-start gap-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+              {t("address")}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-6 text-center text-sm text-white/50">
+      <div className="relative border-t border-white/10 py-6 text-center text-sm text-white/45">
         {t("rights", { year })}
       </div>
     </footer>

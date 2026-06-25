@@ -419,12 +419,42 @@
       "quality": "Quality first: carefully selected sweets and reliable packaging.",
       "personalization": "Personalization: every order can reflect your brand identity.",
       "reliability": "Reliability: clear timelines, dedicated manager, and transparent documents."
-    }
+    },
+    "highlightLabels": {
+      "experience": "Experience",
+      "assortment": "Assortment",
+      "clients": "Clients"
+    },
+    "timelineTitle": "Our journey",
+    "timeline": {
+      "item1Year": "1996",
+      "item1Title": "Production begins",
+      "item1Desc": "A family gift-set workshop in Bohuslav — first corporate orders for local businesses.",
+      "item2Year": "2010",
+      "item2Title": "B2B scale",
+      "item2Desc": "Wholesale programs, branded packaging, and partnerships with HR teams across Ukraine.",
+      "item3Year": "2024",
+      "item3Title": "Digital service",
+      "item3Desc": "Online catalog, pricing calculator, client account, and procurement-friendly order tracking."
+    },
+    "storyLabel": "Season after season",
+    "storyStat": "28 seasons",
+    "storyDesc": "Every year we help companies create holiday moments for thousands of employees and partners."
   },
   "contact": {
     "eyebrow": "Contact",
     "title": "Talk to our B2B team",
     "subtitle": "Share your quantity, budget, and branding requirements. We will prepare a tailored offer for your company.",
+    "formTitle": "Send a request",
+    "formSubtitle": "A manager will reach out within one business day.",
+    "hoursTitle": "Hours",
+    "hours": "Mon–Fri, 9:00–18:00",
+    "responseNote": "For urgent pre–New Year orders, call us directly — we'll suggest the nearest available slots.",
+    "channels": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address"
+    },
     "form": {
       "company": "Company",
       "name": "Contact person",
@@ -459,6 +489,11 @@
     "phone": "+38 (097) 561-21-10",
     "email": "alfarepik@gmail.com",
     "address": "Boguslav, Kyiv region, Ukraine",
-    "rights": "© {year} Alpha Boguslav. All rights reserved."
+    "rights": "© {year} Alpha Boguslav. All rights reserved.",
+    "b2bTitle": "For business",
+    "b2bCatalog": "Gift set catalog",
+    "b2bCompare": "Compare sets",
+    "b2bQuote": "Request a quote",
+    "b2bConfigurator": "Set configurator"
   }
 }

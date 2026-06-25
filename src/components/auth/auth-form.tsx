@@ -81,8 +81,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-md">
-      <div className="surface-panel rounded-2xl p-8">
+    <div className="mx-auto w-full">
+      <div className="surface-panel rounded-2xl p-6 md:p-8">
         <h1 className="mb-6 text-center font-display text-2xl font-bold text-brand-blue">
           {mode === "login" ? t("loginTitle") : t("registerTitle")}
         </h1>

@@ -127,3 +127,9 @@ Premium product staging (float + spotlight) on catalog; restrained navy+cream pa
 - **`LightSectionParticles`**: falling flakes on light sections (white paper dots + navy + gold), mirror of hero snow; `particles={false}` to disable
 - Use on all light marketing sections; disable blobs on busy sections (`blobs={false}`)
 - Blobs respect `prefers-reduced-motion`
+
+### Trust pages (About, Contact, Auth)
+- Wrap in `MarketingPageShell` — ambient + particles + max-width container
+- `PageHeader` with eyebrow + hero size for landing intros
+- Content blocks: `StatCard` grid, vertical timeline, navy story card, `surface-panel` forms
+- Footer: 4 columns — brand, nav, B2B links (catalog, compare, quote, configurator), contact

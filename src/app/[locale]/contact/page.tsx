@@ -1,6 +1,8 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ContactForm } from "@/components/contact/contact-form";
+import { MarketingPageShell } from "@/components/layout/marketing-page-shell";
+import { PageHeader } from "@/components/ui/page-header";
 
 type ContactPageProps = {
   params: { locale: string };
@@ -11,39 +13,86 @@ export default async function ContactPage({ params: { locale } }: ContactPagePro
   const t = await getTranslations({ locale, namespace: "contact" });
   const tFooter = await getTranslations({ locale, namespace: "footer" });
 
-  return (
-    <div className="mx-auto max-w-6xl px-4 py-12 md:py-16">
-      <div className="grid gap-8 lg:grid-cols-[1fr_1.35fr]">
-        <aside className="rounded-3xl border border-border/70 bg-white p-8 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue/70">
-            {t("eyebrow")}
-          </p>
-          <h1 className="mt-4 font-display text-4xl font-semibold text-brand-blue">{t("title")}</h1>
-          <p className="mt-4 text-muted-foreground">{t("subtitle")}</p>
+  const contactItems = [
+    {
+      icon: Phone,
+      href: `tel:${tFooter("phone")}`,
+      label: t("channels.phone"),
+      value: tFooter("phone"),
+    },
+    {
+      icon: Mail,
+      href: `mailto:${tFooter("email")}`,
+      label: t("channels.email"),
+      value: tFooter("email"),
+    },
+    {
+      icon: MapPin,
+      href: undefined,
+      label: t("channels.address"),
+      value: tFooter("address"),
+    },
+    {
+      icon: Clock,
+      href: undefined,
+      label: t("hoursTitle"),
+      value: t("hours"),
+    },
+  ] as const;
 
-          <div className="mt-8 space-y-4 text-sm text-muted-foreground">
-            <a href={`tel:${tFooter("phone")}`} className="flex items-center gap-3 transition-colors hover:text-brand-blue">
-              <Phone className="h-4 w-4" />
-              <span>{tFooter("phone")}</span>
-            </a>
-            <a
-              href={`mailto:${tFooter("email")}`}
-              className="flex items-center gap-3 transition-colors hover:text-brand-blue"
-            >
-              <Mail className="h-4 w-4" />
-              <span>{tFooter("email")}</span>
-            </a>
-            <p className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>{tFooter("address")}</span>
-            </p>
+  return (
+    <MarketingPageShell tone="white" maxWidth="6xl" blobs={false}>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-start">
+        <aside className="surface-panel rounded-2xl p-6 md:p-8">
+          <PageHeader eyebrow={t("eyebrow")} title={t("title")} description={t("subtitle")} />
+
+          <div className="space-y-3">
+            {contactItems.map((item) => {
+              const Icon = item.icon;
+              const inner = (
+                <>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" aria-hidden />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      {item.label}
+                    </span>
+                    <span className="mt-0.5 block text-sm font-medium text-brand-blue">{item.value}</span>
+                  </span>
+                </>
+              );
+
+              if (item.href) {
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="flex items-center gap-3 rounded-xl border border-border/50 bg-[hsl(var(--control-bg))] px-4 py-3 transition-colors hover:border-primary/25 hover:bg-cream"
+                  >
+                    {inner}
+                  </a>
+                );
+              }
+
+              return (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-3 rounded-xl border border-border/50 bg-[hsl(var(--control-bg))] px-4 py-3"
+                >
+                  {inner}
+                </div>
+              );
+            })}
           </div>
+
+          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{t("responseNote")}</p>
         </aside>
 
         <section>
           <ContactForm />
         </section>
       </div>
-    </div>
+    </MarketingPageShell>
   );
 }

@@ -71,18 +71,20 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="rounded-3xl border border-primary/20 bg-primary/5 p-8">
+      <div className="surface-panel rounded-2xl border-primary/20 bg-primary/5 p-8">
         <p className="font-display text-2xl font-semibold text-brand-blue">{t("successTitle")}</p>
-        <p className="mt-2 text-muted-foreground">{t("successDescription")}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("successDescription")}</p>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5 rounded-3xl border border-border/70 bg-white p-6 shadow-sm md:p-8"
-    >
+    <form onSubmit={handleSubmit} className="surface-panel space-y-5 rounded-2xl p-6 md:p-8">
+      <div>
+        <p className="ui-section-title">{t("formTitle")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{t("formSubtitle")}</p>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="contact-company">{t("form.company")}</Label>
@@ -138,7 +140,7 @@ export function ContactForm() {
         />
       </div>
 
-      <Button type="submit" size="lg" className="h-11 gap-2 rounded-full px-8" disabled={submitting}>
+      <Button type="submit" className="h-10 gap-2 px-6" disabled={submitting}>
         <Send className="h-4 w-4" />
         {submitting ? t("form.submitting") : t("form.submit")}
       </Button>
