@@ -12,6 +12,7 @@ test.describe("Admin KPI dashboard (Phase 10.1)", () => {
     await expect(page.getByText("Дохід (7 днів)")).toBeVisible();
     await expect(page.getByText("Усього замовлень")).toBeVisible();
     await expect(page.getByText("Топ-набір")).toBeVisible();
+    await expect(page.getByText("Запити (7 днів)")).toBeVisible();
 
     await page.screenshot({
       path: "/opt/cursor/artifacts/admin_kpi_dashboard.png",

@@ -2,7 +2,15 @@
 
 import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ShoppingBag, CreditCard, Package, Award, ArrowUpRight, TrendingDown } from "lucide-react";
+import {
+  ShoppingBag,
+  CreditCard,
+  Package,
+  Award,
+  ArrowUpRight,
+  TrendingDown,
+  FileText,
+} from "lucide-react";
 import { computeAdminKpis, type KpiOrderInput } from "@/lib/data/admin-kpis";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
@@ -11,9 +19,10 @@ import type { Product } from "@/types/database";
 type AdminKpiCardsProps = {
   orders: KpiOrderInput[];
   products: Product[];
+  quotesThisWeek?: number;
 };
 
-export function AdminKpiCards({ orders, products }: AdminKpiCardsProps) {
+export function AdminKpiCards({ orders, products, quotesThisWeek }: AdminKpiCardsProps) {
   const t = useTranslations("admin.kpi");
   const locale = useLocale();
   const localeStr = locale === "uk" ? "uk-UA" : "en-US";
@@ -37,7 +46,7 @@ export function AdminKpiCards({ orders, products }: AdminKpiCardsProps) {
   const deltaPositive = delta !== null && delta >= 0;
 
   return (
-    <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       <div className="glass rounded-2xl p-5 premium-shadow">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">{t("ordersThisWeek")}</p>
@@ -92,6 +101,18 @@ export function AdminKpiCards({ orders, products }: AdminKpiCardsProps) {
           {topProductLabel}
         </p>
       </div>
+
+      {typeof quotesThisWeek === "number" && (
+        <div className="glass rounded-2xl p-5 premium-shadow">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">{t("quotesThisWeek")}</p>
+            <FileText className="h-5 w-5 text-primary" />
+          </div>
+          <p className="mt-2 font-display text-3xl font-bold text-brand-blue">
+            {quotesThisWeek}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
