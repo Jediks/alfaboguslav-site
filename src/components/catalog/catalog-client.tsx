@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { PricingTier, Product } from "@/types/database";
 import { ProductCard } from "./product-card";
+import { CompareBar } from "./compare-bar";
 import {
   CatalogFiltersPanel,
   filterProducts,
@@ -70,6 +71,7 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
         </div>
       </div>
       </div>
+      <CompareBar />
     </div>
   );
 }

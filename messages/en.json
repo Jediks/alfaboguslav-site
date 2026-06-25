@@ -93,6 +93,20 @@
     "quoteRateLimitDescription": "Please try again in {seconds}s."
   },
   "catalog": {
+    "compare": {
+      "add": "Compare",
+      "added": "Added",
+      "remove": "Remove",
+      "limit": "Up to {max} sets",
+      "selected": "Selected to compare: {count}",
+      "compareN": "Compare ({count})",
+      "clear": "Clear",
+      "title": "Compare sets",
+      "empty": "You haven't selected any sets to compare yet.",
+      "browse": "Browse catalog",
+      "tags": "Tags",
+      "sweetsCount": "Items count"
+    },
     "label": "B2B Marketplace",
     "title": "Gift catalog",
     "subtitle": "Choose the perfect set for your team",

@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ProductImage } from "@/components/catalog/product-image";
+import { CompareToggle } from "@/components/catalog/compare-toggle";
 import { Badge } from "@/components/ui/badge";
 import type { PricingTier, Product } from "@/types/database";
 import { getProductTitle } from "@/lib/data/product-utils";
@@ -69,6 +70,7 @@ export function ProductCard({ product, pricingByProductId, index = 0 }: ProductC
           className="group overflow-hidden rounded-3xl bg-white premium-shadow transition-shadow duration-500 hover:premium-shadow-hover"
         >
           <div className="relative aspect-[4/5] overflow-hidden">
+            <CompareToggle productId={product.id} />
             <ProductImage
               src={product.images[0]}
               alt={getProductTitle(product, locale)}
