@@ -14,22 +14,40 @@ type TestimonialsMarqueeProps = {
   block?: TestimonialsBlockData;
 };
 
-type Review = { name: string; company: string; text: string };
+type Review = { name: string; company: string; text: string; rating: number };
+
+function clampRating(value: number | undefined): number {
+  if (typeof value !== "number" || Number.isNaN(value)) return 5;
+  return Math.max(1, Math.min(5, Math.round(value)));
+}
 
 function localize(item: TestimonialItem, locale: string): Review {
   return {
     name: item.name,
     company: item.company,
     text: locale === "en" ? item.text_en : item.text_uk,
+    rating: clampRating(item.rating),
   };
 }
 
 function ReviewCard({ review }: { review: Review }) {
   return (
     <div className="w-[min(90vw,380px)] shrink-0 rounded-2xl border border-border/50 bg-white p-6 premium-shadow">
-      <div className="mb-4 flex gap-1">
+      <div
+        className="mb-4 flex gap-1"
+        aria-label={`${review.rating}/5`}
+        data-testid="review-stars"
+        data-rating={review.rating}
+      >
         {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} className="h-4 w-4 fill-gold text-gold" />
+          <Star
+            key={i}
+            className={
+              i < review.rating
+                ? "h-4 w-4 fill-gold text-gold"
+                : "h-4 w-4 text-muted-foreground/30"
+            }
+          />
         ))}
       </div>
       <p className="text-sm leading-relaxed text-foreground">&ldquo;{review.text}&rdquo;</p>

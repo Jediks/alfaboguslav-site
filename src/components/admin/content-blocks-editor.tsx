@@ -437,6 +437,25 @@ export function ContentBlocksEditor({
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor={`t-rating-${idx}`}>{t("reviewRating")}</Label>
+                  <Input
+                    id={`t-rating-${idx}`}
+                    type="number"
+                    min={1}
+                    max={5}
+                    value={item.rating ?? 5}
+                    onChange={(e) =>
+                      updateTestimonialItem(idx, {
+                        rating: Math.max(
+                          1,
+                          Math.min(5, Number(e.target.value) || 5)
+                        ),
+                      })
+                    }
+                    className="w-24"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor={`t-uk-${idx}`}>{t("reviewTextUk")}</Label>
                   <Textarea
                     id={`t-uk-${idx}`}
