@@ -10,6 +10,8 @@ import { ProductGallery } from "./product-gallery";
 import { CompositionTable } from "./composition-table";
 import { PricingCalculator } from "./pricing-calculator";
 import { LogoUpload } from "./logo-upload";
+import { CompareToggle } from "@/components/catalog/compare-toggle";
+import { CompareBar } from "@/components/catalog/compare-bar";
 
 type ProductDetailClientProps = {
   product: Product;
@@ -48,12 +50,15 @@ export function ProductDetailClient({ product, tiers }: ProductDetailClientProps
             <p className="mt-4 leading-relaxed text-muted-foreground">
               {getProductDesc(product, locale)}
             </p>
-            <div className="mt-4 flex gap-4 text-sm text-muted-foreground">
+            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <span>{product.weight_grams}g</span>
               <span>·</span>
               <span>
                 {tProduct("packaging")}: {t(`packagingTypes.${product.packaging_type}`)}
               </span>
+            </div>
+            <div className="mt-5">
+              <CompareToggle productId={product.id} variant="inline" />
             </div>
           </div>
 
@@ -73,6 +78,7 @@ export function ProductDetailClient({ product, tiers }: ProductDetailClientProps
         </h2>
         <CompositionTable composition={product.composition} />
       </div>
+      <CompareBar />
     </div>
   );
 }

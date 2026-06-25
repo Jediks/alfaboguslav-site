@@ -113,6 +113,8 @@
     "title": "Gift catalog",
     "subtitle": "Choose the perfect set for your team",
     "recentlyViewed": "Recently viewed",
+    "searchLabel": "Search sets",
+    "searchPlaceholder": "Name, SKU or tag…",
     "sort": {
       "label": "Sort",
       "featured": "Featured",
@@ -243,6 +245,12 @@
     "quickLinkProfile": "Update company details",
     "quickLinkAssets": "Manage brand files",
     "quickLinkOrders": "Review order history",
+    "kpi": {
+      "totalOrders": "Total orders",
+      "pending": "Pending",
+      "active": "In progress",
+      "totalSpent": "Total spent"
+    },
     "noOrders": "No orders yet",
     "downloadInvoice": "Download invoice",
     "viewInvoice": "View invoice",

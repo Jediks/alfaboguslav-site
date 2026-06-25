@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Search } from "lucide-react";
 import type { PricingTier, Product } from "@/types/database";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -35,8 +37,18 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
     getDefaultFilters(products, pricingByProductId)
   );
   const [sort, setSort] = useState<SortKey>("featured");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredBase = filterProducts(products, filters, pricingByProductId);
+  const filteredBase = useMemo(() => {
+    let list = filterProducts(products, filters, pricingByProductId);
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return list;
+    return list.filter((product) => {
+      const title = getProductTitle(product, locale).toLowerCase();
+      if (title.includes(query) || product.id.toLowerCase().includes(query)) return true;
+      return product.b2b_tags.some((tag) => tag.toLowerCase().includes(query));
+    });
+  }, [products, filters, pricingByProductId, searchQuery, locale]);
 
   const filtered = useMemo(() => {
     const minPrice = (id: string) => pricingByProductId[id]?.[0]?.price ?? 0;
@@ -83,6 +95,16 @@ export function CatalogClient({ products, pricingByProductId }: CatalogClientPro
             pricingByProductId={pricingByProductId}
           />
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="relative min-w-[220px] flex-1 max-w-md">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("searchLabel")}
+                className="pl-9"
+              />
+            </div>
             <p className="text-sm text-muted-foreground">
               {t("results", { count: filtered.length })}
             </p>

@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, Scale } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import { MAX_COMPARE, useCompareStore } from "@/stores/compare-store";
 
-export function CompareToggle({ productId }: { productId: string }) {
+type CompareToggleProps = {
+  productId: string;
+  variant?: "card" | "inline";
+};
+
+export function CompareToggle({ productId, variant = "card" }: CompareToggleProps) {
   const t = useTranslations("catalog.compare");
   const ids = useCompareStore((s) => s.ids);
   const toggle = useCompareStore((s) => s.toggle);
@@ -23,6 +29,24 @@ export function CompareToggle({ productId }: { productId: string }) {
     if (atLimit) return;
     toggle(productId);
   };
+
+  if (variant === "inline") {
+    return (
+      <Button
+        type="button"
+        variant={active ? "default" : "outline"}
+        size="sm"
+        onClick={handleClick}
+        disabled={atLimit}
+        aria-pressed={active}
+        title={atLimit ? t("limit", { max: MAX_COMPARE }) : active ? t("remove") : t("add")}
+        className="gap-2"
+      >
+        {active ? <Check className="h-4 w-4" /> : <Scale className="h-4 w-4" />}
+        {active ? t("added") : t("add")}
+      </Button>
+    );
+  }
 
   return (
     <button

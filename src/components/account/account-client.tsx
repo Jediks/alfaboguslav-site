@@ -19,6 +19,7 @@ import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus } from "@/types/database";
 import type { Product } from "@/types/database";
+import { AccountKpiCards } from "./account-kpi-cards";
 
 const statusVariant: Record<OrderStatus, "default" | "secondary" | "outline"> = {
   pending: "outline",
@@ -129,6 +130,8 @@ export function AccountClient({
           <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkOrders")}</p>
         </Link>
       </div>
+
+      <AccountKpiCards orders={orders} />
 
       <div className="glass rounded-3xl p-6 premium-shadow">
         <h2 className="mb-4 font-display text-xl font-semibold">{t("orders")}</h2>

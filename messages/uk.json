@@ -113,6 +113,8 @@
       "addedToCart": "{name} додано в кошик"
     },
     "recentlyViewed": "Нещодавно переглянуті",
+    "searchLabel": "Пошук наборів",
+    "searchPlaceholder": "Назва, артикул або тег…",
     "sort": {
       "label": "Сортування",
       "featured": "Рекомендовані",
@@ -243,6 +245,12 @@
     "quickLinkProfile": "Оновити дані компанії",
     "quickLinkAssets": "Керувати бренд-файлами",
     "quickLinkOrders": "Переглянути історію замовлень",
+    "kpi": {
+      "totalOrders": "Усього замовлень",
+      "pending": "Очікують",
+      "active": "В обробці",
+      "totalSpent": "Загальна сума"
+    },
     "noOrders": "Замовлень поки немає",
     "downloadInvoice": "Завантажити рахунок",
     "viewInvoice": "Переглянути рахунок",
