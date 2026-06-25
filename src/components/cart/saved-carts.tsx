@@ -31,7 +31,7 @@ export function SavedCarts() {
   };
 
   return (
-    <div className="mt-8 glass rounded-3xl p-6 premium-shadow">
+    <div className="mt-8 surface-panel rounded-2xl p-6">
       <div className="mb-4 flex items-center gap-2">
         <Bookmark className="h-5 w-5 text-primary" />
         <h2 className="font-display text-lg font-semibold text-brand-blue">

@@ -4,11 +4,12 @@ import { useRef, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { HeroAmbience } from "./hero-ambience";
 import { DEFAULT_HERO_BLOCK, type HeroBlockData } from "@/types/content-blocks";
+import { useReducedMotion } from "@/lib/motion/use-reduced-motion";
 
 type HeroProps = {
   block?: HeroBlockData;
@@ -20,6 +21,8 @@ function pickLocalized(uk: string, en: string, locale: string) {
 
 export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
   const locale = useLocale();
+  const t = useTranslations("home");
+  const reducedMotion = useReducedMotion();
   const imageRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -30,13 +33,14 @@ export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
+      if (reducedMotion) return;
       const el = imageRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
       mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
     },
-    [mouseX, mouseY]
+    [mouseX, mouseY, reducedMotion]
   );
 
   const heroTitle = pickLocalized(block.title_uk, block.title_en, locale).trim();
@@ -151,7 +155,7 @@ export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
             {(block.stats?.length ? block.stats : DEFAULT_HERO_BLOCK.stats).map(
               (s, i) => (
                 <div key={`${s.value}-${i}`}>
-                  <p className="font-display text-xl font-bold md:text-2xl">
+                  <p className="font-display text-xl font-semibold tabular-nums md:text-2xl">
                     {s.value}
                   </p>
                   <p className="mt-1 text-[10px] uppercase tracking-wider text-white/40 md:text-xs">
@@ -178,7 +182,7 @@ export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
             <div className="hero-float-wrap relative h-full w-full">
               <Image
                 src={block.image_url || DEFAULT_HERO_BLOCK.image_url}
-                alt=""
+                alt={heroTitle || t("heroImageAlt")}
                 fill
                 priority
                 sizes="(min-width: 1024px) 58vw, 100vw"
@@ -190,10 +194,10 @@ export function Hero({ block = DEFAULT_HERO_BLOCK }: HeroProps) {
           <motion.div
             animate={{ y: [0, -5, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-[6%] left-0 z-20 rounded-2xl border border-white/20 bg-white/15 px-6 py-4 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-7 sm:py-4 lg:bottom-[18%] lg:left-[4%]"
+            className="absolute bottom-[6%] left-0 z-20 rounded-2xl border border-white/20 bg-white/10 px-5 py-3 backdrop-blur-md sm:px-6 sm:py-4 lg:bottom-[18%] lg:left-[4%]"
           >
-            <p className="font-display text-2xl font-bold leading-none text-gold">VIP</p>
-            <p className="mt-1.5 text-xs font-medium text-white/80 sm:text-sm">{vipBadge}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">VIP</p>
+            <p className="mt-1 text-xs font-medium leading-snug text-white/85 sm:text-sm">{vipBadge}</p>
           </motion.div>
         </motion.div>
       </div>

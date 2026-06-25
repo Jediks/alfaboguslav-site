@@ -96,7 +96,7 @@ export function CatalogFiltersPanel({
   };
 
   return (
-    <div className="glass sticky top-24 rounded-3xl p-6 premium-shadow">
+    <div className="surface-panel sticky top-24 rounded-2xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2 font-display font-semibold text-brand-blue">
           <SlidersHorizontal className="h-4 w-4" />

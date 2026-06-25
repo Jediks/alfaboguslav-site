@@ -124,7 +124,7 @@ export function CartClient({ products, pricingByProductId }: CartClientProps) {
         })}
       </div>
 
-      <div className="mt-8 glass rounded-3xl p-6 premium-shadow">
+      <div className="mt-8 surface-panel rounded-2xl p-6">
         <div className="flex justify-between font-display text-xl font-bold">
           <span>{t("estimatedTotal")}</span>
           <span className="text-primary">{formatPrice(total, localeStr)}</span>

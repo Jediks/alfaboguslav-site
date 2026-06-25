@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Clock, Package, ShoppingBag, Wallet } from "lucide-react";
+import { StatCard } from "@/components/ui/stat-card";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus } from "@/types/database";
 
@@ -44,41 +45,15 @@ export function AccountKpiCards({ orders }: AccountKpiCardsProps) {
 
   return (
     <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("totalOrders")}</p>
-          <ShoppingBag className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-3xl font-bold text-brand-blue">
-          {kpis.totalOrders}
-        </p>
-      </div>
-
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("pending")}</p>
-          <Clock className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-3xl font-bold text-brand-blue">{kpis.pending}</p>
-      </div>
-
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("active")}</p>
-          <Package className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-3xl font-bold text-brand-blue">{kpis.active}</p>
-      </div>
-
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("totalSpent")}</p>
-          <Wallet className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-2xl font-bold text-brand-blue">
-          {formatPrice(kpis.totalSpent, localeStr)}
-        </p>
-      </div>
+      <StatCard label={t("totalOrders")} value={kpis.totalOrders} icon={ShoppingBag} hero />
+      <StatCard label={t("pending")} value={kpis.pending} icon={Clock} hero />
+      <StatCard label={t("active")} value={kpis.active} icon={Package} hero />
+      <StatCard
+        label={t("totalSpent")}
+        value={formatPrice(kpis.totalSpent, localeStr)}
+        icon={Wallet}
+        hero
+      />
     </div>
   );
 }

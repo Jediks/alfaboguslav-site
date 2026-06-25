@@ -11,6 +11,7 @@ import {
   TrendingDown,
   FileText,
 } from "lucide-react";
+import { StatCard } from "@/components/ui/stat-card";
 import { computeAdminKpis, type KpiOrderInput } from "@/lib/data/admin-kpis";
 import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
@@ -47,71 +48,53 @@ export function AdminKpiCards({ orders, products, quotesThisWeek }: AdminKpiCard
 
   return (
     <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("ordersThisWeek")}</p>
-          <ShoppingBag className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-3xl font-bold text-brand-blue">
-          {kpis.ordersThisWeek}
-        </p>
-        {delta !== null && (
-          <p
-            className={`mt-1 flex items-center gap-1 text-xs font-medium ${
-              deltaPositive ? "text-emerald-600" : "text-red-500"
-            }`}
-          >
-            {deltaPositive ? (
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            ) : (
-              <TrendingDown className="h-3.5 w-3.5" />
-            )}
-            {deltaPositive ? "+" : ""}
-            {delta}% {t("vsPriorWeek")}
-          </p>
-        )}
-      </div>
-
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("revenueThisWeek")}</p>
-          <CreditCard className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-3xl font-bold text-brand-blue">
-          {formatPrice(kpis.revenueThisWeek, localeStr)}
-        </p>
-      </div>
-
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("totalOrders")}</p>
-          <Package className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 font-display text-3xl font-bold text-brand-blue">
-          {kpis.totalOrders}
-        </p>
-      </div>
-
-      <div className="glass rounded-2xl p-5 premium-shadow">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{t("topSet")}</p>
-          <Award className="h-5 w-5 text-primary" />
-        </div>
-        <p className="mt-2 text-sm font-semibold leading-snug text-brand-blue">
-          {topProductLabel}
-        </p>
-      </div>
-
+      <StatCard
+        label={t("ordersThisWeek")}
+        value={kpis.ordersThisWeek}
+        icon={ShoppingBag}
+        hero
+        hint={
+          delta !== null ? (
+            <p
+              className={`flex items-center gap-1 text-xs font-medium tabular-nums ${
+                deltaPositive ? "text-emerald-600" : "text-red-500"
+              }`}
+            >
+              {deltaPositive ? (
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              ) : (
+                <TrendingDown className="h-3.5 w-3.5" />
+              )}
+              {deltaPositive ? "+" : ""}
+              {delta}% {t("vsPriorWeek")}
+            </p>
+          ) : undefined
+        }
+      />
+      <StatCard
+        label={t("revenueThisWeek")}
+        value={formatPrice(kpis.revenueThisWeek, localeStr)}
+        icon={CreditCard}
+        hero
+      />
+      <StatCard
+        label={t("totalOrders")}
+        value={kpis.totalOrders}
+        icon={Package}
+        hero
+      />
+      <StatCard
+        label={t("topSet")}
+        value={<span className="text-base font-semibold leading-snug">{topProductLabel}</span>}
+        icon={Award}
+      />
       {typeof quotesThisWeek === "number" && (
-        <div className="glass rounded-2xl p-5 premium-shadow">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">{t("quotesThisWeek")}</p>
-            <FileText className="h-5 w-5 text-primary" />
-          </div>
-          <p className="mt-2 font-display text-3xl font-bold text-brand-blue">
-            {quotesThisWeek}
-          </p>
-        </div>
+        <StatCard
+          label={t("quotesThisWeek")}
+          value={quotesThisWeek}
+          icon={FileText}
+          hero
+        />
       )}
     </div>
   );

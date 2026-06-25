@@ -63,17 +63,24 @@ export function B2bConfigurator({ products, pricingByProductId }: B2bConfigurato
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-          <div className="rounded-[2rem] border border-border/50 bg-cream p-8 premium-shadow md:p-10">
+          <div className="surface-panel rounded-2xl p-6 md:p-8">
             <div className="mb-8">
+              <p className="mb-3 text-center text-xs text-muted-foreground" aria-live="polite">
+                {t("configStepOf", { current: step + 1, total: STEP_COUNT })}
+              </p>
               <div className="mb-3 flex justify-between gap-2">
                 {stepLabels.map((label, i) => (
                   <button
                     key={label}
                     type="button"
-                    onClick={() => i < step && setStep(i)}
+                    aria-current={i === step ? "step" : undefined}
+                    onClick={() => {
+                      if (i <= step) setStep(i);
+                    }}
+                    disabled={i > step}
                     className={cn(
                       "flex flex-1 flex-col items-center gap-1.5 text-center",
-                      i <= step ? "cursor-pointer" : "cursor-default"
+                      i <= step ? "cursor-pointer" : "cursor-not-allowed opacity-60"
                     )}
                   >
                     <span
@@ -88,7 +95,7 @@ export function B2bConfigurator({ products, pricingByProductId }: B2bConfigurato
                     </span>
                     <span
                       className={cn(
-                        "hidden text-[10px] font-medium uppercase tracking-wide sm:block",
+                        "text-[10px] font-medium uppercase tracking-wide",
                         i === step ? "text-brand-blue" : "text-muted-foreground"
                       )}
                     >
@@ -243,6 +250,33 @@ export function B2bConfigurator({ products, pricingByProductId }: B2bConfigurato
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {recommendation && step === 2 && (
+              <div className="mt-6 overflow-hidden rounded-2xl border border-border/60 bg-brand-blue text-white lg:hidden">
+                <div className="relative h-48">
+                  <ProductImage
+                    src={recommendation.product.images[0]}
+                    alt={getProductTitle(recommendation.product, locale)}
+                    sizes="100vw"
+                    variant="dark"
+                    size="fill"
+                    className="absolute inset-0"
+                    imageClassName="scale-110"
+                  />
+                </div>
+                <div className="border-t border-white/10 p-4">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/50">
+                    {t("configResult")}
+                  </p>
+                  <p className="mt-1 font-display text-lg font-semibold leading-snug">
+                    {getProductTitle(recommendation.product, locale)}
+                  </p>
+                  <p className="mt-1 text-sm tabular-nums text-white/70">
+                    {formatPrice(recommendation.minPrice, localeStr)} / {t("configUnit")}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="relative hidden lg:block lg:min-h-[720px]">

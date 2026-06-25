@@ -117,7 +117,7 @@ export function AccountAssetsClient({ initialAssets }: AccountAssetsClientProps)
           {assets.map((asset) => (
             <li
               key={asset.id}
-              className="glass rounded-2xl p-4 premium-shadow"
+              className="surface-panel rounded-2xl p-4"
             >
               <div className="relative h-32 w-full overflow-hidden rounded-xl border bg-white">
                 <Image

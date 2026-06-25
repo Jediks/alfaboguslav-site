@@ -73,7 +73,11 @@ export function QuoteRequestForm() {
 
   if (sent) {
     return (
-      <div className="relative mx-auto mt-10 max-w-lg overflow-hidden rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-md">
+      <div
+        className="relative mx-auto mt-10 max-w-lg overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-8 backdrop-blur-md"
+        role="status"
+        aria-live="polite"
+      >
         <SparkleBurst active />
         <p className="font-display text-xl font-semibold text-white">{t("quoteSuccessTitle")}</p>
         <p className="mt-2 text-sm text-white/65">{t("quoteSuccessDesc")}</p>
@@ -84,7 +88,7 @@ export function QuoteRequestForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto mt-10 max-w-xl space-y-4 rounded-3xl border border-white/15 bg-white/10 p-6 text-left backdrop-blur-md md:p-8"
+      className="mx-auto mt-10 max-w-xl space-y-4 rounded-2xl border border-white/15 bg-white/10 p-6 text-left backdrop-blur-md md:p-8"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">

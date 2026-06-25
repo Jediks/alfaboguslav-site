@@ -275,7 +275,7 @@ export function AdminClient({
         </TabsList>
 
         <TabsContent value="orders">
-          <div className="glass rounded-3xl p-6 premium-shadow">
+          <div className="surface-panel rounded-2xl p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-3">
                 <Input
@@ -390,7 +390,7 @@ export function AdminClient({
         </TabsContent>
 
         <TabsContent value="quotes">
-          <div className="glass rounded-3xl p-6 premium-shadow">
+          <div className="surface-panel rounded-2xl p-6">
             {quotes.length === 0 ? (
               <p className="py-8 text-center text-muted-foreground">{t("noQuotes")}</p>
             ) : (
@@ -501,7 +501,7 @@ export function AdminClient({
               <Button>{t("addProduct")}</Button>
             </Link>
           </div>
-          <div className="glass rounded-3xl p-6 premium-shadow">
+          <div className="surface-panel rounded-2xl p-6">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -545,7 +545,7 @@ export function AdminClient({
         </TabsContent>
 
         <TabsContent value="audit">
-          <div className="glass rounded-3xl p-6 premium-shadow">
+          <div className="surface-panel rounded-2xl p-6">
             {auditLog.length === 0 ? (
               <p className="py-8 text-center text-muted-foreground">
                 {t("auditEmpty")}

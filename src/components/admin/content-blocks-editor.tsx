@@ -190,7 +190,7 @@ export function ContentBlocksEditor({
         </div>
       )}
 
-      <section className="glass rounded-3xl p-6 premium-shadow">
+      <section className="surface-panel rounded-2xl p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <h2 className="font-display text-xl font-semibold text-brand-blue">
@@ -384,7 +384,7 @@ export function ContentBlocksEditor({
         </div>
       </section>
 
-      <section className="glass rounded-3xl p-6 premium-shadow">
+      <section className="surface-panel rounded-2xl p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <h2 className="font-display text-xl font-semibold text-brand-blue">

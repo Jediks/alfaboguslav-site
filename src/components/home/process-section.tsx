@@ -16,16 +16,25 @@ export function ProcessSection() {
   const reducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [activeStep, setActiveStep] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion || !isDesktop) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const steps = stepRefs.current.filter(Boolean) as HTMLDivElement[];
+      const steps = stepRefs.current.filter(Boolean) as HTMLButtonElement[];
 
       const setActive = (active: number) => {
         setActiveStep(active);
@@ -55,7 +64,14 @@ export function ProcessSection() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [reducedMotion]);
+  }, [reducedMotion, isDesktop]);
+
+  const selectStep = (index: number) => {
+    setActiveStep(index);
+    stepRefs.current.forEach((step, i) => {
+      if (step) step.dataset.active = i === index ? "true" : "false";
+    });
+  };
 
   return (
     <section ref={sectionRef} className="relative bg-cream">
@@ -65,11 +81,13 @@ export function ProcessSection() {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
               01 — 04
             </p>
-            <h2 className="mt-3 font-display text-4xl font-bold text-brand-blue md:text-5xl">
+            <h2 className="mt-3 text-balance font-display text-4xl font-semibold tracking-tight text-brand-blue md:text-5xl">
               {t("featuresTitle")}
             </h2>
           </div>
-          <p className="mt-4 max-w-sm text-muted-foreground md:mt-0">{t("featuresSubtitle")}</p>
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground md:mt-0">
+            {t("featuresSubtitle")}
+          </p>
         </div>
 
         <div className="mb-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -88,32 +106,36 @@ export function ProcessSection() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {keys.map((key, i) => {
             const Icon = icons[i];
+            const isActive = i === activeStep;
             return (
-              <div
+              <button
                 key={key}
+                type="button"
                 ref={(el) => {
                   stepRefs.current[i] = el;
                 }}
-                data-active={i === activeStep ? "true" : "false"}
-                className="process-step group relative rounded-3xl border border-border/60 bg-white p-8 opacity-40 transition-[opacity,transform,box-shadow,border-color,background-color] duration-500 data-[active=true]:scale-[1.02] data-[active=true]:border-primary/40 data-[active=true]:bg-white data-[active=true]:opacity-100 data-[active=true]:shadow-xl data-[active=true]:shadow-primary/10 md:p-10"
+                data-active={isActive ? "true" : "false"}
+                aria-pressed={isActive}
+                onClick={() => selectStep(i)}
+                className="process-step group relative rounded-2xl border border-border/60 bg-white p-6 text-left opacity-60 transition-[opacity,transform,box-shadow,border-color] duration-300 hover:opacity-80 data-[active=true]:scale-[1.01] data-[active=true]:border-primary/40 data-[active=true]:opacity-100 data-[active=true]:shadow-md data-[active=true]:shadow-primary/5 md:p-8"
               >
                 <div className="flex items-start justify-between gap-5">
-                  <span className="block origin-top-left font-display text-5xl font-bold leading-none text-muted-foreground/15 transition-[transform,color] duration-500 ease-out will-change-transform group-data-[active=true]:scale-110 group-data-[active=true]:text-primary/30">
+                  <span className="block font-display text-4xl font-bold leading-none text-muted-foreground/20 transition-colors duration-300 group-data-[active=true]:text-primary/25">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <div className="flex h-12 w-12 shrink-0 origin-top-right items-center justify-center rounded-2xl bg-brand-blue/5 text-brand-blue/60 transition-[transform,background-color,color] duration-500 ease-out will-change-transform group-data-[active=true]:scale-110 group-data-[active=true]:bg-primary group-data-[active=true]:text-white">
-                    <Icon className="h-6 w-6" />
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-blue/5 text-brand-blue/70 transition-colors duration-300 group-data-[active=true]:bg-primary group-data-[active=true]:text-white">
+                    <Icon className="h-5 w-5" aria-hidden />
                   </div>
                 </div>
-                <div className="mt-8 min-h-[4.5rem]">
-                  <h3 className="origin-top-left font-display text-xl font-bold leading-snug text-brand-blue/50 transition-[transform,color] duration-500 ease-out will-change-transform group-data-[active=true]:scale-110 group-data-[active=true]:text-brand-blue">
+                <div className="mt-6 min-h-[3.5rem]">
+                  <h3 className="font-display text-lg font-semibold leading-snug text-brand-blue/70 transition-colors duration-300 group-data-[active=true]:text-brand-blue">
                     {t(`${key}Title`)}
                   </h3>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground/60 transition-colors duration-500 group-data-[active=true]:text-muted-foreground">
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground/80 transition-colors duration-300 group-data-[active=true]:text-muted-foreground">
                   {t(`${key}Desc`)}
                 </p>
-              </div>
+              </button>
             );
           })}
         </div>

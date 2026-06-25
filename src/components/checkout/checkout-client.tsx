@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { CreditCard, FileText, Truck } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -152,13 +153,11 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="mb-8 font-display text-3xl font-bold text-brand-blue">{t("title")}</h1>
+      <PageHeader title={t("title")} />
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="glass rounded-3xl p-6 premium-shadow">
-          <Label className="mb-4 block font-display font-semibold text-brand-blue">
-            {t("companyDetails")}
-          </Label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="surface-panel rounded-2xl p-6">
+          <p className="ui-section-title mb-4">{t("companyDetails")}</p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="company">{t("companyName")}</Label>
@@ -201,10 +200,10 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
           </div>
         </div>
 
-        <div className="glass rounded-3xl p-6 premium-shadow">
-          <div className="mb-4 flex items-center gap-2 font-display font-semibold text-brand-blue">
-            <Truck className="h-5 w-5" />
-            {t("delivery")}
+        <div className="surface-panel rounded-2xl p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Truck className="h-4 w-4 text-muted-foreground" aria-hidden />
+            <p className="ui-section-title">{t("delivery")}</p>
           </div>
           <Textarea
             value={delivery}
@@ -216,21 +215,19 @@ export function CheckoutClient({ pricingByProductId, profilePrefill }: CheckoutC
           />
         </div>
 
-        <div className="glass rounded-3xl p-6 premium-shadow">
-          <Label className="mb-4 block font-display font-semibold text-brand-blue">
-            {t("payment")}
-          </Label>
+        <div className="surface-panel rounded-2xl p-6">
+          <p className="ui-section-title mb-4">{t("payment")}</p>
           <RadioGroup
             value={payment}
             onValueChange={(v) => setPayment(v as PaymentMethod)}
             className="space-y-3"
           >
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border/50 p-4 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-border/60 p-4 transition-colors hover:bg-muted/40 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
               <RadioGroupItem value="online" />
               <CreditCard className="h-5 w-5 text-muted-foreground" />
               <span>{t("paymentOnline")}</span>
             </label>
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-border/50 p-4 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-border/60 p-4 transition-colors hover:bg-muted/40 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
               <RadioGroupItem value="invoice" />
               <FileText className="h-5 w-5 text-muted-foreground" />
               <span>{t("paymentInvoice")}</span>

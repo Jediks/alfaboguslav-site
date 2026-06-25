@@ -32,7 +32,7 @@ function localize(item: TestimonialItem, locale: string): Review {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <div className="w-[min(90vw,380px)] shrink-0 rounded-2xl border border-border/50 bg-white p-6 premium-shadow">
+    <div className="surface-panel w-[min(90vw,380px)] shrink-0 rounded-2xl p-6">
       <div
         className="mb-4 flex gap-1"
         aria-label={`${review.rating}/5`}
@@ -87,10 +87,15 @@ export function TestimonialsMarquee({
         <MarqueeText items={brands} className="text-brand-blue/25" speed="slow" />
       </div>
 
-      <div className="flex gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6">
+      <div
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 scrollbar-hide md:justify-center md:gap-6 md:snap-none"
+        role="list"
+      >
         {items.map((review, i) => (
           <motion.div
             key={`${review.name}-${i}`}
+            role="listitem"
+            className="snap-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

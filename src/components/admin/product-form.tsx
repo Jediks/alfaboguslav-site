@@ -216,17 +216,17 @@ export function ProductForm({ mode, product, initialTiers = [] }: ProductFormPro
         </div>
       </div>
 
-      <div className="glass rounded-3xl p-6 premium-shadow">
+      <div className="surface-panel rounded-2xl p-6">
         <h2 className="mb-4 font-semibold">Фото</h2>
         <ProductImageUpload images={images} onChange={setImages} />
       </div>
 
-      <div className="glass rounded-3xl p-6 premium-shadow">
+      <div className="surface-panel rounded-2xl p-6">
         <h2 className="mb-4 font-semibold">Склад набору</h2>
         <CompositionEditor items={composition} onChange={setComposition} />
       </div>
 
-      <div className="glass rounded-3xl p-6 premium-shadow">
+      <div className="surface-panel rounded-2xl p-6">
         <h2 className="mb-4 font-semibold">Ціни (B2B tiers)</h2>
         <PricingTiersEditor tiers={tiers} onChange={setTiers} />
       </div>

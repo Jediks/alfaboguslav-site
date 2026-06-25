@@ -114,7 +114,7 @@ export function AdminOrderDetail({
       </div>
 
       <div className="space-y-6">
-        <div className="glass rounded-3xl p-6 premium-shadow">
+        <div className="surface-panel rounded-2xl p-6">
           <h2 className="mb-4 font-display font-semibold text-brand-blue">{t("company")}</h2>
           <dl className="grid gap-3 text-sm sm:grid-cols-2">
             <div>
@@ -151,7 +151,7 @@ export function AdminOrderDetail({
           </dl>
         </div>
 
-        <div className="glass rounded-3xl p-6 premium-shadow">
+        <div className="surface-panel rounded-2xl p-6">
           <h2 className="mb-4 font-display font-semibold text-brand-blue">{tCheckout("delivery")}</h2>
           <p className="text-sm leading-relaxed">{deliveryNotes || order.delivery_address}</p>
           <p className="mt-4 text-sm text-muted-foreground">
@@ -162,7 +162,7 @@ export function AdminOrderDetail({
           </p>
         </div>
 
-        <div className="glass rounded-3xl p-6 premium-shadow">
+        <div className="surface-panel rounded-2xl p-6">
           <h2 className="mb-4 font-display font-semibold text-brand-blue">{t("orderItems")}</h2>
           <ul className="space-y-3">
             {items.map((item) => {

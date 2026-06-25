@@ -1,7 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { AccountClient } from "@/components/account/account-client";
 import { fetchOrdersByEmail } from "@/lib/data/orders";
-import { getProducts } from "@/lib/data/products";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseEnv } from "@/lib/supabase/config";
 
@@ -11,7 +10,6 @@ type AccountPageProps = {
 
 export default async function AccountPage({ params: { locale } }: AccountPageProps) {
   setRequestLocale(locale);
-  const products = await getProducts();
 
   let supabaseOrders: Awaited<ReturnType<typeof fetchOrdersByEmail>> = [];
 
@@ -28,7 +26,6 @@ export default async function AccountPage({ params: { locale } }: AccountPagePro
   return (
     <AccountClient
       supabaseOrders={supabaseOrders}
-      products={products}
       supabaseEnabled={hasSupabaseEnv()}
     />
   );

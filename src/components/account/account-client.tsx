@@ -15,10 +15,9 @@ import {
 } from "@/components/ui/table";
 import { useCartStore, type LocalOrder } from "@/stores/cart-store";
 import type { OrderRecord } from "@/lib/actions/orders";
-import { getProductTitle } from "@/lib/data/product-utils";
 import { formatPrice } from "@/lib/pricing";
 import type { OrderStatus } from "@/types/database";
-import type { Product } from "@/types/database";
+import { PageHeader } from "@/components/ui/page-header";
 import { AccountKpiCards } from "./account-kpi-cards";
 
 const statusVariant: Record<OrderStatus, "default" | "secondary" | "outline"> = {
@@ -30,7 +29,6 @@ const statusVariant: Record<OrderStatus, "default" | "secondary" | "outline"> = 
 
 type AccountClientProps = {
   supabaseOrders: OrderRecord[];
-  products: Product[];
   supabaseEnabled?: boolean;
 };
 
@@ -75,7 +73,6 @@ function mergeOrders(local: LocalOrder[], remote: OrderRecord[]): DisplayOrder[]
 
 export function AccountClient({
   supabaseOrders,
-  products,
   supabaseEnabled = false,
 }: AccountClientProps) {
   const t = useTranslations("account");
@@ -93,10 +90,6 @@ export function AccountClient({
         : mergeOrders(localOrders, supabaseOrders),
     [localOrders, supabaseOrders, supabaseEnabled]
   );
-  const productById = useMemo(
-    () => new Map(products.map((product) => [product.id, product])),
-    [products]
-  );
 
   const repeatOrder = (order: DisplayOrder) => {
     for (const item of order.items) {
@@ -111,21 +104,18 @@ export function AccountClient({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
-      <div className="mb-8">
-        <h1 className="font-display text-3xl font-bold text-brand-blue">{t("title")}</h1>
-        <p className="mt-2 text-muted-foreground">{t("dashboardWelcome")}</p>
-      </div>
+      <PageHeader title={t("title")} description={t("dashboardWelcome")} />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
-        <Link href="/account/profile" className="glass rounded-2xl p-4 premium-shadow">
+        <Link href="/account/profile" className="surface-panel rounded-2xl p-4 transition-colors hover:border-border">
           <p className="font-medium">{t("profile")}</p>
           <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkProfile")}</p>
         </Link>
-        <Link href="/account/assets" className="glass rounded-2xl p-4 premium-shadow">
+        <Link href="/account/assets" className="surface-panel rounded-2xl p-4">
           <p className="font-medium">{t("assets")}</p>
           <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkAssets")}</p>
         </Link>
-        <Link href="/account" className="glass rounded-2xl p-4 premium-shadow">
+        <Link href="/account" className="surface-panel rounded-2xl p-4">
           <p className="font-medium">{t("orders")}</p>
           <p className="mt-1 text-sm text-muted-foreground">{t("quickLinkOrders")}</p>
         </Link>
@@ -133,8 +123,8 @@ export function AccountClient({
 
       <AccountKpiCards orders={orders} />
 
-      <div className="glass rounded-3xl p-6 premium-shadow">
-        <h2 className="mb-4 font-display text-xl font-semibold">{t("orders")}</h2>
+      <div className="surface-panel rounded-2xl p-6">
+        <h2 className="ui-section-title mb-4">{t("orders")}</h2>
 
         {orders.length === 0 ? (
           <p className="py-8 text-center text-muted-foreground">{t("noOrders")}</p>
@@ -166,7 +156,7 @@ export function AccountClient({
                         ? tCheckout("paymentInvoice")
                         : tCheckout("paymentOnline")}
                     </TableCell>
-                    <TableCell className="text-right font-semibold text-primary">
+                    <TableCell className="text-right font-semibold tabular-nums text-primary">
                       {formatPrice(order.total_estimated_price, localeStr)}
                     </TableCell>
                     <TableCell>
@@ -189,23 +179,6 @@ export function AccountClient({
           </div>
         )}
       </div>
-
-      {orders.length > 0 && (
-        <div className="mt-6 text-sm text-muted-foreground">
-          {orders.map((o) => (
-            <div key={o.id} className="mb-2">
-              {o.items.map((item) => {
-                const p = productById.get(item.productId);
-                return p ? (
-                  <span key={item.productId} className="mr-2">
-                    {getProductTitle(p, locale)} ×{item.quantity}
-                  </span>
-                ) : null;
-              })}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
